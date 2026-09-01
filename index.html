@@ -546,6 +546,10 @@ function addEdu(){
     </div>
     <label>Dates</label>
     <input type="text" class="edu-dates" oninput="renderPreview()" placeholder="2020 – 2024">
+    <div class="row2">
+      <div><label>GPA/CGPA <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-gpa" oninput="renderPreview()" placeholder="e.g. 4.83 or 5.00"></div>
+      <div><label>Scale <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-scale" oninput="renderPreview()" placeholder="e.g. 5.00 or 4.00"></div>
+    </div>
   `;
   document.getElementById('edu-list').appendChild(div);
 }
@@ -590,8 +594,12 @@ function renderPreview(){
     const degree=b.querySelector('.edu-degree').value;
     const inst=b.querySelector('.edu-inst').value;
     const dates=b.querySelector('.edu-dates').value;
+    const gpa=b.querySelector('.edu-gpa').value;
+    const scale=b.querySelector('.edu-scale').value;
     if(!degree && !inst) return;
-    eduHtml+=`<div class="entry"><div class="top"><span>${esc(degree)}</span><span>${esc(dates)}</span></div>
+    let gpaLine='';
+    if(gpa) gpaLine = ` — CGPA: ${esc(gpa)}${scale?'/'+esc(scale):''}`;
+    eduHtml+=`<div class="entry"><div class="top"><span>${esc(degree)}${gpaLine}</span><span>${esc(dates)}</span></div>
       <div class="sub">${esc(inst)}</div></div>`;
   });
 
@@ -644,7 +652,8 @@ function collectData(){
   document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
     edu.push({
       degree:b.querySelector('.edu-degree').value, inst:b.querySelector('.edu-inst').value,
-      dates:b.querySelector('.edu-dates').value
+      dates:b.querySelector('.edu-dates').value, gpa:b.querySelector('.edu-gpa').value,
+      scale:b.querySelector('.edu-scale').value
     });
   });
   return {
@@ -696,6 +705,8 @@ function loadSavedData(){
     block.querySelector('.edu-degree').value=item.degree||'';
     block.querySelector('.edu-inst').value=item.inst||'';
     block.querySelector('.edu-dates').value=item.dates||'';
+    block.querySelector('.edu-gpa').value=item.gpa||'';
+    block.querySelector('.edu-scale').value=item.scale||'';
   });
 
   if(d.template){
