@@ -1,0 +1,57 @@
+cd ~/emon-design.github.io
+cat > about.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Deskwork</title>
+<meta name="description" content="Deskwork is a free set of browser tools for resumes, file conversion, and student calculations. Learn how it works and why it's free.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#EDF1F5;--paper-raised:#FFFFFF;--ink:#1B2430;--ink-soft:#4B5563;--stamp:#C1443C;--stamp-dark:#9E362F;--line:#D3DBE3;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.65;}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+  header{padding:36px 0 0 0;}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .brand h1{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;margin:0;}
+  .mark{width:14px;height:14px;background:var(--stamp);transform:rotate(45deg);flex-shrink:0;}
+  a.home-link{color:var(--ink-soft);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line);}
+  main{padding:34px 0 70px 0;}
+  h2{font-family:'Fraunces',serif;font-size:1.6rem;margin:0 0 .5em 0;}
+  p{color:var(--ink-soft);margin:0 0 1.1em 0;}
+  strong{color:var(--ink);}
+  footer{border-top:2px solid var(--ink);padding:24px 0 40px 0;color:var(--ink-soft);font-size:.82rem;}
+  footer a{color:var(--ink-soft);margin-right:16px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="mark"></span><h1>Deskwork</h1></div>
+    <a class="home-link" href="index.html">← Back to tools</a>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <h2>About Deskwork</h2>
+    <p>Deskwork is a small set of free tools built for one reason: resumes, file conversions, and everyday calculations shouldn't require an account, a subscription, or your files leaving your device.</p>
+    <p>Everything on this site runs <strong>in your browser</strong>. When you build a resume or compress an image here, none of that data is uploaded anywhere or stored on a server — it stays on your device the whole time.</p>
+    <p>The site currently includes a resume builder, an image compressor and format converter, a GPA calculator, and a citation generator. More tools get added over time, based on what people ask for.</p>
+    <p>Deskwork is free to use. It's supported by ads shown alongside the tools, and by an optional premium tier for extra resume templates and file features. There's no obligation to pay for anything — the core tools stay free.</p>
+    <p>Built and maintained by an independent developer. If something's broken or you have a tool you wish existed, reach out — details on the <a href="about.html#contact">contact</a> note below.</p>
+    <h2 id="contact" style="margin-top:2em;">Contact</h2>
+    <p>For questions, bug reports, or tool requests, email <strong>marazemon3@gmail.com</strong>.</p>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <span>Deskwork — built with free, open tools.</span>
+  </div>
+</footer>
+</body>
+</html>
