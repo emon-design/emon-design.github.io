@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deskwork — Resume, File Tools & Student Calculators</title>
+<meta name="description" content="Free resume builder, image compressor/converter, and student calculators. No signup needed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDF1F5;
+    --paper-raised:#FFFFFF;
+    --ink:#1B2430;
+    --ink-soft:#4B5563;
+    --stamp:#C1443C;
+    --stamp-dark:#9E362F;
+    --highlight:#F2C94C;
+    --line:#D3DBE3;
+    --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0 0 .4em 0;
+    letter-spacing:-0.01em;
+  }
+  a{color:var(--stamp-dark);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px;}
+
+  /* Header */
+  header.site{
+    padding:36px 0 0 0;
+  }
+  header.site .brand{
+    display:flex;align-items:baseline;gap:10px;margin-bottom:6px;
+  }
+  header.site .brand h1{font-size:1.7rem;}
+  header.site .brand .mark{
+    width:14px;height:14px;background:var(--stamp);
+    transform:rotate(45deg);flex-shrink:0;
+  }
+  header.site p.tag{
+    color:var(--ink-soft);max-width:52ch;font-size:.98rem;margin:0 0 26px 0;
+  }
+
+  /* Folder tabs */
+  nav.tabs{
+    display:flex;gap:4px;
+    border-bottom:2px solid var(--ink);
+  }
+  nav.tabs button{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:.95rem;
+    font-weight:500;
+    padding:11px 20px 10px 20px;
+    background:#DCE3EA;
+    border:2px solid var(--ink);
+    border-bottom:none;
+    border-radius:8px 8px 0 0;
+    color:var(--ink-soft);
+    cursor:pointer;
+    position:relative;
+    top:2px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.tabs button:hover{background:#CBD5DF;}
+  nav.tabs button.active{
+    background:var(--paper-raised);
+    color:var(--ink);
+    top:0;
+    padding-top:13px;
+  }
+  nav.tabs button:focus-visible{outline:2px solid var(--stamp);outline-offset:2px;}
+
+  main{padding:34px 0 80px 0;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{
+    background:var(--paper-raised);
+    border:2px solid var(--ink);
+    border-radius:var(--radius);
+    padding:26px;
+    margin-bottom:22px;
+  }
+  .card h2{font-size:1.25rem;margin-bottom:4px;}
+  .card p.desc{color:var(--ink-soft);font-size:.92rem;margin:0 0 20px 0;}
+
+  label{display:block;font-size:.85rem;font-weight:500;margin:14px 0 5px 0;color:var(--ink);}
+  label:first-of-type{margin-top:0;}
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea, select{
+    width:100%;
+    padding:9px 11px;
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    font-family:inherit;
+    font-size:.92rem;
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--stamp);outline-offset:1px;border-color:var(--stamp);}
+  textarea{resize:vertical;min-height:70px;}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:600px){.row2{grid-template-columns:1fr;}}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink);color:#fff;
+    border:none;border-radius:4px;
+    padding:10px 18px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:.9rem;font-weight:500;
+    cursor:pointer;
+  }
+  .btn:hover{background:#2B3648;}
+  .btn.primary{background:var(--stamp);}
+  .btn.primary:hover{background:var(--stamp-dark);}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);}
+  .btn.small{padding:6px 12px;font-size:.82rem;}
+
+  .repeat-block{
+    border-left:3px solid var(--line);
+    padding-left:14px;margin-bottom:16px;position:relative;
+  }
+  .repeat-block .remove{
+    position:absolute;right:0;top:0;background:none;border:none;color:var(--stamp-dark);
+    font-size:.8rem;cursor:pointer;text-decoration:underline;
+  }
+
+  /* Resume preview */
+  .resume-preview{
+    background:#fff;border:1px solid var(--line);
+    padding:34px 38px;font-size:.85rem;color:#222;
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:400px;
+  }
+  .resume-preview h3{font-family:'Fraunces',serif;font-size:1.5rem;margin:0;color:#111;}
+  .resume-preview .contact{color:#555;font-size:.78rem;margin:4px 0 16px 0;}
+  .resume-preview .section-title{
+    font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--stamp-dark);border-bottom:1px solid var(--line);
+    margin:16px 0 8px 0;padding-bottom:3px;font-weight:600;
+  }
+  .resume-preview .entry{margin-bottom:10px;}
+  .resume-preview .entry .top{display:flex;justify-content:space-between;font-weight:600;font-size:.86rem;}
+  .resume-preview .entry .sub{font-size:.78rem;color:#555;margin-bottom:3px;}
+  .resume-preview .entry p{margin:2px 0 0 0;font-size:.8rem;color:#333;}
+  .resume-preview .skills-list{font-size:.8rem;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
+  @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
+  .sticky{position:sticky;top:16px;}
+
+  /* File tool */
+  .drop{
+    border:2px dashed var(--line);border-radius:6px;
+    padding:34px 20px;text-align:center;color:var(--ink-soft);
+    cursor:pointer;background:#FAFBFC;
+  }
+  .drop.dragover{border-color:var(--stamp);background:#FDF1F0;}
+  .drop input{display:none;}
+  .preview-img{max-width:100%;border:1px solid var(--line);border-radius:4px;margin-top:14px;display:block;}
+  .filemeta{font-size:.82rem;color:var(--ink-soft);margin-top:8px;}
+  .slider-row{display:flex;align-items:center;gap:12px;margin:14px 0;}
+  .slider-row input[type=range]{flex:1;}
+
+  /* Student tools */
+  .gpa-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px;}
+  @media (max-width:600px){.gpa-row{grid-template-columns:1fr 1fr;}}
+  .result-box{
+    background:#F4EFDD;border:1.5px solid var(--highlight);
+    border-radius:4px;padding:14px 18px;margin-top:16px;
+    font-size:1rem;font-weight:600;
+  }
+  .citation-out{
+    background:#F7F5F0;border:1px solid var(--line);border-radius:4px;
+    padding:14px;font-family:'IBM Plex Sans',monospace;font-size:.85rem;
+    margin-top:14px;white-space:pre-wrap;word-break:break-word;
+  }
+
+  .premium-badge{
+    display:inline-block;background:var(--highlight);color:#5C4400;
+    font-size:.68rem;font-weight:600;letter-spacing:.03em;
+    padding:2px 8px;border-radius:3px;margin-left:8px;vertical-align:middle;
+  }
+  .ad-slot{
+    background:#E4E9EE;border:1px dashed var(--line);
+    text-align:center;color:var(--ink-soft);font-size:.78rem;
+    padding:16px;border-radius:4px;margin:24px 0;
+  }
+
+  footer{
+    border-top:2px solid var(--ink);padding:24px 0 40px 0;
+    color:var(--ink-soft);font-size:.82rem;
+  }
+
+  @media print{
+    header.site, nav.tabs, .card > *:not(.resume-preview), .two-col > div:first-child, footer, .ad-slot{display:none !important;}
+    .resume-preview{border:none;padding:0;}
+    body{background:#fff;}
+    .card{border:none;padding:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="mark"></span><h1>Deskwork</h1></div>
+    <p class="tag">Build a resume, convert or compress a file, and run the calculations students need — free, in your browser, nothing uploaded to a server.</p>
+    <nav class="tabs">
+      <button class="tab-btn active" data-panel="resume">Resume Builder</button>
+      <button class="tab-btn" data-panel="convert">File Tools</button>
+      <button class="tab-btn" data-panel="student">Student Tools</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- RESUME BUILDER -->
+    <section class="panel active" id="resume">
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <h2>Your details</h2>
+            <p class="desc">Fill this in — the preview updates as you type.</p>
+            <label>Full name</label>
+            <input type="text" id="r-name" placeholder="Jordan Rivera">
+            <div class="row2">
+              <div><label>Email</label><input type="text" id="r-email" placeholder="jordan@email.com"></div>
+              <div><label>Phone</label><input type="text" id="r-phone" placeholder="+1 555 010 2020"></div>
+            </div>
+            <label>Location</label>
+            <input type="text" id="r-location" placeholder="Dhaka, Bangladesh">
+            <label>Summary</label>
+            <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
+          </div>
+
+          <div class="card">
+            <h2>Experience</h2>
+            <p class="desc">Add roles, most recent first.</p>
+            <div id="exp-list"></div>
+            <button class="btn ghost small" onclick="addExp()">+ Add role</button>
+          </div>
+
+          <div class="card">
+            <h2>Education</h2>
+            <div id="edu-list"></div>
+            <button class="btn ghost small" onclick="addEdu()">+ Add education</button>
+          </div>
+
+          <div class="card">
+            <h2>Skills</h2>
+            <p class="desc">Comma-separated.</p>
+            <input type="text" id="r-skills" placeholder="Python, SQL, Project Management">
+          </div>
+        </div>
+
+        <div class="sticky">
+          <div class="card" style="padding:16px;">
+            <h2 style="font-size:1rem;">Preview</h2>
+            <div class="resume-preview" id="preview"></div>
+            <div style="margin-top:14px;display:flex;gap:10px;">
+              <button class="btn primary" onclick="window.print()">Download as PDF</button>
+            </div>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF" as the destination.</p>
+          </div>
+          <div class="card">
+            <h2 style="font-size:1rem;">Templates <span class="premium-badge">2 free · 4 premium</span></h2>
+            <p class="desc">More layouts and color themes unlock with a one-time premium code.</p>
+            <input type="text" id="premium-code" placeholder="Enter code" style="max-width:180px;display:inline-block;">
+            <button class="btn small ghost" onclick="checkCode()">Unlock</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILE TOOLS -->
+    <section class="panel" id="convert">
+      <div class="card">
+        <h2>Image compressor & converter</h2>
+        <p class="desc">Shrinks file size or converts format (JPG/PNG/WebP) — runs entirely on your device, nothing is uploaded.</p>
+        <div class="drop" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <div id="drop-label">Tap to choose an image, or drag one here</div>
+          <input type="file" id="file-input" accept="image/*">
+        </div>
+        <img id="preview-img" class="preview-img" style="display:none;">
+        <div class="filemeta" id="file-meta"></div>
+
+        <div id="controls" style="display:none;">
+          <label>Output format</label>
+          <select id="out-format">
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+          <div class="slider-row">
+            <label style="margin:0;white-space:nowrap;">Quality</label>
+            <input type="range" id="quality" min="10" max="100" value="80">
+            <span id="quality-val">80%</span>
+          </div>
+          <button class="btn primary" onclick="processImage()">Convert & Download</button>
+          <div class="filemeta" id="result-meta"></div>
+        </div>
+      </div>
+
+      <div class="ad-slot">Ad space — 728×90 leaderboard placeholder</div>
+
+      <div class="card">
+        <h2>More file tools <span class="premium-badge">Premium</span></h2>
+        <p class="desc">PDF ↔ Word conversion, batch processing, and PDF page merging unlock with premium.</p>
+        <button class="btn ghost small" disabled>Coming with premium</button>
+      </div>
+    </section>
+
+    <!-- STUDENT TOOLS -->
+    <section class="panel" id="student">
+      <div class="card">
+        <h2>GPA calculator</h2>
+        <p class="desc">Add each course's grade and credit hours.</p>
+        <div id="gpa-list"></div>
+        <button class="btn ghost small" onclick="addGpaRow()">+ Add course</button>
+        <div class="result-box" id="gpa-result">GPA: —</div>
+      </div>
+
+      <div class="card">
+        <h2>Citation generator</h2>
+        <p class="desc">Fill in the source details, pick a style.</p>
+        <div class="row2">
+          <div><label>Author (Last, First)</label><input type="text" id="c-author" placeholder="Doe, Jane"></div>
+          <div><label>Year</label><input type="text" id="c-year" placeholder="2024"></div>
+        </div>
+        <label>Title</label>
+        <input type="text" id="c-title" placeholder="Title of the work">
+        <div class="row2">
+          <div><label>Publisher / Source</label><input type="text" id="c-pub" placeholder="Publisher or website"></div>
+          <div><label>Style</label>
+            <select id="c-style">
+              <option value="apa">APA</option>
+              <option value="mla">MLA</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn primary" onclick="genCitation()" style="margin-top:14px;">Generate</button>
+        <div class="citation-out" id="citation-out" style="display:none;"></div>
+      </div>
+
+      <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">Deskwork — built with free, open tools. Nothing you enter here leaves your device.</div>
+</footer>
+
+<script>
+// ---- Tabs ----
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+// ---- Resume builder ----
+let expCount=0, eduCount=0;
+function addExp(data){
+  expCount++;
+  const id='exp'+expCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <div class="row2">
+      <div><label>Role</label><input type="text" class="exp-role" oninput="renderPreview()" placeholder="Software Engineer"></div>
+      <div><label>Company</label><input type="text" class="exp-company" oninput="renderPreview()" placeholder="Acme Inc."></div>
+    </div>
+    <div class="row2">
+      <div><label>Dates</label><input type="text" class="exp-dates" oninput="renderPreview()" placeholder="2022 – Present"></div>
+      <div><label>Location</label><input type="text" class="exp-loc" oninput="renderPreview()" placeholder="Remote"></div>
+    </div>
+    <label>Description</label>
+    <textarea class="exp-desc" oninput="renderPreview()" placeholder="What did you do / achieve?"></textarea>
+  `;
+  document.getElementById('exp-list').appendChild(div);
+}
+function addEdu(){
+  eduCount++;
+  const id='edu'+eduCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <div class="row2">
+      <div><label>Degree</label><input type="text" class="edu-degree" oninput="renderPreview()" placeholder="B.Sc. Computer Science"></div>
+      <div><label>Institution</label><input type="text" class="edu-inst" oninput="renderPreview()" placeholder="State University"></div>
+    </div>
+    <label>Dates</label>
+    <input type="text" class="edu-dates" oninput="renderPreview()" placeholder="2020 – 2024">
+  `;
+  document.getElementById('edu-list').appendChild(div);
+}
+['r-name','r-email','r-phone','r-location','r-summary','r-skills'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', renderPreview);
+});
+function renderPreview(){
+  const name=val('r-name')||'Your Name';
+  const email=val('r-email'), phone=val('r-phone'), loc=val('r-location');
+  const contact=[email,phone,loc].filter(Boolean).join(' · ');
+  const summary=val('r-summary');
+  const skills=val('r-skills');
+
+  let expHtml='';
+  document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+    const role=b.querySelector('.exp-role').value;
+    const company=b.querySelector('.exp-company').value;
+    const dates=b.querySelector('.exp-dates').value;
+    const locv=b.querySelector('.exp-loc').value;
+    const desc=b.querySelector('.exp-desc').value;
+    if(!role && !company) return;
+    expHtml+=`<div class="entry"><div class="top"><span>${esc(role)}${company?' · '+esc(company):''}</span><span>${esc(dates)}</span></div>
+      <div class="sub">${esc(locv)}</div><p>${esc(desc)}</p></div>`;
+  });
+
+  let eduHtml='';
+  document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+    const degree=b.querySelector('.edu-degree').value;
+    const inst=b.querySelector('.edu-inst').value;
+    const dates=b.querySelector('.edu-dates').value;
+    if(!degree && !inst) return;
+    eduHtml+=`<div class="entry"><div class="top"><span>${esc(degree)}</span><span>${esc(dates)}</span></div>
+      <div class="sub">${esc(inst)}</div></div>`;
+  });
+
+  let html=`<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
+  if(summary) html+=`<div class="section-title">Summary</div><p>${esc(summary)}</p>`;
+  if(expHtml) html+=`<div class="section-title">Experience</div>${expHtml}`;
+  if(eduHtml) html+=`<div class="section-title">Education</div>${eduHtml}`;
+  if(skills) html+=`<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
+
+  document.getElementById('preview').innerHTML=html;
+}
+function val(id){return document.getElementById(id).value.trim();}
+function esc(s){
+  return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+addExp(); addEdu(); renderPreview();
+
+let unlocked=false;
+function checkCode(){
+  const code=document.getElementById('premium-code').value.trim();
+  if(code.length>3){
+    unlocked=true;
+    alert('Premium unlocked — more templates available.');
+  } else {
+    alert('That code doesn\'t look right. Codes are sent after purchase.');
+  }
+}
+
+// ---- File tool: image compress/convert ----
+const dropZone=document.getElementById('drop-zone');
+const fileInput=document.getElementById('file-input');
+const previewImg=document.getElementById('preview-img');
+let currentFile=null, currentImg=null;
+
+fileInput.addEventListener('change',e=>handleFile(e.target.files[0]));
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover');});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop',e=>{
+  e.preventDefault();dropZone.classList.remove('dragover');
+  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFile(file){
+  if(!file || !file.type.startsWith('image/')) return;
+  currentFile=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    previewImg.src=e.target.result;
+    previewImg.style.display='block';
+    const img=new Image();
+    img.onload=()=>{ currentImg=img; };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('file-meta').textContent=`${file.name} — ${(file.size/1024).toFixed(0)} KB`;
+  document.getElementById('controls').style.display='block';
+  document.getElementById('drop-label').textContent='Tap to choose a different image';
+}
+
+document.getElementById('quality').addEventListener('input',e=>{
+  document.getElementById('quality-val').textContent=e.target.value+'%';
+});
+
+function processImage(){
+  if(!currentImg) return;
+  const canvas=document.createElement('canvas');
+  canvas.width=currentImg.width;
+  canvas.height=currentImg.height;
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(currentImg,0,0);
+  const format=document.getElementById('out-format').value;
+  const quality=document.getElementById('quality').value/100;
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const ext=format.split('/')[1];
+    a.href=url;
+    a.download='converted.'+ext;
+    a.click();
+    document.getElementById('result-meta').textContent=
+      `Done — new size: ${(blob.size/1024).toFixed(0)} KB (was ${(currentFile.size/1024).toFixed(0)} KB)`;
+  }, format, quality);
+}
+
+// ---- Student tools: GPA ----
+let gpaRows=0;
+function addGpaRow(){
+  gpaRows++;
+  const id='gpa'+gpaRows;
+  const row=document.createElement('div');
+  row.className='gpa-row';
+  row.id=id;
+  row.innerHTML=`
+    <div><label>Course</label><input type="text" class="gpa-course" placeholder="e.g. Calculus I"></div>
+    <div><label>Grade</label>
+      <select class="gpa-grade">
+        <option value="4">A</option><option value="3.7">A-</option>
+        <option value="3.3">B+</option><option value="3">B</option><option value="2.7">B-</option>
+        <option value="2.3">C+</option><option value="2">C</option><option value="1.7">C-</option>
+        <option value="1">D</option><option value="0">F</option>
+      </select>
+    </div>
+    <div><label>Credits</label><input type="number" class="gpa-credits" min="0" step="0.5" value="3"></div>
+    <button class="btn ghost small" onclick="document.getElementById('${id}').remove();calcGpa();">×</button>
+  `;
+  document.getElementById('gpa-list').appendChild(row);
+  row.querySelectorAll('select, input').forEach(el=>el.addEventListener('input',calcGpa));
+  calcGpa();
+}
+function calcGpa(){
+  let totalPoints=0, totalCredits=0;
+  document.querySelectorAll('#gpa-list .gpa-row').forEach(r=>{
+    const grade=parseFloat(r.querySelector('.gpa-grade').value);
+    const credits=parseFloat(r.querySelector('.gpa-credits').value)||0;
+    totalPoints+=grade*credits;
+    totalCredits+=credits;
+  });
+  const gpa=totalCredits>0 ? (totalPoints/totalCredits).toFixed(2) : '—';
+  document.getElementById('gpa-result').textContent='GPA: '+gpa;
+}
+addGpaRow();
+
+// ---- Student tools: Citation generator ----
+function genCitation(){
+  const author=val('c-author')||'Author, A.';
+  const year=val('c-year')||'n.d.';
+  const title=val('c-title')||'Untitled';
+  const pub=val('c-pub')||'Publisher';
+  const style=document.getElementById('c-style').value;
+  let out='';
+  if(style==='apa'){
+    out=`${author} (${year}). ${title}. ${pub}.`;
+  } else {
+    out=`${author}. "${title}." ${pub}, ${year}.`;
+  }
+  const box=document.getElementById('citation-out');
+  box.style.display='block';
+  box.textContent=out;
+}
+</script>
+</body>
+</html>
