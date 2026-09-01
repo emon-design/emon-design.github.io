@@ -547,11 +547,37 @@ function addEdu(){
     <label>Dates</label>
     <input type="text" class="edu-dates" oninput="renderPreview()" placeholder="2020 – 2024">
     <div class="row2">
-      <div><label>GPA/CGPA <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-gpa" oninput="renderPreview()" placeholder="e.g. 4.83 or 5.00"></div>
-      <div><label>Scale <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-scale" oninput="renderPreview()" placeholder="e.g. 5.00 or 4.00"></div>
+      <div><label>Scale</label>
+        <select class="edu-scale" onchange="onEduScaleChange(this)">
+          <option value="5">GPA (out of 5.00)</option>
+          <option value="4">CGPA (out of 4.00)</option>
+        </select>
+      </div>
+      <div><label>Result</label><input type="number" class="edu-gpa" min="0" max="5" step="0.01" placeholder="e.g. 4.83" oninput="onEduGpaInput(this)"></div>
     </div>
   `;
   document.getElementById('edu-list').appendChild(div);
+}
+function onEduScaleChange(sel){
+  const block=sel.closest('.repeat-block');
+  const gpaInput=block.querySelector('.edu-gpa');
+  const max=parseFloat(sel.value);
+  gpaInput.max=sel.value;
+  gpaInput.placeholder = sel.value==='4' ? 'e.g. 3.75' : 'e.g. 4.83';
+  if(gpaInput.value && parseFloat(gpaInput.value)>max){
+    gpaInput.value=max.toFixed(2);
+    showToast(`Adjusted — max for this scale is ${max.toFixed(2)}.`);
+  }
+  renderPreview();
+}
+function onEduGpaInput(inp){
+  const max=parseFloat(inp.max)||5;
+  const v=parseFloat(inp.value);
+  if(!isNaN(v) && v>max){
+    inp.value=max.toFixed(2);
+    showToast(`Max for this scale is ${max.toFixed(2)}.`);
+  }
+  renderPreview();
 }
 ['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
@@ -598,7 +624,10 @@ function renderPreview(){
     const scale=b.querySelector('.edu-scale').value;
     if(!degree && !inst) return;
     let gpaLine='';
-    if(gpa) gpaLine = ` — CGPA: ${esc(gpa)}${scale?'/'+esc(scale):''}`;
+    if(gpa){
+      const label = scale==='4' ? 'CGPA' : 'GPA';
+      gpaLine = ` — ${label}: ${esc(gpa)}/${parseFloat(scale||5).toFixed(2)}`;
+    }
     eduHtml+=`<div class="entry"><div class="top"><span>${esc(degree)}${gpaLine}</span><span>${esc(dates)}</span></div>
       <div class="sub">${esc(inst)}</div></div>`;
   });
@@ -705,8 +734,9 @@ function loadSavedData(){
     block.querySelector('.edu-degree').value=item.degree||'';
     block.querySelector('.edu-inst').value=item.inst||'';
     block.querySelector('.edu-dates').value=item.dates||'';
+    if(item.scale) block.querySelector('.edu-scale').value=item.scale;
+    block.querySelector('.edu-gpa').max=block.querySelector('.edu-scale').value;
     block.querySelector('.edu-gpa').value=item.gpa||'';
-    block.querySelector('.edu-scale').value=item.scale||'';
   });
 
   if(d.template){
