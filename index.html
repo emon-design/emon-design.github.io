@@ -282,6 +282,7 @@
     <p class="tag">Build a resume, convert or compress a file, and run the calculations students need — free, in your browser, nothing uploaded to a server.</p>
     <nav class="tabs">
       <button class="tab-btn active" data-panel="resume">Resume Builder</button>
+      <button class="tab-btn" data-panel="letter">Cover Letter</button>
       <button class="tab-btn" data-panel="convert">File Tools</button>
       <button class="tab-btn" data-panel="student">Student Tools</button>
     </nav>
@@ -308,6 +309,7 @@
             <input type="text" id="r-location" placeholder="Dhaka, Bangladesh">
             <label>Summary</label>
             <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
+            <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftSummary()">✨ Auto-draft summary from your details</button>
             <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International template)</span></label>
             <input type="file" id="r-photo" accept="image/*">
             <div class="row2">
@@ -356,6 +358,47 @@
             </div>
             <input type="text" id="premium-code" placeholder="Enter code" style="max-width:180px;display:inline-block;">
             <button class="btn small ghost" onclick="checkCode()">Unlock 2 more</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COVER LETTER -->
+    <section class="panel" id="letter">
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <h2>Applying for</h2>
+            <p class="desc">Your name and contact come from the Resume Builder tab automatically.</p>
+            <div class="row2">
+              <div><label>Company name</label><input type="text" id="l-company" placeholder="Acme Inc." oninput="renderLetter()"></div>
+              <div><label>Job title</label><input type="text" id="l-jobtitle" placeholder="Software Engineer" oninput="renderLetter()"></div>
+            </div>
+            <label>Hiring manager <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+            <input type="text" id="l-manager" placeholder="Leave blank to use \"Hiring Manager\"" oninput="renderLetter()">
+          </div>
+
+          <div class="card">
+            <h2>Letter body</h2>
+            <p class="desc">Write your own, or auto-draft a starting point from your resume details.</p>
+            <button class="btn ghost small" onclick="autoDraftLetter()">✨ Auto-draft from my resume</button>
+            <label style="margin-top:16px;">Opening</label>
+            <textarea id="l-opening" oninput="renderLetter()" placeholder="Why you're writing and the role you're applying for."></textarea>
+            <label>Body</label>
+            <textarea id="l-body" oninput="renderLetter()" placeholder="Relevant experience and skills."></textarea>
+            <label>Closing</label>
+            <textarea id="l-closing" oninput="renderLetter()" placeholder="Thank them and invite next steps."></textarea>
+          </div>
+        </div>
+
+        <div class="sticky">
+          <div class="card" style="padding:16px;">
+            <h2 style="font-size:1rem;">Preview</h2>
+            <div class="resume-preview" id="letter-preview" style="font-family:'IBM Plex Sans',sans-serif;"></div>
+            <div style="margin-top:14px;">
+              <button class="btn primary" onclick="printLetter()">Download as PDF</button>
+            </div>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF".</p>
           </div>
         </div>
       </div>
@@ -573,12 +616,161 @@ function renderPreview(){
   } else {
     preview.innerHTML = bodyHtml;
   }
+  saveData();
 }
 function val(id){return document.getElementById(id).value.trim();}
 function esc(s){
   return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-addExp(); addEdu(); renderPreview();
+
+// ---- Auto-save / restore ----
+let saveTimer;
+function saveData(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{ localStorage.setItem('deskwork_draft_v1', JSON.stringify(collectData())); }catch(e){}
+  }, 400);
+}
+function collectData(){
+  const exp=[];
+  document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+    exp.push({
+      role:b.querySelector('.exp-role').value, company:b.querySelector('.exp-company').value,
+      dates:b.querySelector('.exp-dates').value, loc:b.querySelector('.exp-loc').value,
+      desc:b.querySelector('.exp-desc').value
+    });
+  });
+  const edu=[];
+  document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+    edu.push({
+      degree:b.querySelector('.edu-degree').value, inst:b.querySelector('.edu-inst').value,
+      dates:b.querySelector('.edu-dates').value
+    });
+  });
+  return {
+    name:val('r-name'), email:val('r-email'), phone:val('r-phone'),
+    location:val('r-location'), summary:val('r-summary'), skills:val('r-skills'),
+    dob:val('r-dob'), nationality:val('r-nationality'),
+    template:resumeTemplate, exp, edu,
+    letter:{
+      company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
+      opening:val('l-opening'), body:val('l-body'), closing:val('l-closing')
+    }
+  };
+}
+function loadSavedData(){
+  let raw;
+  try{ raw=localStorage.getItem('deskwork_draft_v1'); }catch(e){ return false; }
+  if(!raw) return false;
+  let d;
+  try{ d=JSON.parse(raw); }catch(e){ return false; }
+
+  document.getElementById('r-name').value=d.name||'';
+  document.getElementById('r-email').value=d.email||'';
+  document.getElementById('r-phone').value=d.phone||'';
+  document.getElementById('r-location').value=d.location||'';
+  document.getElementById('r-summary').value=d.summary||'';
+  document.getElementById('r-skills').value=d.skills||'';
+  document.getElementById('r-dob').value=d.dob||'';
+  document.getElementById('r-nationality').value=d.nationality||'';
+
+  document.getElementById('exp-list').innerHTML='';
+  document.getElementById('edu-list').innerHTML='';
+  expCount=0; eduCount=0;
+
+  const expArr=(d.exp && d.exp.length) ? d.exp : [{}];
+  expArr.forEach(item=>{
+    addExp();
+    const block=document.getElementById('exp-list').lastElementChild;
+    block.querySelector('.exp-role').value=item.role||'';
+    block.querySelector('.exp-company').value=item.company||'';
+    block.querySelector('.exp-dates').value=item.dates||'';
+    block.querySelector('.exp-loc').value=item.loc||'';
+    block.querySelector('.exp-desc').value=item.desc||'';
+  });
+
+  const eduArr=(d.edu && d.edu.length) ? d.edu : [{}];
+  eduArr.forEach(item=>{
+    addEdu();
+    const block=document.getElementById('edu-list').lastElementChild;
+    block.querySelector('.edu-degree').value=item.degree||'';
+    block.querySelector('.edu-inst').value=item.inst||'';
+    block.querySelector('.edu-dates').value=item.dates||'';
+  });
+
+  if(d.template){
+    resumeTemplate=d.template;
+    document.querySelectorAll('.tmpl-btn').forEach(b=>b.classList.toggle('active', b.dataset.tmpl===resumeTemplate));
+  }
+
+  if(d.letter){
+    document.getElementById('l-company').value=d.letter.company||'';
+    document.getElementById('l-jobtitle').value=d.letter.jobtitle||'';
+    document.getElementById('l-manager').value=d.letter.manager||'';
+    document.getElementById('l-opening').value=d.letter.opening||'';
+    document.getElementById('l-body').value=d.letter.body||'';
+    document.getElementById('l-closing').value=d.letter.closing||'';
+  }
+  return true;
+}
+
+// ---- Cover letter ----
+function renderLetter(){
+  const name=val('r-name')||'Your Name';
+  const email=val('r-email'), phone=val('r-phone'), loc=val('r-location');
+  const contactLine=[email,phone,loc].filter(Boolean).join(' · ');
+  const company=val('l-company');
+  const manager=val('l-manager')||'Hiring Manager';
+  const opening=val('l-opening'), body=val('l-body'), closing=val('l-closing');
+  const today=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+
+  let html=`<div style="margin-bottom:16px;"><strong>${esc(name)}</strong><br><span style="font-size:.8rem;color:#555;">${esc(contactLine)}</span></div>`;
+  html+=`<div style="margin-bottom:16px;font-size:.82rem;color:#555;">${today}</div>`;
+  if(company) html+=`<div style="margin-bottom:16px;font-size:.85rem;">${esc(manager)}<br>${esc(company)}</div>`;
+  html+=`<p>Dear ${esc(manager)},</p>`;
+  if(opening) html+=`<p>${esc(opening)}</p>`;
+  if(body) html+=`<p>${esc(body)}</p>`;
+  if(closing) html+=`<p>${esc(closing)}</p>`;
+  html+=`<p>Sincerely,<br>${esc(name)}</p>`;
+
+  document.getElementById('letter-preview').innerHTML=html;
+  saveData();
+}
+function autoDraftLetter(){
+  const jobtitle=val('l-jobtitle')||'this role';
+  const company=val('l-company')||'your company';
+  const skillsRaw=val('r-skills');
+  const skillList=skillsRaw ? skillsRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  const roles=[];
+  document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+    const role=b.querySelector('.exp-role').value.trim();
+    if(role) roles.push(role);
+  });
+
+  if(!val('l-opening')){
+    document.getElementById('l-opening').value=
+      `I'm writing to apply for the ${jobtitle} position at ${company}.${roles.length ? ' With experience as a '+roles[0]+',' : ''} I believe I'd be a strong fit for this role.`;
+  }
+  if(!val('l-body')){
+    const skillsSentence=skillList.length ? `My background includes ${skillList.slice(0,3).join(', ')}${skillList.length>3?', among other areas':''}.` : 'My experience has prepared me well for this position.';
+    document.getElementById('l-body').value=
+      `${skillsSentence} I'm confident these skills would let me contribute quickly to your team.`;
+  }
+  if(!val('l-closing')){
+    document.getElementById('l-closing').value=
+      `Thank you for considering my application. I'd welcome the opportunity to discuss how I can contribute to ${company}.`;
+  }
+  renderLetter();
+  showToast('Draft added — feel free to personalize it.');
+}
+function printLetter(){ window.print(); }
+
+// ---- Init ----
+if(!loadSavedData()){
+  addExp(); addEdu();
+}
+renderPreview();
+renderLetter();
 
 let toastTimer;
 function showToast(msg){
@@ -587,6 +779,58 @@ function showToast(msg){
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+function autoDraftSummary(){
+  const roles=[], degrees=[];
+  document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+    const role=b.querySelector('.exp-role').value.trim();
+    if(role) roles.push(role);
+  });
+  document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+    const degree=b.querySelector('.edu-degree').value.trim();
+    if(degree) degrees.push(degree);
+  });
+  const skillsRaw=val('r-skills');
+  const skillList=skillsRaw ? skillsRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+
+  if(roles.length===0 && degrees.length===0 && skillList.length===0){
+    showToast('Add a role, education, or a few skills first — then try again.');
+    return;
+  }
+
+  let opening;
+  if(roles.length>0){
+    opening = `${roles[0]} with hands-on experience`;
+    if(roles.length>1) opening += ` across ${roles.length} roles`;
+  } else if(degrees.length>0){
+    opening = `${degrees[0]} graduate`;
+  } else {
+    opening = 'Motivated professional';
+  }
+
+  let skillsPart='';
+  if(skillList.length>0){
+    const shown=skillList.slice(0,3).join(', ');
+    skillsPart = ` Skilled in ${shown}${skillList.length>3?', among other areas':''}.`;
+  }
+
+  let eduPart='';
+  if(degrees.length>0 && roles.length>0){
+    eduPart = ` Holds a ${degrees[0]}.`;
+  }
+
+  const closers=[
+    ' Looking to bring proven skills to a new team.',
+    ' Focused on delivering measurable results and growing within a collaborative environment.',
+    ' Eager to apply a strong work ethic to new challenges.'
+  ];
+  const closer = closers[Math.floor(Math.random()*closers.length)];
+
+  const draft = opening + '.' + eduPart + skillsPart + closer;
+  document.getElementById('r-summary').value = draft.replace(/\s+/g,' ').trim();
+  renderPreview();
+  showToast('Draft added — feel free to edit it to sound like you.');
 }
 
 let unlocked=false;
