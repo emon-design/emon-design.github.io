@@ -3,8 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deskwork — Resume, File Tools & Student Calculators</title>
-<meta name="description" content="Free resume builder, image compressor/converter, and student calculators. No signup needed.">
+<title>Deskwork — Free Resume Builder, File Converter & Student Tools</title>
+<meta name="description" content="Build a resume, compress or convert an image, and calculate GPA or citations — free, in your browser, with nothing uploaded to a server.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:title" content="Deskwork — Resume, File Tools & Student Calculators">
+<meta property="og:description" content="Free browser-based tools: resume builder, image converter/compressor, GPA calculator, citation generator.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://emon-design.github.io/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Deskwork",
+  "url": "https://emon-design.github.io/",
+  "description": "Free browser-based tools: resume builder, image converter/compressor, GPA calculator, citation generator.",
+  "applicationCategory": "Utility",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -157,6 +174,33 @@
   .resume-preview .entry .sub{font-size:.78rem;color:#555;margin-bottom:3px;}
   .resume-preview .entry p{margin:2px 0 0 0;font-size:.8rem;color:#333;}
   .resume-preview .skills-list{font-size:.8rem;}
+  .resume-preview.tmpl-modern{border-top:6px solid var(--stamp);}
+  .resume-preview.tmpl-modern h3{color:var(--stamp-dark);text-transform:uppercase;letter-spacing:.02em;font-size:1.3rem;}
+  .resume-preview.tmpl-modern .section-title{
+    color:#fff;background:var(--ink);border-bottom:none;
+    padding:3px 8px;display:inline-block;border-radius:2px;
+  }
+  /* Compact / ATS-friendly */
+  .resume-preview.tmpl-compact{font-family:Georgia,'Times New Roman',serif;}
+  .resume-preview.tmpl-compact h3{font-family:inherit;font-weight:700;text-transform:none;letter-spacing:0;}
+  .resume-preview.tmpl-compact .section-title{
+    color:#111;border-bottom:1px solid #111;text-transform:uppercase;
+    font-size:.7rem;letter-spacing:.08em;
+  }
+  .resume-preview.tmpl-compact .entry{margin-bottom:6px;}
+  /* International (photo + personal details) */
+  .resume-preview.tmpl-intl{display:flex;gap:20px;}
+  .resume-preview.tmpl-intl .intl-side{width:110px;flex-shrink:0;}
+  .resume-preview.tmpl-intl .intl-photo{
+    width:100px;height:100px;border-radius:6px;background:#EEE;
+    object-fit:cover;border:1px solid var(--line);display:block;margin-bottom:10px;
+  }
+  .resume-preview.tmpl-intl .intl-photo.placeholder{
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);font-size:.68rem;text-align:center;
+  }
+  .resume-preview.tmpl-intl .intl-personal{font-size:.72rem;color:#555;line-height:1.5;}
+  .resume-preview.tmpl-intl .intl-main{flex:1;min-width:0;}
 
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
   @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
@@ -205,15 +249,32 @@
     color:var(--ink-soft);font-size:.82rem;
   }
 
+  #toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:6px;
+    font-size:.88rem;opacity:0;pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:999;max-width:88vw;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.2);
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .tmpl-btn.active{background:var(--ink);color:#fff;}
+
   @media print{
     header.site, nav.tabs, .card > *:not(.resume-preview), .two-col > div:first-child, footer, .ad-slot{display:none !important;}
-    .resume-preview{border:none;padding:0;}
+    @page{margin:14mm;}
+    .wrap{max-width:none !important;padding:0 !important;}
+    .two-col{display:block !important;}
+    .sticky{position:static !important;}
+    .resume-preview{border:none;padding:0;width:100%;}
+    .resume-preview, .resume-preview *{-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
     body{background:#fff;}
-    .card{border:none;padding:0;}
+    .card{border:none;padding:0;margin:0;}
   }
 </style>
 </head>
 <body>
+<div id="toast"></div>
 
 <header class="site">
   <div class="wrap">
@@ -247,6 +308,12 @@
             <input type="text" id="r-location" placeholder="Dhaka, Bangladesh">
             <label>Summary</label>
             <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
+            <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International template)</span></label>
+            <input type="file" id="r-photo" accept="image/*">
+            <div class="row2">
+              <div><label>Date of birth <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-dob" placeholder="04 Jan 1998"></div>
+              <div><label>Nationality <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-nationality" placeholder="Bangladeshi"></div>
+            </div>
           </div>
 
           <div class="card">
@@ -276,13 +343,19 @@
             <div style="margin-top:14px;display:flex;gap:10px;">
               <button class="btn primary" onclick="window.print()">Download as PDF</button>
             </div>
-            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF" as the destination.</p>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and under "More settings" turn on <strong>Background graphics</strong> so colors and shading print correctly.</p>
           </div>
           <div class="card">
-            <h2 style="font-size:1rem;">Templates <span class="premium-badge">2 free · 4 premium</span></h2>
-            <p class="desc">More layouts and color themes unlock with a one-time premium code.</p>
+            <h2 style="font-size:1rem;">Templates <span class="premium-badge">4 free · 2 premium</span></h2>
+            <p class="desc">Pick the format that fits where you're applying — the International layout suits regions where a photo and personal details are standard; Compact suits US-style ATS screening.</p>
+            <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+              <button class="btn ghost small tmpl-btn active" data-tmpl="classic" onclick="setTemplate('classic')">Classic</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="modern" onclick="setTemplate('modern')">Modern</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="compact" onclick="setTemplate('compact')">Compact (US/ATS)</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="intl" onclick="setTemplate('intl')">International</button>
+            </div>
             <input type="text" id="premium-code" placeholder="Enter code" style="max-width:180px;display:inline-block;">
-            <button class="btn small ghost" onclick="checkCode()">Unlock</button>
+            <button class="btn small ghost" onclick="checkCode()">Unlock 2 more</button>
           </div>
         </div>
       </div>
@@ -330,8 +403,14 @@
     <section class="panel" id="student">
       <div class="card">
         <h2>GPA calculator</h2>
-        <p class="desc">Add each course's grade and credit hours.</p>
-        <div id="gpa-list"></div>
+        <p class="desc">Works with the US 4.0 scale, percentage marks, or the 10-point scale used in many countries.</p>
+        <label>Grading system</label>
+        <select id="gpa-system" onchange="onGpaSystemChange()">
+          <option value="us4">US 4.0 scale (A, B, C...)</option>
+          <option value="pt10">10-point scale (0–10)</option>
+          <option value="percent">Percentage (0–100)</option>
+        </select>
+        <div id="gpa-list" style="margin-top:14px;"></div>
         <button class="btn ghost small" onclick="addGpaRow()">+ Add course</button>
         <div class="result-box" id="gpa-result">GPA: —</div>
       </div>
@@ -351,6 +430,7 @@
             <select id="c-style">
               <option value="apa">APA</option>
               <option value="mla">MLA</option>
+              <option value="chicago">Chicago</option>
             </select>
           </div>
         </div>
@@ -365,7 +445,14 @@
 </main>
 
 <footer>
-  <div class="wrap">Deskwork — built with free, open tools. Nothing you enter here leaves your device.</div>
+  <div class="wrap">
+    <div style="margin-bottom:8px;">
+      <a href="about.html">About</a>
+      <span style="margin:0 10px;color:var(--line);">·</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+    Deskwork — built with free, open tools. Nothing you enter here leaves your device.
+  </div>
 </footer>
 
 <script>
@@ -419,9 +506,23 @@ function addEdu(){
   `;
   document.getElementById('edu-list').appendChild(div);
 }
-['r-name','r-email','r-phone','r-location','r-summary','r-skills'].forEach(id=>{
+['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
 });
+let photoDataUrl=null;
+document.getElementById('r-photo').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ photoDataUrl=ev.target.result; renderPreview(); };
+  reader.readAsDataURL(file);
+});
+let resumeTemplate='classic';
+function setTemplate(t){
+  resumeTemplate=t;
+  document.querySelectorAll('.tmpl-btn').forEach(b=>b.classList.toggle('active', b.dataset.tmpl===t));
+  renderPreview();
+}
 function renderPreview(){
   const name=val('r-name')||'Your Name';
   const email=val('r-email'), phone=val('r-phone'), loc=val('r-location');
@@ -451,13 +552,27 @@ function renderPreview(){
       <div class="sub">${esc(inst)}</div></div>`;
   });
 
-  let html=`<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
-  if(summary) html+=`<div class="section-title">Summary</div><p>${esc(summary)}</p>`;
-  if(expHtml) html+=`<div class="section-title">Experience</div>${expHtml}`;
-  if(eduHtml) html+=`<div class="section-title">Education</div>${eduHtml}`;
-  if(skills) html+=`<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
+  let bodyHtml=`<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
+  if(summary) bodyHtml+=`<div class="section-title">Summary</div><p>${esc(summary)}</p>`;
+  if(expHtml) bodyHtml+=`<div class="section-title">Experience</div>${expHtml}`;
+  if(eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
+  if(skills) bodyHtml+=`<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
 
-  document.getElementById('preview').innerHTML=html;
+  const preview=document.getElementById('preview');
+  preview.className='resume-preview tmpl-'+resumeTemplate;
+
+  if(resumeTemplate==='intl'){
+    const dob=val('r-dob'), nat=val('r-nationality');
+    let personal='';
+    if(dob) personal+=`<div><strong>DOB:</strong> ${esc(dob)}</div>`;
+    if(nat) personal+=`<div><strong>Nationality:</strong> ${esc(nat)}</div>`;
+    const photoHtml = photoDataUrl
+      ? `<img class="intl-photo" src="${photoDataUrl}">`
+      : `<div class="intl-photo placeholder">Photo</div>`;
+    preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="intl-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
+  } else {
+    preview.innerHTML = bodyHtml;
+  }
 }
 function val(id){return document.getElementById(id).value.trim();}
 function esc(s){
@@ -465,14 +580,23 @@ function esc(s){
 }
 addExp(); addEdu(); renderPreview();
 
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
 let unlocked=false;
 function checkCode(){
   const code=document.getElementById('premium-code').value.trim();
   if(code.length>3){
     unlocked=true;
-    alert('Premium unlocked — more templates available.');
+    showToast('Premium unlocked — 2 more templates available.');
   } else {
-    alert('That code doesn\'t look right. Codes are sent after purchase.');
+    showToast("That code doesn't look right. Codes are sent after purchase.");
   }
 }
 
@@ -529,11 +653,33 @@ function processImage(){
     a.click();
     document.getElementById('result-meta').textContent=
       `Done — new size: ${(blob.size/1024).toFixed(0)} KB (was ${(currentFile.size/1024).toFixed(0)} KB)`;
+    showToast('Image converted and downloaded.');
   }, format, quality);
 }
 
 // ---- Student tools: GPA ----
 let gpaRows=0;
+let gpaSystem='us4';
+function onGpaSystemChange(){
+  gpaSystem=document.getElementById('gpa-system').value;
+  document.getElementById('gpa-list').innerHTML='';
+  gpaRows=0;
+  addGpaRow();
+}
+function gradeFieldHtml(){
+  if(gpaSystem==='us4'){
+    return `<div><label>Grade</label><select class="gpa-grade">
+        <option value="4">A</option><option value="3.7">A-</option>
+        <option value="3.3">B+</option><option value="3">B</option><option value="2.7">B-</option>
+        <option value="2.3">C+</option><option value="2">C</option><option value="1.7">C-</option>
+        <option value="1">D</option><option value="0">F</option>
+      </select></div>`;
+  } else if(gpaSystem==='pt10'){
+    return `<div><label>Points (/10)</label><input type="number" class="gpa-grade" min="0" max="10" step="0.1" placeholder="e.g. 8.5"></div>`;
+  } else {
+    return `<div><label>Marks (%)</label><input type="number" class="gpa-grade" min="0" max="100" step="0.1" placeholder="e.g. 85"></div>`;
+  }
+}
 function addGpaRow(){
   gpaRows++;
   const id='gpa'+gpaRows;
@@ -542,14 +688,7 @@ function addGpaRow(){
   row.id=id;
   row.innerHTML=`
     <div><label>Course</label><input type="text" class="gpa-course" placeholder="e.g. Calculus I"></div>
-    <div><label>Grade</label>
-      <select class="gpa-grade">
-        <option value="4">A</option><option value="3.7">A-</option>
-        <option value="3.3">B+</option><option value="3">B</option><option value="2.7">B-</option>
-        <option value="2.3">C+</option><option value="2">C</option><option value="1.7">C-</option>
-        <option value="1">D</option><option value="0">F</option>
-      </select>
-    </div>
+    ${gradeFieldHtml()}
     <div><label>Credits</label><input type="number" class="gpa-credits" min="0" step="0.5" value="3"></div>
     <button class="btn ghost small" onclick="document.getElementById('${id}').remove();calcGpa();">×</button>
   `;
@@ -560,13 +699,16 @@ function addGpaRow(){
 function calcGpa(){
   let totalPoints=0, totalCredits=0;
   document.querySelectorAll('#gpa-list .gpa-row').forEach(r=>{
-    const grade=parseFloat(r.querySelector('.gpa-grade').value);
+    const grade=parseFloat(r.querySelector('.gpa-grade').value)||0;
     const credits=parseFloat(r.querySelector('.gpa-credits').value)||0;
     totalPoints+=grade*credits;
     totalCredits+=credits;
   });
-  const gpa=totalCredits>0 ? (totalPoints/totalCredits).toFixed(2) : '—';
-  document.getElementById('gpa-result').textContent='GPA: '+gpa;
+  const result=totalCredits>0 ? (totalPoints/totalCredits).toFixed(2) : '—';
+  let label='GPA', suffix='';
+  if(gpaSystem==='pt10'){ label='CGPA'; suffix='/10'; }
+  if(gpaSystem==='percent'){ label='Average'; suffix='%'; }
+  document.getElementById('gpa-result').textContent = label+': '+result+(result!=='—'?suffix:'');
 }
 addGpaRow();
 
@@ -580,6 +722,8 @@ function genCitation(){
   let out='';
   if(style==='apa'){
     out=`${author} (${year}). ${title}. ${pub}.`;
+  } else if(style==='chicago'){
+    out=`${author}. ${title}. ${pub}, ${year}.`;
   } else {
     out=`${author}. "${title}." ${pub}, ${year}.`;
   }
