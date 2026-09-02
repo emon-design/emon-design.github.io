@@ -235,6 +235,39 @@
   .resume-preview.tmpl-bd .sig-block{display:flex;flex-direction:column;align-items:center;}
   .resume-preview.tmpl-bd .signature-img{max-width:130px;max-height:45px;object-fit:contain;margin-bottom:3px;}
 
+  /* Bangladesh Classic (gray section bars, per-degree education) */
+  .resume-preview.tmpl-bd2{font-family:'IBM Plex Sans',sans-serif;padding:26px 30px;}
+  .resume-preview.tmpl-bd2 h3{display:none;}
+  .resume-preview.tmpl-bd2 .bd2-title{text-align:center;font-family:'Fraunces',serif;font-weight:700;font-size:1.4rem;margin-bottom:16px;}
+  .resume-preview.tmpl-bd2 .bd2-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .resume-preview.tmpl-bd2 .bd2-contact{font-size:.76rem;color:#333;line-height:1.6;}
+  .resume-preview.tmpl-bd2 .bd2-contact strong{display:block;margin-bottom:2px;}
+  .resume-preview.tmpl-bd2 .bd2-photo-wrap{display:flex;gap:6px;align-items:stretch;}
+  .resume-preview.tmpl-bd2 .bd2-photo-accent{width:4px;background:var(--stamp);}
+  .resume-preview.tmpl-bd2 .bd2-photo{width:85px;height:100px;object-fit:cover;border:1px solid #999;}
+  .resume-preview.tmpl-bd2 .bd2-photo.placeholder{
+    display:flex;align-items:center;justify-content:center;background:#F0F0F0;color:#999;font-size:.6rem;text-align:center;
+  }
+  .resume-preview.tmpl-bd2 .bd2-name{text-align:center;font-weight:700;font-size:1rem;margin:8px 0 18px 0;}
+  .resume-preview.tmpl-bd2 .bd2-bar{
+    background:#D9D9D9;font-weight:700;font-size:.82rem;padding:4px 8px;margin:16px 0 8px 0;
+  }
+  .resume-preview.tmpl-bd2 .bd2-degree-title{font-weight:700;text-decoration:underline;font-size:.82rem;margin:10px 0 4px 0;}
+  .resume-preview.tmpl-bd2 .bd2-kv{display:flex;font-size:.78rem;margin-bottom:2px;}
+  .resume-preview.tmpl-bd2 .bd2-kv .k{width:150px;flex-shrink:0;color:#333;}
+  .resume-preview.tmpl-bd2 .bd2-kv .v{color:#111;}
+  .resume-preview.tmpl-bd2 .bd2-exp-entry{margin-bottom:8px;font-size:.8rem;}
+  .resume-preview.tmpl-bd2 .bd2-exp-entry .role{font-weight:700;}
+  .resume-preview.tmpl-bd2 table.bd2-lang{width:100%;border-collapse:collapse;font-size:.76rem;margin-bottom:8px;}
+  .resume-preview.tmpl-bd2 table.bd2-lang td, .resume-preview.tmpl-bd2 table.bd2-lang th{
+    border:1px solid #999;padding:3px 6px;text-align:left;
+  }
+  .resume-preview.tmpl-bd2 ul.bd2-bullets{margin:4px 0 0 0;padding-left:18px;font-size:.78rem;}
+  .resume-preview.tmpl-bd2 ul.bd2-bullets li{margin-bottom:2px;}
+  .resume-preview.tmpl-bd2 .bd2-declaration-sig{margin-top:20px;text-align:right;}
+  .resume-preview.tmpl-bd2 .bd2-sig-img{max-width:120px;max-height:40px;object-fit:contain;}
+  .resume-preview.tmpl-bd2 .bd2-sig-line{border-top:1px solid #333;width:160px;margin-left:auto;margin-top:4px;padding-top:3px;font-size:.78rem;text-align:center;}
+
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
   @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
   .sticky{position:sticky;top:16px;}
@@ -369,8 +402,17 @@
                   </div>
                   <div><label>Religion <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-religion"></div>
                 </div>
-                <label>NID number</label>
-                <input type="text" id="r-nid" placeholder="National ID number">
+                <div class="row2">
+                  <div><label>Sex <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+                    <select id="r-gender">
+                      <option value="">Prefer not to say</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div><label>NID number</label><input type="text" id="r-nid" placeholder="National ID number"></div>
+                </div>
                 <div class="row2">
                   <div><label>Present address</label><input type="text" id="r-present-addr" placeholder="House, Road, Area, City"></div>
                   <div><label>Permanent address</label><input type="text" id="r-permanent-addr" placeholder="Village/P.O., Upazila, District"></div>
@@ -401,6 +443,19 @@
             <p class="desc">Comma-separated.</p>
             <input type="text" id="r-skills" placeholder="Python, SQL, Project Management">
           </div>
+
+          <div class="card">
+            <h2>Language Proficiency, Computing & Strengths <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(optional — used by Bangladesh Classic template)</span></h2>
+            <p class="desc">Rate each language you speak.</p>
+            <div id="lang-list"></div>
+            <button class="btn ghost small" onclick="addLangRow()">+ Add language</button>
+            <div class="row2" style="margin-top:16px;">
+              <div><label>Computing — Operating skills</label><input type="text" id="r-computing-os" placeholder="MS Word, Excel, PowerPoint"></div>
+              <div><label>Computing — Application software</label><input type="text" id="r-computing-software" placeholder="Windows 7–11"></div>
+            </div>
+            <label>Capabilities / Strengths <span style="font-weight:400;color:var(--ink-soft);">(one per line — becomes a bullet list)</span></label>
+            <textarea id="r-strengths" placeholder="Ability to work under pressure&#10;Self-motivated and goal-driven&#10;Habituated with teamwork"></textarea>
+          </div>
         </div>
 
         <div class="sticky">
@@ -413,17 +468,16 @@
             <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and under "More settings" turn on <strong>Background graphics</strong> so colors and shading print correctly.</p>
           </div>
           <div class="card">
-            <h2 style="font-size:1rem;">Templates <span class="premium-badge">5 free · 1 premium</span></h2>
-            <p class="desc">Pick the format that fits where you're applying — Bangladesh Standard matches local conventions (photo, personal details, GPA/CGPA per exam, declaration); International suits regions where a photo and personal details are standard; Compact suits US-style ATS screening.</p>
+            <h2 style="font-size:1rem;">Templates <span class="premium-badge">6 free</span></h2>
+            <p class="desc">Pick the format that fits where you're applying — Bangladesh Standard and Bangladesh Classic both match local conventions; International suits regions where a photo and personal details are standard; Compact suits US-style ATS screening.</p>
             <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
               <button class="btn ghost small tmpl-btn active" data-tmpl="classic" onclick="setTemplate('classic')">Classic</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="modern" onclick="setTemplate('modern')">Modern</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="compact" onclick="setTemplate('compact')">Compact (US/ATS)</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="intl" onclick="setTemplate('intl')">International</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="bd" onclick="setTemplate('bd')">Bangladesh Standard</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="bd2" onclick="setTemplate('bd2')">Bangladesh Classic</button>
             </div>
-            <input type="text" id="premium-code" placeholder="Enter code" style="max-width:180px;display:inline-block;">
-            <button class="btn small ghost" onclick="checkCode()">Unlock 1 more</button>
           </div>
         </div>
       </div>
@@ -757,8 +811,12 @@ function addEdu(){
       </div>
       <div><label>Result</label><input type="number" class="edu-gpa" min="0" max="5" step="0.01" placeholder="e.g. 4.83" oninput="onEduGpaInput(this)"></div>
     </div>
-    <label>Class/Division <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. "1st Class", used by Bangladesh Standard)</span></label>
+    <label>Class/Division <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. "1st Class", used by Bangladesh templates)</span></label>
     <input type="text" class="edu-class" oninput="renderPreview()" placeholder="1st Class">
+    <div class="row2">
+      <div><label>Group/Major <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-group" oninput="renderPreview()" placeholder="Science"></div>
+      <div><label>Board <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-board" oninput="renderPreview()" placeholder="Dhaka"></div>
+    </div>
   `;
   document.getElementById('edu-list').appendChild(div);
 }
@@ -826,6 +884,29 @@ function addJpFamily(){
   `;
   document.getElementById('jp-family-list').appendChild(div);
 }
+
+// ---- Language proficiency table (Bangladesh Classic) ----
+let langCount=0;
+function addLangRow(){
+  langCount++;
+  const id='lang'+langCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  const levelOpts='<option value="Excellent">Excellent</option><option value="Good">Good</option><option value="Fair">Fair</option><option value="Beginner">Beginner</option>';
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <label>Language</label>
+    <input type="text" class="lang-name" oninput="renderPreview()" placeholder="Bangla">
+    <div class="row2">
+      <div><label>Reading</label><select class="lang-reading" onchange="renderPreview()">${levelOpts}</select></div>
+      <div><label>Writing</label><select class="lang-writing" onchange="renderPreview()">${levelOpts}</select></div>
+    </div>
+    <label>Speaking</label>
+    <select class="lang-speaking" onchange="renderPreview()">${levelOpts}</select>
+  `;
+  document.getElementById('lang-list').appendChild(div);
+}
 function onEduScaleChange(sel){
   const block=sel.closest('.repeat-block');
   const gpaInput=block.querySelector('.edu-gpa');
@@ -848,7 +929,7 @@ function onEduGpaInput(inp){
   renderPreview();
 }
 function renderAll(){ renderPreview(); renderJapan(); }
-['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr'].forEach(id=>{
+['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderAll);
 });
 ['jp-furigana','jp-age','jp-height','jp-weight','jp-eye-left','jp-eye-right','jp-other-qual','jp-personality','jp-hobby','jp-favorite-subject','jp-dietary','jp-worship','jp-remittance','jp-longterm','jp-residence-detail','jp-relatives-who'].forEach(id=>{
@@ -967,6 +1048,102 @@ function renderPreview(){
       ? `<img class="intl-photo" src="${photoDataUrl}">`
       : `<div class="intl-photo placeholder">Photo</div>`;
     preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="bd-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
+  } else if(resumeTemplate==='bd2'){
+    const email2=val('r-email'), phone2=val('r-phone'), presentAddr2=val('r-present-addr')||val('r-location');
+    const dob2=val('r-dob'), religion2=val('r-religion'), nat2=val('r-nationality')||'Bangladeshi';
+    const father2=val('r-father'), mother2=val('r-mother'), gender2=document.getElementById('r-gender').value;
+    const permanentAddr2=val('r-permanent-addr');
+
+    const photoHtml2 = photoDataUrl
+      ? `<img class="bd2-photo" src="${photoDataUrl}">`
+      : `<div class="bd2-photo placeholder">Photo</div>`;
+
+    let html = `<div class="bd2-title">Resume</div>`;
+    html += `<div class="bd2-top">
+      <div class="bd2-contact">
+        <strong>Contact Address:</strong>
+        ${presentAddr2?esc(presentAddr2)+'<br>':''}
+        ${email2?'Email: '+esc(email2)+'<br>':''}
+        ${phone2?'Mobile: '+esc(phone2):''}
+      </div>
+      <div class="bd2-photo-wrap"><div class="bd2-photo-accent"></div>${photoHtml2}</div>
+    </div>`;
+    html += `<div class="bd2-name">${esc(name)}</div>`;
+
+    if(summary) html += `<div class="bd2-bar">Career Objective</div><p style="font-size:.8rem;">${esc(summary)}</p>`;
+
+    let eduHtml2='';
+    document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+      const degree=b.querySelector('.edu-degree').value;
+      const inst=b.querySelector('.edu-inst').value;
+      const dates=b.querySelector('.edu-dates').value;
+      const gpa=b.querySelector('.edu-gpa').value;
+      const scale=b.querySelector('.edu-scale').value;
+      const classDiv=b.querySelector('.edu-class').value;
+      const group=b.querySelector('.edu-group').value;
+      const board=b.querySelector('.edu-board').value;
+      if(!degree && !inst) return;
+      const label = scale==='4' ? 'CGPA' : 'GPA';
+      eduHtml2 += `<div class="bd2-degree-title">${esc(degree)}</div>`;
+      if(inst) eduHtml2 += `<div class="bd2-kv"><span class="k">Name of the Institute</span><span class="v">: ${esc(inst)}</span></div>`;
+      if(group) eduHtml2 += `<div class="bd2-kv"><span class="k">Group/Major</span><span class="v">: ${esc(group)}</span></div>`;
+      if(board) eduHtml2 += `<div class="bd2-kv"><span class="k">Board</span><span class="v">: ${esc(board)}</span></div>`;
+      if(gpa) eduHtml2 += `<div class="bd2-kv"><span class="k">${label}</span><span class="v">: ${esc(gpa)} (out of ${parseFloat(scale||5).toFixed(2)})${classDiv?' — '+esc(classDiv):''}</span></div>`;
+      if(dates) eduHtml2 += `<div class="bd2-kv"><span class="k">Year of Completion</span><span class="v">: ${esc(dates)}</span></div>`;
+    });
+    if(eduHtml2) html += `<div class="bd2-bar">Educational Background</div>${eduHtml2}`;
+
+    let expHtml2='';
+    document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+      const role=b.querySelector('.exp-role').value;
+      const company=b.querySelector('.exp-company').value;
+      const locv=b.querySelector('.exp-loc').value;
+      const dates=b.querySelector('.exp-dates').value;
+      if(!role && !company) return;
+      expHtml2 += `<div class="bd2-exp-entry"><div class="role">${esc(role)}</div>${company?esc(company)+'<br>':''}${locv?esc(locv)+'<br>':''}${dates?'Duration: '+esc(dates):''}</div>`;
+    });
+    if(expHtml2) html += `<div class="bd2-bar">Experience</div>${expHtml2}`;
+
+    let langRows='';
+    document.querySelectorAll('#lang-list .repeat-block').forEach(b=>{
+      const lname=b.querySelector('.lang-name').value;
+      if(!lname) return;
+      const r=b.querySelector('.lang-reading').value, w=b.querySelector('.lang-writing').value, s=b.querySelector('.lang-speaking').value;
+      langRows += `<tr><td>${esc(lname)}</td><td>${esc(r)}</td><td>${esc(w)}</td><td>${esc(s)}</td></tr>`;
+    });
+    const computingOs=val('r-computing-os'), computingSw=val('r-computing-software');
+    if(langRows || skills || computingOs || computingSw){
+      html += `<div class="bd2-bar">Skills</div>`;
+      if(langRows) html += `<table class="bd2-lang"><tr><th>Language</th><th>Reading</th><th>Writing</th><th>Speaking</th></tr>${langRows}</table>`;
+      if(skills) html += `<p style="font-size:.8rem;"><strong>Skills:</strong> ${esc(skills)}</p>`;
+      if(computingOs) html += `<p style="font-size:.8rem;"><strong>Operating skills:</strong> ${esc(computingOs)}</p>`;
+      if(computingSw) html += `<p style="font-size:.8rem;"><strong>Application software:</strong> ${esc(computingSw)}</p>`;
+    }
+
+    const strengths=val('r-strengths');
+    if(strengths){
+      const items=strengths.split('\n').map(s=>s.trim()).filter(Boolean);
+      html += `<div class="bd2-bar">Capabilities and Interests</div><ul class="bd2-bullets">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+
+    let personalKv='';
+    if(father2) personalKv += `<div class="bd2-kv"><span class="k">Father Name</span><span class="v">: ${esc(father2)}</span></div>`;
+    if(mother2) personalKv += `<div class="bd2-kv"><span class="k">Mother Name</span><span class="v">: ${esc(mother2)}</span></div>`;
+    if(dob2) personalKv += `<div class="bd2-kv"><span class="k">Date of Birth</span><span class="v">: ${esc(dob2)}</span></div>`;
+    if(religion2) personalKv += `<div class="bd2-kv"><span class="k">Religion</span><span class="v">: ${esc(religion2)}</span></div>`;
+    if(gender2) personalKv += `<div class="bd2-kv"><span class="k">Sex</span><span class="v">: ${esc(gender2)}</span></div>`;
+    if(nat2) personalKv += `<div class="bd2-kv"><span class="k">Nationality</span><span class="v">: ${esc(nat2)}</span></div>`;
+    if(permanentAddr2) personalKv += `<div class="bd2-kv"><span class="k">Permanent Address</span><span class="v">: ${esc(permanentAddr2)}</span></div>`;
+    if(personalKv) html += `<div class="bd2-bar">Personal Information</div>${personalKv}`;
+
+    const sigInner = signatureDataUrl
+      ? `<img class="bd2-sig-img" src="${signatureDataUrl}">`
+      : `<div style="height:30px;"></div>`;
+    html += `<div class="bd2-bar">Declaration</div>
+      <p style="font-size:.8rem;">I hereby declare that all the information given above is absolutely true and correct.</p>
+      <div class="bd2-declaration-sig">${sigInner}<div class="bd2-sig-line">${esc(name)}</div></div>`;
+
+    preview.innerHTML = html;
   } else {
     preview.innerHTML = bodyHtml;
   }
@@ -999,7 +1176,15 @@ function collectData(){
     edu.push({
       degree:b.querySelector('.edu-degree').value, inst:b.querySelector('.edu-inst').value,
       dates:b.querySelector('.edu-dates').value, gpa:b.querySelector('.edu-gpa').value,
-      scale:b.querySelector('.edu-scale').value, classDiv:b.querySelector('.edu-class').value
+      scale:b.querySelector('.edu-scale').value, classDiv:b.querySelector('.edu-class').value,
+      group:b.querySelector('.edu-group').value, board:b.querySelector('.edu-board').value
+    });
+  });
+  const langs=[];
+  document.querySelectorAll('#lang-list .repeat-block').forEach(b=>{
+    langs.push({
+      name:b.querySelector('.lang-name').value, reading:b.querySelector('.lang-reading').value,
+      writing:b.querySelector('.lang-writing').value, speaking:b.querySelector('.lang-speaking').value
     });
   });
   const jpEdu=[];
@@ -1032,6 +1217,8 @@ function collectData(){
     father:val('r-father'), mother:val('r-mother'), marital:document.getElementById('r-marital').value,
     religion:val('r-religion'), nid:val('r-nid'), languages:val('r-languages'), references:val('r-references'),
     presentAddr:val('r-present-addr'), permanentAddr:val('r-permanent-addr'),
+    gender:document.getElementById('r-gender').value, computingOs:val('r-computing-os'),
+    computingSoftware:val('r-computing-software'), strengths:val('r-strengths'), langs,
     template:resumeTemplate, exp, edu,
     letter:{
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
@@ -1081,6 +1268,10 @@ function loadSavedData(){
   document.getElementById('r-references').value=d.references||'';
   document.getElementById('r-present-addr').value=d.presentAddr||'';
   document.getElementById('r-permanent-addr').value=d.permanentAddr||'';
+  document.getElementById('r-gender').value=d.gender||'';
+  document.getElementById('r-computing-os').value=d.computingOs||'';
+  document.getElementById('r-computing-software').value=d.computingSoftware||'';
+  document.getElementById('r-strengths').value=d.strengths||'';
 
   document.getElementById('exp-list').innerHTML='';
   document.getElementById('edu-list').innerHTML='';
@@ -1108,7 +1299,22 @@ function loadSavedData(){
     block.querySelector('.edu-gpa').max=block.querySelector('.edu-scale').value;
     block.querySelector('.edu-gpa').value=item.gpa||'';
     block.querySelector('.edu-class').value=item.classDiv||'';
+    block.querySelector('.edu-group').value=item.group||'';
+    block.querySelector('.edu-board').value=item.board||'';
   });
+
+  document.getElementById('lang-list').innerHTML='';
+  langCount=0;
+  if(d.langs && d.langs.length){
+    d.langs.forEach(item=>{
+      addLangRow();
+      const block=document.getElementById('lang-list').lastElementChild;
+      block.querySelector('.lang-name').value=item.name||'';
+      if(item.reading) block.querySelector('.lang-reading').value=item.reading;
+      if(item.writing) block.querySelector('.lang-writing').value=item.writing;
+      if(item.speaking) block.querySelector('.lang-speaking').value=item.speaking;
+    });
+  }
 
   if(d.template){
     resumeTemplate=d.template;
