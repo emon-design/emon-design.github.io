@@ -455,6 +455,7 @@
             </div>
             <label>Capabilities / Strengths <span style="font-weight:400;color:var(--ink-soft);">(one per line — becomes a bullet list)</span></label>
             <textarea id="r-strengths" placeholder="Ability to work under pressure&#10;Self-motivated and goal-driven&#10;Habituated with teamwork"></textarea>
+            <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftStrengths()">✨ Auto-draft bullet points from Experience & Skills</button>
           </div>
         </div>
 
@@ -1099,8 +1100,9 @@ function renderPreview(){
       const company=b.querySelector('.exp-company').value;
       const locv=b.querySelector('.exp-loc').value;
       const dates=b.querySelector('.exp-dates').value;
+      const desc=b.querySelector('.exp-desc').value;
       if(!role && !company) return;
-      expHtml2 += `<div class="bd2-exp-entry"><div class="role">${esc(role)}</div>${company?esc(company)+'<br>':''}${locv?esc(locv)+'<br>':''}${dates?'Duration: '+esc(dates):''}</div>`;
+      expHtml2 += `<div class="bd2-exp-entry"><div class="role">${esc(role)}</div>${company?esc(company)+'<br>':''}${locv?esc(locv)+'<br>':''}${dates?'Duration: '+esc(dates):''}${desc?'<p style="margin:4px 0 0 0;">'+esc(desc)+'</p>':''}</div>`;
     });
     if(expHtml2) html += `<div class="bd2-bar">Experience</div>${expHtml2}`;
 
@@ -1622,6 +1624,39 @@ function autoDraftSummary(){
   const draft = opening + '.' + eduPart + skillsPart + closer;
   document.getElementById('r-summary').value = draft.replace(/\s+/g,' ').trim();
   renderPreview();
+  showToast('Draft added — feel free to edit it to sound like you.');
+}
+
+function autoDraftStrengths(){
+  const roles=[];
+  document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+    const role=b.querySelector('.exp-role').value.trim();
+    if(role) roles.push(role);
+  });
+  const skillsRaw=val('r-skills');
+  const skillList=skillsRaw ? skillsRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+
+  if(roles.length===0 && skillList.length===0){
+    showToast('Add some Experience roles or Skills first — then try again.');
+    return;
+  }
+
+  const bullets=[];
+  if(roles.length>0){
+    bullets.push(`Proven experience as a ${roles[0]}, delivering reliable results under deadlines.`);
+  }
+  if(skillList.length>0){
+    const shown=skillList.slice(0,3).join(', ');
+    bullets.push(`Skilled in ${shown}${skillList.length>3?' and other related tools':''}, applied in real project work.`);
+  }
+  if(roles.length>1){
+    bullets.push(`Adaptable across multiple roles, including ${roles.slice(0,3).join(', ')}.`);
+  }
+  bullets.push('Strong ability to work under pressure and meet deadlines.');
+  bullets.push('Habituated with teamwork and cross-functional collaboration.');
+
+  document.getElementById('r-strengths').value = bullets.join('\n');
+  renderAll();
   showToast('Draft added — feel free to edit it to sound like you.');
 }
 
