@@ -201,6 +201,25 @@
   }
   .resume-preview.tmpl-intl .intl-personal{font-size:.72rem;color:#555;line-height:1.5;}
   .resume-preview.tmpl-intl .intl-main{flex:1;min-width:0;}
+
+  /* Japan rirekisho */
+  .resume-preview.tmpl-jp{font-size:.72rem;padding:20px 24px;}
+  .resume-preview.tmpl-jp h3{text-align:center;font-family:'IBM Plex Sans',sans-serif;font-size:1.1rem;margin-bottom:4px;}
+  .resume-preview.tmpl-jp .jp-sub{text-align:center;color:#666;font-size:.68rem;margin-bottom:14px;}
+  .resume-preview.tmpl-jp table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:.7rem;}
+  .resume-preview.tmpl-jp td, .resume-preview.tmpl-jp th{
+    border:1px solid #999;padding:4px 6px;text-align:left;vertical-align:top;
+  }
+  .resume-preview.tmpl-jp th{background:#F0F0F0;font-weight:600;white-space:nowrap;}
+  .resume-preview.tmpl-jp .jp-label{background:#F0F0F0;font-weight:600;width:26%;white-space:nowrap;}
+  .resume-preview.tmpl-jp .jp-section-title{
+    font-weight:700;font-size:.78rem;margin:14px 0 4px 0;border-bottom:2px solid #333;padding-bottom:2px;
+  }
+  .resume-preview.tmpl-jp .jp-photo-wrap{float:right;margin-left:12px;}
+  .resume-preview.tmpl-jp .jp-photo{width:90px;height:110px;object-fit:cover;border:1px solid #999;display:block;}
+  .resume-preview.tmpl-jp .jp-photo.placeholder{
+    display:flex;align-items:center;justify-content:center;color:#999;font-size:.6rem;text-align:center;background:#F5F5F5;
+  }
   /* Bangladesh Standard */
   .resume-preview.tmpl-bd{display:flex;gap:20px;font-family:'IBM Plex Sans',sans-serif;}
   .resume-preview.tmpl-bd .intl-side{width:120px;flex-shrink:0;}
@@ -294,6 +313,7 @@
     <p class="tag">Build a resume, convert or compress a file, and run the calculations students need — free, in your browser, nothing uploaded to a server.</p>
     <nav class="tabs">
       <button class="tab-btn active" data-panel="resume">Resume Builder</button>
+      <button class="tab-btn" data-panel="japan">Japan Format</button>
       <button class="tab-btn" data-panel="letter">Cover Letter</button>
       <button class="tab-btn" data-panel="convert">File Tools</button>
       <button class="tab-btn" data-panel="student">Student Tools</button>
@@ -400,6 +420,137 @@
             </div>
             <input type="text" id="premium-code" placeholder="Enter code" style="max-width:180px;display:inline-block;">
             <button class="btn small ghost" onclick="checkCode()">Unlock 1 more</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JAPAN FORMAT (Rirekisho) -->
+    <section class="panel" id="japan">
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <h2>Basic Information <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">基本情報</span></h2>
+            <p class="desc">Name, DOB, religion, marital status, permanent address, and photo are shared with the Resume Builder tab — fill them there once.</p>
+            <label>Furigana <span style="font-weight:400;color:var(--ink-soft);">フリガナ (katakana reading of your name)</span></label>
+            <input type="text" id="jp-furigana" placeholder="モハンマド エモン アハメド">
+            <label>Age</label>
+            <input type="text" id="jp-age" placeholder="22">
+          </div>
+
+          <div class="card">
+            <h2>Physical & Health <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">身体・健康情報</span></h2>
+            <div class="row2">
+              <div><label>Height (cm)</label><input type="text" id="jp-height" placeholder="167"></div>
+              <div><label>Weight (kg)</label><input type="text" id="jp-weight" placeholder="56"></div>
+            </div>
+            <div class="row2">
+              <div><label>Dominant hand</label><select id="jp-hand"><option value="Right">Right</option><option value="Left">Left</option></select></div>
+              <div><label>Blood type</label><select id="jp-blood"><option>O</option><option>A</option><option>B</option><option>AB</option></select></div>
+            </div>
+            <div class="row2">
+              <div><label>Eyesight — Left</label><input type="text" id="jp-eye-left" placeholder="6"></div>
+              <div><label>Eyesight — Right</label><input type="text" id="jp-eye-right" placeholder="6"></div>
+            </div>
+            <div class="row2">
+              <div><label>Tattoo</label><select id="jp-tattoo"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>Color blindness</label><select id="jp-colorblind"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+            </div>
+            <div class="row2">
+              <div><label>Smoking</label><select id="jp-smoking"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>Drinking</label><select id="jp-drinking"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+            </div>
+            <label>Medical history</label>
+            <select id="jp-medical"><option value="No abnormality">No abnormality</option><option value="Abnormality">Abnormality</option></select>
+          </div>
+
+          <div class="card">
+            <h2>Academic Background <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">学歴</span></h2>
+            <div id="jp-edu-list"></div>
+            <button class="btn ghost small" onclick="addJpEdu()">+ Add school</button>
+          </div>
+
+          <div class="card">
+            <h2>Language Proficiency <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">日本語・英語レベル</span></h2>
+            <label>Japanese level</label>
+            <select id="jp-jp-level">
+              <option value="">Not tested</option>
+              <option value="JLPT N5">JLPT N5</option>
+              <option value="JLPT N4">JLPT N4</option>
+              <option value="JLPT N3">JLPT N3</option>
+              <option value="JLPT N2">JLPT N2</option>
+              <option value="JLPT N1">JLPT N1</option>
+              <option value="JFT Basic">JFT Basic</option>
+            </select>
+            <label>English level</label>
+            <select id="jp-english">
+              <option value="Beginner">Beginner</option>
+              <option value="Daily conversation">Daily conversation</option>
+              <option value="Business level">Business level</option>
+            </select>
+          </div>
+
+          <div class="card">
+            <h2>Work History <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">職歴</span></h2>
+            <div id="jp-work-list"></div>
+            <button class="btn ghost small" onclick="addJpWork()">+ Add job</button>
+          </div>
+
+          <div class="card">
+            <h2>Other Information <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">その他情報</span></h2>
+            <label>Other qualifications</label>
+            <input type="text" id="jp-other-qual" placeholder="Agriculture, Driving">
+            <label>Personality</label>
+            <input type="text" id="jp-personality" placeholder="Responsible and hard-working">
+            <div class="row2">
+              <div><label>Hobby</label><input type="text" id="jp-hobby" placeholder="Reading"></div>
+              <div><label>Favorite subject</label><input type="text" id="jp-favorite-subject" placeholder="Japanese language study"></div>
+            </div>
+            <div class="row2">
+              <div><label>Group living experience</label><select id="jp-group-living"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>Cooking experience</label><select id="jp-cooking"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+            </div>
+            <label>Dietary restrictions <span style="font-weight:400;color:var(--ink-soft);">(religiously prohibited foods, if any)</span></label>
+            <input type="text" id="jp-dietary" placeholder="Pork, Alcohol">
+            <label>Worship practice</label>
+            <input type="text" id="jp-worship" placeholder="Will worship without disrupting work">
+            <label>Fasting</label>
+            <select id="jp-fasting"><option value="No">No</option><option value="Yes">Yes</option></select>
+          </div>
+
+          <div class="card">
+            <h2>Future Plans <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">今後の予定</span></h2>
+            <label>Monthly remittance intention</label>
+            <input type="text" id="jp-remittance" placeholder="e.g. About half of my salary">
+            <label>Desire to stay in Japan long-term</label>
+            <input type="text" id="jp-longterm" placeholder="e.g. Would like to stay longer if there's an opportunity">
+            <div class="row2">
+              <div><label>Previously applied for residence status?</label><select id="jp-residence-applied"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>If yes, details</label><input type="text" id="jp-residence-detail" placeholder="When and what status"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Family Structure <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">家族構成</span></h2>
+            <div id="jp-family-list"></div>
+            <button class="btn ghost small" onclick="addJpFamily()">+ Add family member</button>
+            <div class="row2" style="margin-top:14px;">
+              <div><label>Relatives living in Japan?</label><select id="jp-relatives-japan"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>If yes, who</label><input type="text" id="jp-relatives-who" placeholder="Name and relationship"></div>
+            </div>
+            <label>Family's view on you going to Japan</label>
+            <select id="jp-family-opinion"><option value="Agree">Agree</option><option value="Not agree">Not agree</option></select>
+          </div>
+        </div>
+
+        <div class="sticky">
+          <div class="card" style="padding:16px;">
+            <h2 style="font-size:1rem;">Preview</h2>
+            <div class="resume-preview tmpl-jp" id="jp-preview"></div>
+            <div style="margin-top:14px;">
+              <button class="btn primary" onclick="window.print()">Download as PDF</button>
+            </div>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and turn on Background graphics for the table borders to print.</p>
           </div>
         </div>
       </div>
@@ -602,6 +753,70 @@ function addEdu(){
   `;
   document.getElementById('edu-list').appendChild(div);
 }
+
+// ---- Japan format repeatable rows ----
+let jpEduCount=0, jpWorkCount=0, jpFamilyCount=0;
+function addJpEdu(){
+  jpEduCount++;
+  const id='jpedu'+jpEduCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderJapan();">remove</button>
+    <div class="row2">
+      <div><label>Start year</label><input type="text" class="jp-edu-start" oninput="renderJapan()" placeholder="2018"></div>
+      <div><label>End year</label><input type="text" class="jp-edu-end" oninput="renderJapan()" placeholder="2020"></div>
+    </div>
+    <label>School name</label>
+    <input type="text" class="jp-edu-school" oninput="renderJapan()" placeholder="Muslim Nagar K. M. High School">
+    <div class="row2">
+      <div><label>Specialty</label><input type="text" class="jp-edu-specialty" oninput="renderJapan()" placeholder="Science"></div>
+      <div><label>License/Qualification</label><input type="text" class="jp-edu-license" oninput="renderJapan()" placeholder="SSC"></div>
+    </div>
+  `;
+  document.getElementById('jp-edu-list').appendChild(div);
+}
+function addJpWork(){
+  jpWorkCount++;
+  const id='jpwork'+jpWorkCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderJapan();">remove</button>
+    <div class="row2">
+      <div><label>Start year</label><input type="text" class="jp-work-start" oninput="renderJapan()" placeholder="2025"></div>
+      <div><label>End year</label><input type="text" class="jp-work-end" oninput="renderJapan()" placeholder="2026 or Running"></div>
+    </div>
+    <label>Company name</label>
+    <input type="text" class="jp-work-company" oninput="renderJapan()" placeholder="Shanti Care Hospital">
+    <label>Role / Work history</label>
+    <input type="text" class="jp-work-role" oninput="renderJapan()" placeholder="Reception duties">
+  `;
+  document.getElementById('jp-work-list').appendChild(div);
+}
+function addJpFamily(){
+  jpFamilyCount++;
+  const id='jpfam'+jpFamilyCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderJapan();">remove</button>
+    <div class="row2">
+      <div><label>Name</label><input type="text" class="jp-fam-name" oninput="renderJapan()" placeholder="MAHABUB ALOM"></div>
+      <div><label>Relationship</label><input type="text" class="jp-fam-relation" oninput="renderJapan()" placeholder="Father"></div>
+    </div>
+    <div class="row2">
+      <div><label>Age</label><input type="text" class="jp-fam-age" oninput="renderJapan()" placeholder="58"></div>
+      <div><label>Occupation</label><input type="text" class="jp-fam-occupation" oninput="renderJapan()" placeholder="Retired"></div>
+    </div>
+    <label>Living together?</label>
+    <select class="jp-fam-living" onchange="renderJapan()"><option value="Yes">Yes</option><option value="No">No</option></select>
+  `;
+  document.getElementById('jp-family-list').appendChild(div);
+}
 function onEduScaleChange(sel){
   const block=sel.closest('.repeat-block');
   const gpaInput=block.querySelector('.edu-gpa');
@@ -623,15 +838,22 @@ function onEduGpaInput(inp){
   }
   renderPreview();
 }
+function renderAll(){ renderPreview(); renderJapan(); }
 ['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', renderPreview);
+  document.getElementById(id).addEventListener('input', renderAll);
+});
+['jp-furigana','jp-age','jp-height','jp-weight','jp-eye-left','jp-eye-right','jp-other-qual','jp-personality','jp-hobby','jp-favorite-subject','jp-dietary','jp-worship','jp-remittance','jp-longterm','jp-residence-detail','jp-relatives-who'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', renderJapan);
+});
+['jp-hand','jp-blood','jp-tattoo','jp-colorblind','jp-smoking','jp-drinking','jp-medical','jp-jp-level','jp-english','jp-group-living','jp-cooking','jp-fasting','jp-residence-applied','jp-relatives-japan','jp-family-opinion'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', renderJapan);
 });
 let photoDataUrl=null;
 document.getElementById('r-photo').addEventListener('change', e=>{
   const file=e.target.files[0];
   if(!file) return;
   const reader=new FileReader();
-  reader.onload=ev=>{ photoDataUrl=ev.target.result; renderPreview(); };
+  reader.onload=ev=>{ photoDataUrl=ev.target.result; renderAll(); };
   reader.readAsDataURL(file);
 });
 let resumeTemplate='classic';
@@ -760,6 +982,29 @@ function collectData(){
       scale:b.querySelector('.edu-scale').value, classDiv:b.querySelector('.edu-class').value
     });
   });
+  const jpEdu=[];
+  document.querySelectorAll('#jp-edu-list .repeat-block').forEach(b=>{
+    jpEdu.push({
+      start:b.querySelector('.jp-edu-start').value, end:b.querySelector('.jp-edu-end').value,
+      school:b.querySelector('.jp-edu-school').value, specialty:b.querySelector('.jp-edu-specialty').value,
+      license:b.querySelector('.jp-edu-license').value
+    });
+  });
+  const jpWork=[];
+  document.querySelectorAll('#jp-work-list .repeat-block').forEach(b=>{
+    jpWork.push({
+      start:b.querySelector('.jp-work-start').value, end:b.querySelector('.jp-work-end').value,
+      company:b.querySelector('.jp-work-company').value, role:b.querySelector('.jp-work-role').value
+    });
+  });
+  const jpFamily=[];
+  document.querySelectorAll('#jp-family-list .repeat-block').forEach(b=>{
+    jpFamily.push({
+      name:b.querySelector('.jp-fam-name').value, relation:b.querySelector('.jp-fam-relation').value,
+      age:b.querySelector('.jp-fam-age').value, occupation:b.querySelector('.jp-fam-occupation').value,
+      living:b.querySelector('.jp-fam-living').value
+    });
+  });
   return {
     name:val('r-name'), email:val('r-email'), phone:val('r-phone'),
     location:val('r-location'), summary:val('r-summary'), skills:val('r-skills'),
@@ -771,6 +1016,24 @@ function collectData(){
     letter:{
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
       opening:val('l-opening'), body:val('l-body'), closing:val('l-closing')
+    },
+    japan:{
+      furigana:val('jp-furigana'), age:val('jp-age'),
+      height:val('jp-height'), weight:val('jp-weight'), hand:document.getElementById('jp-hand').value,
+      blood:document.getElementById('jp-blood').value, eyeLeft:val('jp-eye-left'), eyeRight:val('jp-eye-right'),
+      tattoo:document.getElementById('jp-tattoo').value, colorblind:document.getElementById('jp-colorblind').value,
+      smoking:document.getElementById('jp-smoking').value, drinking:document.getElementById('jp-drinking').value,
+      medical:document.getElementById('jp-medical').value,
+      jpLevel:document.getElementById('jp-jp-level').value, english:document.getElementById('jp-english').value,
+      otherQual:val('jp-other-qual'), personality:val('jp-personality'), hobby:val('jp-hobby'),
+      favoriteSubject:val('jp-favorite-subject'), groupLiving:document.getElementById('jp-group-living').value,
+      cooking:document.getElementById('jp-cooking').value, dietary:val('jp-dietary'), worship:val('jp-worship'),
+      fasting:document.getElementById('jp-fasting').value,
+      remittance:val('jp-remittance'), longterm:val('jp-longterm'),
+      residenceApplied:document.getElementById('jp-residence-applied').value, residenceDetail:val('jp-residence-detail'),
+      relativesJapan:document.getElementById('jp-relatives-japan').value, relativesWho:val('jp-relatives-who'),
+      familyOpinion:document.getElementById('jp-family-opinion').value,
+      edu:jpEdu, work:jpWork, family:jpFamily
     }
   };
 }
@@ -840,6 +1103,77 @@ function loadSavedData(){
     document.getElementById('l-body').value=d.letter.body||'';
     document.getElementById('l-closing').value=d.letter.closing||'';
   }
+
+  document.getElementById('jp-edu-list').innerHTML='';
+  document.getElementById('jp-work-list').innerHTML='';
+  document.getElementById('jp-family-list').innerHTML='';
+  jpEduCount=0; jpWorkCount=0; jpFamilyCount=0;
+
+  const j=d.japan||{};
+  document.getElementById('jp-furigana').value=j.furigana||'';
+  document.getElementById('jp-age').value=j.age||'';
+  document.getElementById('jp-height').value=j.height||'';
+  document.getElementById('jp-weight').value=j.weight||'';
+  if(j.hand) document.getElementById('jp-hand').value=j.hand;
+  if(j.blood) document.getElementById('jp-blood').value=j.blood;
+  document.getElementById('jp-eye-left').value=j.eyeLeft||'';
+  document.getElementById('jp-eye-right').value=j.eyeRight||'';
+  if(j.tattoo) document.getElementById('jp-tattoo').value=j.tattoo;
+  if(j.colorblind) document.getElementById('jp-colorblind').value=j.colorblind;
+  if(j.smoking) document.getElementById('jp-smoking').value=j.smoking;
+  if(j.drinking) document.getElementById('jp-drinking').value=j.drinking;
+  if(j.medical) document.getElementById('jp-medical').value=j.medical;
+  if(j.jpLevel) document.getElementById('jp-jp-level').value=j.jpLevel;
+  if(j.english) document.getElementById('jp-english').value=j.english;
+  document.getElementById('jp-other-qual').value=j.otherQual||'';
+  document.getElementById('jp-personality').value=j.personality||'';
+  document.getElementById('jp-hobby').value=j.hobby||'';
+  document.getElementById('jp-favorite-subject').value=j.favoriteSubject||'';
+  if(j.groupLiving) document.getElementById('jp-group-living').value=j.groupLiving;
+  if(j.cooking) document.getElementById('jp-cooking').value=j.cooking;
+  document.getElementById('jp-dietary').value=j.dietary||'';
+  document.getElementById('jp-worship').value=j.worship||'';
+  if(j.fasting) document.getElementById('jp-fasting').value=j.fasting;
+  document.getElementById('jp-remittance').value=j.remittance||'';
+  document.getElementById('jp-longterm').value=j.longterm||'';
+  if(j.residenceApplied) document.getElementById('jp-residence-applied').value=j.residenceApplied;
+  document.getElementById('jp-residence-detail').value=j.residenceDetail||'';
+  if(j.relativesJapan) document.getElementById('jp-relatives-japan').value=j.relativesJapan;
+  document.getElementById('jp-relatives-who').value=j.relativesWho||'';
+  if(j.familyOpinion) document.getElementById('jp-family-opinion').value=j.familyOpinion;
+
+  const jpEduArr=(j.edu && j.edu.length) ? j.edu : [{}];
+  jpEduArr.forEach(item=>{
+    addJpEdu();
+    const b=document.getElementById('jp-edu-list').lastElementChild;
+    b.querySelector('.jp-edu-start').value=item.start||'';
+    b.querySelector('.jp-edu-end').value=item.end||'';
+    b.querySelector('.jp-edu-school').value=item.school||'';
+    b.querySelector('.jp-edu-specialty').value=item.specialty||'';
+    b.querySelector('.jp-edu-license').value=item.license||'';
+  });
+
+  const jpWorkArr=(j.work && j.work.length) ? j.work : [{}];
+  jpWorkArr.forEach(item=>{
+    addJpWork();
+    const b=document.getElementById('jp-work-list').lastElementChild;
+    b.querySelector('.jp-work-start').value=item.start||'';
+    b.querySelector('.jp-work-end').value=item.end||'';
+    b.querySelector('.jp-work-company').value=item.company||'';
+    b.querySelector('.jp-work-role').value=item.role||'';
+  });
+
+  const jpFamilyArr=(j.family && j.family.length) ? j.family : [{}];
+  jpFamilyArr.forEach(item=>{
+    addJpFamily();
+    const b=document.getElementById('jp-family-list').lastElementChild;
+    b.querySelector('.jp-fam-name').value=item.name||'';
+    b.querySelector('.jp-fam-relation').value=item.relation||'';
+    b.querySelector('.jp-fam-age').value=item.age||'';
+    b.querySelector('.jp-fam-occupation').value=item.occupation||'';
+    if(item.living) b.querySelector('.jp-fam-living').value=item.living;
+  });
+
   return true;
 }
 
@@ -894,12 +1228,115 @@ function autoDraftLetter(){
 }
 function printLetter(){ window.print(); }
 
+// ---- Japan format (rirekisho) ----
+function renderJapan(){
+  const name=val('r-name')||'Your Name';
+  const furigana=val('jp-furigana');
+  const dob=val('r-dob'), age=val('jp-age'), permAddr=val('r-permanent-addr');
+  const marital=document.getElementById('r-marital').value||'Unmarried';
+
+  const photoHtml = photoDataUrl
+    ? `<img class="jp-photo" src="${photoDataUrl}">`
+    : `<div class="jp-photo placeholder">Photo</div>`;
+
+  let html = `<h3>履歴書 / Resume</h3><div class="jp-sub">Date: ${esc(new Date().toLocaleDateString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'}))}</div>`;
+  html += `<div class="jp-photo-wrap">${photoHtml}</div>`;
+  html += `<table>
+    <tr><td class="jp-label">Furigana</td><td>${esc(furigana)}</td></tr>
+    <tr><td class="jp-label">Full Name</td><td>${esc(name)}</td></tr>
+    <tr><td class="jp-label">Marriage</td><td>${esc(marital)}</td></tr>
+    <tr><td class="jp-label">Date of Birth</td><td>${esc(dob)}</td></tr>
+    <tr><td class="jp-label">Age</td><td>${esc(age)}</td></tr>
+    <tr><td class="jp-label">Permanent Address</td><td>${esc(permAddr)}</td></tr>
+  </table>`;
+
+  html += `<div class="jp-section-title">Physical & Health / 身体・健康情報</div>`;
+  html += `<table>
+    <tr><td class="jp-label">Height</td><td>${esc(val('jp-height'))} cm</td><td class="jp-label">Weight</td><td>${esc(val('jp-weight'))} kg</td></tr>
+    <tr><td class="jp-label">Dominant hand</td><td>${esc(document.getElementById('jp-hand').value)}</td><td class="jp-label">Blood type</td><td>${esc(document.getElementById('jp-blood').value)}</td></tr>
+    <tr><td class="jp-label">Eyesight (L/R)</td><td>${esc(val('jp-eye-left'))} / ${esc(val('jp-eye-right'))}</td><td class="jp-label">Tattoo</td><td>${esc(document.getElementById('jp-tattoo').value)}</td></tr>
+    <tr><td class="jp-label">Color blindness</td><td>${esc(document.getElementById('jp-colorblind').value)}</td><td class="jp-label">Smoking</td><td>${esc(document.getElementById('jp-smoking').value)}</td></tr>
+    <tr><td class="jp-label">Drinking</td><td>${esc(document.getElementById('jp-drinking').value)}</td><td class="jp-label">Medical history</td><td>${esc(document.getElementById('jp-medical').value)}</td></tr>
+  </table>`;
+
+  let eduRows='';
+  document.querySelectorAll('#jp-edu-list .repeat-block').forEach(b=>{
+    const start=b.querySelector('.jp-edu-start').value, end=b.querySelector('.jp-edu-end').value;
+    const school=b.querySelector('.jp-edu-school').value, spec=b.querySelector('.jp-edu-specialty').value, lic=b.querySelector('.jp-edu-license').value;
+    if(!school) return;
+    eduRows+=`<tr><td>${esc(start)}</td><td>${esc(end)}</td><td>${esc(school)}</td><td>${esc(spec)}</td><td>${esc(lic)}</td></tr>`;
+  });
+  if(eduRows){
+    html += `<div class="jp-section-title">Academic Background / 学歴</div>
+    <table><tr><th>Start</th><th>End</th><th>School</th><th>Specialty</th><th>License/Qualification</th></tr>${eduRows}</table>`;
+  }
+
+  html += `<div class="jp-section-title">Language Proficiency / 日本語・英語レベル</div>`;
+  html += `<table>
+    <tr><td class="jp-label">Japanese level</td><td>${esc(document.getElementById('jp-jp-level').value||'Not tested')}</td></tr>
+    <tr><td class="jp-label">English level</td><td>${esc(document.getElementById('jp-english').value)}</td></tr>
+  </table>`;
+
+  let workRows='';
+  document.querySelectorAll('#jp-work-list .repeat-block').forEach(b=>{
+    const start=b.querySelector('.jp-work-start').value, end=b.querySelector('.jp-work-end').value;
+    const company=b.querySelector('.jp-work-company').value, role=b.querySelector('.jp-work-role').value;
+    if(!company) return;
+    workRows+=`<tr><td>${esc(start)}</td><td>${esc(end)}</td><td>${esc(company)}</td><td>${esc(role)}</td></tr>`;
+  });
+  if(workRows){
+    html += `<div class="jp-section-title">Work History / 職歴</div>
+    <table><tr><th>Start</th><th>End</th><th>Company</th><th>Role</th></tr>${workRows}</table>`;
+  }
+
+  html += `<div class="jp-section-title">Other Information / その他情報</div>`;
+  html += `<table>
+    <tr><td class="jp-label">Other qualifications</td><td>${esc(val('jp-other-qual'))}</td></tr>
+    <tr><td class="jp-label">Personality</td><td>${esc(val('jp-personality'))}</td></tr>
+    <tr><td class="jp-label">Hobby</td><td>${esc(val('jp-hobby'))}</td><td class="jp-label">Favorite subject</td><td>${esc(val('jp-favorite-subject'))}</td></tr>
+    <tr><td class="jp-label">Group living experience</td><td>${esc(document.getElementById('jp-group-living').value)}</td><td class="jp-label">Cooking experience</td><td>${esc(document.getElementById('jp-cooking').value)}</td></tr>
+    <tr><td class="jp-label">Religion</td><td>${esc(val('r-religion'))}</td><td class="jp-label">Dietary restrictions</td><td>${esc(val('jp-dietary'))}</td></tr>
+    <tr><td class="jp-label">Worship practice</td><td>${esc(val('jp-worship'))}</td><td class="jp-label">Fasting</td><td>${esc(document.getElementById('jp-fasting').value)}</td></tr>
+  </table>`;
+
+  html += `<div class="jp-section-title">Future Plans / 今後の予定</div>`;
+  html += `<table>
+    <tr><td class="jp-label">Monthly remittance</td><td>${esc(val('jp-remittance'))}</td></tr>
+    <tr><td class="jp-label">Long-term stay in Japan</td><td>${esc(val('jp-longterm'))}</td></tr>
+    <tr><td class="jp-label">Applied for residence status?</td><td>${esc(document.getElementById('jp-residence-applied').value)}</td></tr>
+    <tr><td class="jp-label">Details, if yes</td><td>${esc(val('jp-residence-detail'))}</td></tr>
+  </table>`;
+
+  let famRows='';
+  document.querySelectorAll('#jp-family-list .repeat-block').forEach(b=>{
+    const fname=b.querySelector('.jp-fam-name').value, rel=b.querySelector('.jp-fam-relation').value;
+    const fage=b.querySelector('.jp-fam-age').value, occ=b.querySelector('.jp-fam-occupation').value;
+    const living=b.querySelector('.jp-fam-living').value;
+    if(!fname) return;
+    famRows+=`<tr><td>${esc(fname)}</td><td>${esc(rel)}</td><td>${esc(fage)}</td><td>${esc(occ)}</td><td>${esc(living)}</td></tr>`;
+  });
+  html += `<div class="jp-section-title">Family Structure / 家族構成</div>`;
+  if(famRows){
+    html += `<table><tr><th>Name</th><th>Relationship</th><th>Age</th><th>Occupation</th><th>Living together</th></tr>${famRows}</table>`;
+  }
+  html += `<table>
+    <tr><td class="jp-label">Relatives living in Japan?</td><td>${esc(document.getElementById('jp-relatives-japan').value)}</td></tr>
+    <tr><td class="jp-label">If yes, who</td><td>${esc(val('jp-relatives-who'))}</td></tr>
+    <tr><td class="jp-label">Family's view on this move</td><td>${esc(document.getElementById('jp-family-opinion').value)}</td></tr>
+  </table>`;
+
+  document.getElementById('jp-preview').innerHTML=html;
+  saveData();
+}
+
 // ---- Init ----
 if(!loadSavedData()){
   addExp(); addEdu();
+  addJpEdu(); addJpWork(); addJpFamily();
 }
 renderPreview();
 renderLetter();
+renderJapan();
 
 let toastTimer;
 function showToast(msg){
