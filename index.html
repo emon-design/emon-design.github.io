@@ -201,6 +201,18 @@
   }
   .resume-preview.tmpl-intl .intl-personal{font-size:.72rem;color:#555;line-height:1.5;}
   .resume-preview.tmpl-intl .intl-main{flex:1;min-width:0;}
+  /* Bangladesh Standard */
+  .resume-preview.tmpl-bd{display:flex;gap:20px;font-family:'IBM Plex Sans',sans-serif;}
+  .resume-preview.tmpl-bd .intl-side{width:120px;flex-shrink:0;}
+  .resume-preview.tmpl-bd .intl-main{flex:1;min-width:0;}
+  .resume-preview.tmpl-bd h3{text-align:left;}
+  .resume-preview.tmpl-bd .bd-personal{font-size:.74rem;color:#333;line-height:1.7;margin-bottom:6px;}
+  .resume-preview.tmpl-bd .bd-personal div{border-bottom:1px dotted var(--line);padding-bottom:2px;margin-bottom:3px;}
+  .resume-preview.tmpl-bd .declaration{
+    margin-top:20px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:.78rem;color:#444;
+  }
+  .resume-preview.tmpl-bd .signature-line{margin-top:36px;display:flex;justify-content:space-between;font-size:.8rem;}
 
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
   @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
@@ -310,12 +322,41 @@
             <label>Summary</label>
             <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
             <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftSummary()">✨ Auto-draft summary from your details</button>
-            <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International template)</span></label>
+            <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International and Bangladesh Standard templates)</span></label>
             <input type="file" id="r-photo" accept="image/*">
             <div class="row2">
               <div><label>Date of birth <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-dob" placeholder="04 Jan 1998"></div>
               <div><label>Nationality <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-nationality" placeholder="Bangladeshi"></div>
             </div>
+            <details style="margin-top:16px;">
+              <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Bangladesh-standard fields (optional — used by the Bangladesh Standard template)</summary>
+              <div style="margin-top:12px;">
+                <div class="row2">
+                  <div><label>Father's name</label><input type="text" id="r-father"></div>
+                  <div><label>Mother's name</label><input type="text" id="r-mother"></div>
+                </div>
+                <div class="row2">
+                  <div><label>Marital status</label>
+                    <select id="r-marital">
+                      <option value="">Prefer not to say</option>
+                      <option value="Single">Single</option>
+                      <option value="Married">Married</option>
+                    </select>
+                  </div>
+                  <div><label>Religion <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-religion"></div>
+                </div>
+                <label>NID number</label>
+                <input type="text" id="r-nid" placeholder="National ID number">
+                <div class="row2">
+                  <div><label>Present address</label><input type="text" id="r-present-addr" placeholder="House, Road, Area, City"></div>
+                  <div><label>Permanent address</label><input type="text" id="r-permanent-addr" placeholder="Village/P.O., Upazila, District"></div>
+                </div>
+                <label>Languages</label>
+                <input type="text" id="r-languages" placeholder="Bangla (Native), English (Fluent)">
+                <label>References</label>
+                <textarea id="r-references" placeholder="Will be provided upon request, or list a referee's name, position, and contact."></textarea>
+              </div>
+            </details>
           </div>
 
           <div class="card">
@@ -348,16 +389,17 @@
             <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and under "More settings" turn on <strong>Background graphics</strong> so colors and shading print correctly.</p>
           </div>
           <div class="card">
-            <h2 style="font-size:1rem;">Templates <span class="premium-badge">4 free · 2 premium</span></h2>
-            <p class="desc">Pick the format that fits where you're applying — the International layout suits regions where a photo and personal details are standard; Compact suits US-style ATS screening.</p>
+            <h2 style="font-size:1rem;">Templates <span class="premium-badge">5 free · 1 premium</span></h2>
+            <p class="desc">Pick the format that fits where you're applying — Bangladesh Standard matches local conventions (photo, personal details, GPA/CGPA per exam, declaration); International suits regions where a photo and personal details are standard; Compact suits US-style ATS screening.</p>
             <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
               <button class="btn ghost small tmpl-btn active" data-tmpl="classic" onclick="setTemplate('classic')">Classic</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="modern" onclick="setTemplate('modern')">Modern</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="compact" onclick="setTemplate('compact')">Compact (US/ATS)</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="intl" onclick="setTemplate('intl')">International</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="bd" onclick="setTemplate('bd')">Bangladesh Standard</button>
             </div>
             <input type="text" id="premium-code" placeholder="Enter code" style="max-width:180px;display:inline-block;">
-            <button class="btn small ghost" onclick="checkCode()">Unlock 2 more</button>
+            <button class="btn small ghost" onclick="checkCode()">Unlock 1 more</button>
           </div>
         </div>
       </div>
@@ -555,6 +597,8 @@ function addEdu(){
       </div>
       <div><label>Result</label><input type="number" class="edu-gpa" min="0" max="5" step="0.01" placeholder="e.g. 4.83" oninput="onEduGpaInput(this)"></div>
     </div>
+    <label>Class/Division <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. "1st Class", used by Bangladesh Standard)</span></label>
+    <input type="text" class="edu-class" oninput="renderPreview()" placeholder="1st Class">
   `;
   document.getElementById('edu-list').appendChild(div);
 }
@@ -579,7 +623,7 @@ function onEduGpaInput(inp){
   }
   renderPreview();
 }
-['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality'].forEach(id=>{
+['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
 });
 let photoDataUrl=null;
@@ -622,21 +666,34 @@ function renderPreview(){
     const dates=b.querySelector('.edu-dates').value;
     const gpa=b.querySelector('.edu-gpa').value;
     const scale=b.querySelector('.edu-scale').value;
+    const classDiv=b.querySelector('.edu-class').value;
     if(!degree && !inst) return;
     let gpaLine='';
     if(gpa){
       const label = scale==='4' ? 'CGPA' : 'GPA';
       gpaLine = ` — ${label}: ${esc(gpa)}/${parseFloat(scale||5).toFixed(2)}`;
+      if(resumeTemplate==='bd' && classDiv) gpaLine += ` (${esc(classDiv)})`;
     }
     eduHtml+=`<div class="entry"><div class="top"><span>${esc(degree)}${gpaLine}</span><span>${esc(dates)}</span></div>
       <div class="sub">${esc(inst)}</div></div>`;
   });
 
   let bodyHtml=`<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
-  if(summary) bodyHtml+=`<div class="section-title">Summary</div><p>${esc(summary)}</p>`;
+  const summaryLabel = resumeTemplate==='bd' ? 'Career Objective' : 'Summary';
+  if(summary) bodyHtml+=`<div class="section-title">${summaryLabel}</div><p>${esc(summary)}</p>`;
+  if(resumeTemplate==='bd' && eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
   if(expHtml) bodyHtml+=`<div class="section-title">Experience</div>${expHtml}`;
-  if(eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
+  if(resumeTemplate!=='bd' && eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
   if(skills) bodyHtml+=`<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
+
+  if(resumeTemplate==='bd'){
+    const languages=val('r-languages');
+    const references=val('r-references');
+    if(languages) bodyHtml+=`<div class="section-title">Languages</div><p>${esc(languages)}</p>`;
+    if(references) bodyHtml+=`<div class="section-title">References</div><p>${esc(references)}</p>`;
+    bodyHtml+=`<div class="declaration">I hereby declare that the information given above is true to the best of my knowledge and belief.</div>
+      <div class="signature-line"><span>Date: ______________</span><span>Signature: ______________</span></div>`;
+  }
 
   const preview=document.getElementById('preview');
   preview.className='resume-preview tmpl-'+resumeTemplate;
@@ -650,6 +707,24 @@ function renderPreview(){
       ? `<img class="intl-photo" src="${photoDataUrl}">`
       : `<div class="intl-photo placeholder">Photo</div>`;
     preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="intl-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
+  } else if(resumeTemplate==='bd'){
+    const dob=val('r-dob'), nat=val('r-nationality')||'Bangladeshi';
+    const father=val('r-father'), mother=val('r-mother'), marital=document.getElementById('r-marital').value, religion=val('r-religion'), nid=val('r-nid');
+    const presentAddr=val('r-present-addr'), permanentAddr=val('r-permanent-addr');
+    let personal='';
+    if(father) personal+=`<div><strong>Father:</strong> ${esc(father)}</div>`;
+    if(mother) personal+=`<div><strong>Mother:</strong> ${esc(mother)}</div>`;
+    if(dob) personal+=`<div><strong>DOB:</strong> ${esc(dob)}</div>`;
+    if(nat) personal+=`<div><strong>Nationality:</strong> ${esc(nat)}</div>`;
+    if(marital) personal+=`<div><strong>Marital status:</strong> ${esc(marital)}</div>`;
+    if(religion) personal+=`<div><strong>Religion:</strong> ${esc(religion)}</div>`;
+    if(nid) personal+=`<div><strong>NID:</strong> ${esc(nid)}</div>`;
+    if(presentAddr) personal+=`<div><strong>Present address:</strong> ${esc(presentAddr)}</div>`;
+    if(permanentAddr) personal+=`<div><strong>Permanent address:</strong> ${esc(permanentAddr)}</div>`;
+    const photoHtml = photoDataUrl
+      ? `<img class="intl-photo" src="${photoDataUrl}">`
+      : `<div class="intl-photo placeholder">Photo</div>`;
+    preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="bd-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
   } else {
     preview.innerHTML = bodyHtml;
   }
@@ -682,13 +757,16 @@ function collectData(){
     edu.push({
       degree:b.querySelector('.edu-degree').value, inst:b.querySelector('.edu-inst').value,
       dates:b.querySelector('.edu-dates').value, gpa:b.querySelector('.edu-gpa').value,
-      scale:b.querySelector('.edu-scale').value
+      scale:b.querySelector('.edu-scale').value, classDiv:b.querySelector('.edu-class').value
     });
   });
   return {
     name:val('r-name'), email:val('r-email'), phone:val('r-phone'),
     location:val('r-location'), summary:val('r-summary'), skills:val('r-skills'),
     dob:val('r-dob'), nationality:val('r-nationality'),
+    father:val('r-father'), mother:val('r-mother'), marital:document.getElementById('r-marital').value,
+    religion:val('r-religion'), nid:val('r-nid'), languages:val('r-languages'), references:val('r-references'),
+    presentAddr:val('r-present-addr'), permanentAddr:val('r-permanent-addr'),
     template:resumeTemplate, exp, edu,
     letter:{
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
@@ -711,6 +789,15 @@ function loadSavedData(){
   document.getElementById('r-skills').value=d.skills||'';
   document.getElementById('r-dob').value=d.dob||'';
   document.getElementById('r-nationality').value=d.nationality||'';
+  document.getElementById('r-father').value=d.father||'';
+  document.getElementById('r-mother').value=d.mother||'';
+  document.getElementById('r-marital').value=d.marital||'';
+  document.getElementById('r-religion').value=d.religion||'';
+  document.getElementById('r-nid').value=d.nid||'';
+  document.getElementById('r-languages').value=d.languages||'';
+  document.getElementById('r-references').value=d.references||'';
+  document.getElementById('r-present-addr').value=d.presentAddr||'';
+  document.getElementById('r-permanent-addr').value=d.permanentAddr||'';
 
   document.getElementById('exp-list').innerHTML='';
   document.getElementById('edu-list').innerHTML='';
@@ -737,6 +824,7 @@ function loadSavedData(){
     if(item.scale) block.querySelector('.edu-scale').value=item.scale;
     block.querySelector('.edu-gpa').max=block.querySelector('.edu-scale').value;
     block.querySelector('.edu-gpa').value=item.gpa||'';
+    block.querySelector('.edu-class').value=item.classDiv||'';
   });
 
   if(d.template){
