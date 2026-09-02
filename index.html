@@ -232,7 +232,8 @@
     font-size:.78rem;color:#444;
   }
   .resume-preview.tmpl-bd .signature-line{margin-top:36px;display:flex;justify-content:space-between;align-items:flex-end;font-size:.8rem;}
-  .resume-preview.tmpl-bd .signature-img{max-width:130px;max-height:50px;object-fit:contain;display:block;margin-bottom:2px;}
+  .resume-preview.tmpl-bd .sig-block{display:flex;flex-direction:column;align-items:center;}
+  .resume-preview.tmpl-bd .signature-img{max-width:130px;max-height:45px;object-fit:contain;margin-bottom:3px;}
 
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
   @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
@@ -930,7 +931,7 @@ function renderPreview(){
     if(languages) bodyHtml+=`<div class="section-title">Languages</div><p>${esc(languages)}</p>`;
     if(references) bodyHtml+=`<div class="section-title">References</div><p>${esc(references)}</p>`;
     const signatureHtml = signatureDataUrl
-      ? `<img class="signature-img" src="${signatureDataUrl}"><span>Signature</span>`
+      ? `<div class="sig-block"><img class="signature-img" src="${signatureDataUrl}"><span>Signature</span></div>`
       : `<span>Signature: ______________</span>`;
     bodyHtml+=`<div class="declaration">I hereby declare that the information given above is true to the best of my knowledge and belief.</div>
       <div class="signature-line"><span>Date: ______________</span>${signatureHtml}</div>`;
