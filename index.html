@@ -268,6 +268,42 @@
   .resume-preview.tmpl-bd2 .bd2-sig-img{max-width:120px;max-height:40px;object-fit:contain;}
   .resume-preview.tmpl-bd2 .bd2-sig-line{border-top:1px solid #333;width:160px;margin-left:auto;margin-top:4px;padding-top:3px;font-size:.78rem;text-align:center;}
 
+  /* Sidebar (modern two-column) */
+  .resume-preview.tmpl-sidebar{display:flex;gap:0;padding:0;}
+  .resume-preview.tmpl-sidebar .sb-side{
+    width:170px;flex-shrink:0;background:var(--ink);color:#fff;padding:22px 16px;
+  }
+  .resume-preview.tmpl-sidebar .sb-side .intl-photo{width:90px;height:90px;margin:0 auto 14px auto;border:2px solid #fff;}
+  .resume-preview.tmpl-sidebar .sb-side h3{color:#fff;font-size:1.05rem;text-align:center;margin-bottom:4px;}
+  .resume-preview.tmpl-sidebar .sb-side .sb-contact{font-size:.68rem;color:#CBD3DC;text-align:center;margin-bottom:16px;word-break:break-word;}
+  .resume-preview.tmpl-sidebar .sb-side .sb-heading{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--highlight);border-bottom:1px solid #4B5563;padding-bottom:3px;margin:14px 0 6px 0;}
+  .resume-preview.tmpl-sidebar .sb-side .sb-skill-item{font-size:.72rem;margin-bottom:3px;}
+  .resume-preview.tmpl-sidebar .sb-main{flex:1;min-width:0;padding:22px 24px;}
+  .resume-preview.tmpl-sidebar .sb-main .section-title{color:var(--stamp-dark);}
+
+  /* Europass */
+  .resume-preview.tmpl-europass{font-family:'IBM Plex Sans',sans-serif;padding:0;}
+  .resume-preview.tmpl-europass .ep-header{background:#004494;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
+  .resume-preview.tmpl-europass .ep-header h3{color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:1.1rem;margin:0;}
+  .resume-preview.tmpl-europass .ep-body{padding:18px 22px;}
+  .resume-preview.tmpl-europass .ep-bar{background:#E8EEF7;color:#004494;font-weight:700;font-size:.78rem;padding:5px 10px;margin:14px 0 8px 0;text-transform:uppercase;letter-spacing:.03em;}
+  .resume-preview.tmpl-europass .ep-row{display:flex;font-size:.78rem;margin-bottom:4px;}
+  .resume-preview.tmpl-europass .ep-row .ep-label{width:150px;flex-shrink:0;font-weight:600;color:#333;}
+  .resume-preview.tmpl-europass .intl-photo{width:80px;height:100px;border-radius:2px;}
+
+  /* Gulf / Middle East */
+  .resume-preview.tmpl-gulf{display:flex;gap:20px;font-family:'IBM Plex Sans',sans-serif;}
+  .resume-preview.tmpl-gulf .intl-side{width:120px;flex-shrink:0;}
+  .resume-preview.tmpl-gulf .intl-main{flex:1;min-width:0;}
+  .resume-preview.tmpl-gulf h3{text-align:left;}
+  .resume-preview.tmpl-gulf .gulf-personal{font-size:.74rem;color:#333;line-height:1.7;}
+  .resume-preview.tmpl-gulf .gulf-personal div{border-bottom:1px dotted var(--line);padding-bottom:2px;margin-bottom:3px;}
+
+  /* Academic */
+  .resume-preview.tmpl-academic{font-family:'IBM Plex Sans',sans-serif;}
+  .resume-preview.tmpl-academic h3{font-family:'Fraunces',serif;}
+  .resume-preview.tmpl-academic .ac-pub-entry{font-size:.8rem;margin-bottom:5px;padding-left:14px;text-indent:-14px;}
+
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
   @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
   .sticky{position:sticky;top:16px;}
@@ -423,6 +459,33 @@
                 <textarea id="r-references" placeholder="Will be provided upon request, or list a referee's name, position, and contact."></textarea>
               </div>
             </details>
+
+            <details style="margin-top:10px;">
+              <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Gulf/Middle East fields (optional — used by the Gulf template)</summary>
+              <div style="margin-top:12px;">
+                <div class="row2">
+                  <div><label>Passport number</label><input type="text" id="r-passport" placeholder="A12345678"></div>
+                  <div><label>Visa status</label><input type="text" id="r-visa-status" placeholder="e.g. Visit visa, Residence visa"></div>
+                </div>
+                <label>Driving license</label>
+                <select id="r-driving-license">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+            </details>
+          </div>
+
+          <div class="card">
+            <h2>Academic Fields <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(optional — used by the Academic template)</span></h2>
+            <label>Research interests</label>
+            <textarea id="r-research-interests" placeholder="Machine learning, computational biology, ..."></textarea>
+            <div id="pub-list" style="margin-top:10px;"></div>
+            <button class="btn ghost small" onclick="addPubRow()">+ Add publication</button>
+            <div id="conf-list" style="margin-top:14px;"></div>
+            <button class="btn ghost small" onclick="addConfRow()">+ Add conference/presentation</button>
+            <label style="margin-top:14px;">Grants & Awards <span style="font-weight:400;color:var(--ink-soft);">(one per line)</span></label>
+            <textarea id="r-awards" placeholder="Best Paper Award, ACM Conference 2024"></textarea>
           </div>
 
           <div class="card">
@@ -469,8 +532,8 @@
             <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and under "More settings" turn on <strong>Background graphics</strong> so colors and shading print correctly.</p>
           </div>
           <div class="card">
-            <h2 style="font-size:1rem;">Templates <span class="premium-badge">6 free</span></h2>
-            <p class="desc">Pick the format that fits where you're applying — Bangladesh Standard and Bangladesh Classic both match local conventions; International suits regions where a photo and personal details are standard; Compact suits US-style ATS screening.</p>
+            <h2 style="font-size:1rem;">Templates <span class="premium-badge">10 free</span></h2>
+            <p class="desc">Pick the format that fits where you're applying.</p>
             <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
               <button class="btn ghost small tmpl-btn active" data-tmpl="classic" onclick="setTemplate('classic')">Classic</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="modern" onclick="setTemplate('modern')">Modern</button>
@@ -478,6 +541,10 @@
               <button class="btn ghost small tmpl-btn" data-tmpl="intl" onclick="setTemplate('intl')">International</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="bd" onclick="setTemplate('bd')">Bangladesh Standard</button>
               <button class="btn ghost small tmpl-btn" data-tmpl="bd2" onclick="setTemplate('bd2')">Bangladesh Classic</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="sidebar" onclick="setTemplate('sidebar')">Sidebar</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="europass" onclick="setTemplate('europass')">Europass (EU)</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="gulf" onclick="setTemplate('gulf')">Gulf / Middle East</button>
+              <button class="btn ghost small tmpl-btn" data-tmpl="academic" onclick="setTemplate('academic')">Academic</button>
             </div>
           </div>
         </div>
@@ -908,6 +975,43 @@ function addLangRow(){
   `;
   document.getElementById('lang-list').appendChild(div);
 }
+
+// ---- Academic: publications & conferences ----
+let pubCount=0, confCount=0;
+function addPubRow(){
+  pubCount++;
+  const id='pub'+pubCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <label>Publication title</label>
+    <input type="text" class="pub-title" oninput="renderPreview()" placeholder="Title of the paper">
+    <div class="row2">
+      <div><label>Journal/Venue</label><input type="text" class="pub-venue" oninput="renderPreview()" placeholder="Journal name"></div>
+      <div><label>Year</label><input type="text" class="pub-year" oninput="renderPreview()" placeholder="2024"></div>
+    </div>
+  `;
+  document.getElementById('pub-list').appendChild(div);
+}
+function addConfRow(){
+  confCount++;
+  const id='conf'+confCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <label>Presentation/Talk title</label>
+    <input type="text" class="conf-title" oninput="renderPreview()" placeholder="Title of talk or poster">
+    <div class="row2">
+      <div><label>Conference</label><input type="text" class="conf-venue" oninput="renderPreview()" placeholder="Conference name"></div>
+      <div><label>Year</label><input type="text" class="conf-year" oninput="renderPreview()" placeholder="2024"></div>
+    </div>
+  `;
+  document.getElementById('conf-list').appendChild(div);
+}
 function onEduScaleChange(sel){
   const block=sel.closest('.repeat-block');
   const gpaInput=block.querySelector('.edu-gpa');
@@ -930,9 +1034,10 @@ function onEduGpaInput(inp){
   renderPreview();
 }
 function renderAll(){ renderPreview(); renderJapan(); }
-['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths'].forEach(id=>{
+['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths','r-passport','r-visa-status','r-research-interests','r-awards'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderAll);
 });
+document.getElementById('r-driving-license').addEventListener('change', renderAll);
 ['jp-furigana','jp-age','jp-height','jp-weight','jp-eye-left','jp-eye-right','jp-other-qual','jp-personality','jp-hobby','jp-favorite-subject','jp-dietary','jp-worship','jp-remittance','jp-longterm','jp-residence-detail','jp-relatives-who'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderJapan);
 });
@@ -1146,6 +1251,112 @@ function renderPreview(){
       <div class="bd2-declaration-sig">${sigInner}<div class="bd2-sig-line">${esc(name)}</div></div>`;
 
     preview.innerHTML = html;
+  } else if(resumeTemplate==='sidebar'){
+    const photoHtml = photoDataUrl ? `<img class="intl-photo" src="${photoDataUrl}">` : `<div class="intl-photo placeholder">Photo</div>`;
+    const skillItems = skills ? skills.split(',').map(s=>s.trim()).filter(Boolean) : [];
+    const langsRaw = val('r-languages');
+    const langItems = langsRaw ? langsRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+    let sideHtml = `${photoHtml}<h3>${esc(name)}</h3><div class="sb-contact">${esc(contact)}</div>`;
+    if(skillItems.length){
+      sideHtml += `<div class="sb-heading">Skills</div>`;
+      skillItems.forEach(s=> sideHtml += `<div class="sb-skill-item">• ${esc(s)}</div>`);
+    }
+    if(langItems.length){
+      sideHtml += `<div class="sb-heading">Languages</div>`;
+      langItems.forEach(l=> sideHtml += `<div class="sb-skill-item">• ${esc(l)}</div>`);
+    }
+    let mainHtml='';
+    if(summary) mainHtml += `<div class="section-title">Summary</div><p>${esc(summary)}</p>`;
+    if(expHtml) mainHtml += `<div class="section-title">Experience</div>${expHtml}`;
+    if(eduHtml) mainHtml += `<div class="section-title">Education</div>${eduHtml}`;
+    preview.innerHTML = `<div class="sb-side">${sideHtml}</div><div class="sb-main">${mainHtml}</div>`;
+  } else if(resumeTemplate==='europass'){
+    const email3=val('r-email'), phone3=val('r-phone');
+    const dob3=val('r-dob'), nat3=val('r-nationality'), gender3=document.getElementById('r-gender').value;
+    const addr3=val('r-present-addr')||val('r-location');
+    const photoHtml3 = photoDataUrl ? `<img class="intl-photo" src="${photoDataUrl}">` : '';
+    let htmlEp = `<div class="ep-header"><h3>${esc(name)}</h3>${photoHtml3}</div><div class="ep-body">`;
+    htmlEp += `<div class="ep-bar">Personal Information</div>`;
+    if(addr3) htmlEp += `<div class="ep-row"><span class="ep-label">Address</span><span>${esc(addr3)}</span></div>`;
+    if(phone3) htmlEp += `<div class="ep-row"><span class="ep-label">Telephone</span><span>${esc(phone3)}</span></div>`;
+    if(email3) htmlEp += `<div class="ep-row"><span class="ep-label">Email</span><span>${esc(email3)}</span></div>`;
+    if(nat3) htmlEp += `<div class="ep-row"><span class="ep-label">Nationality</span><span>${esc(nat3)}</span></div>`;
+    if(dob3) htmlEp += `<div class="ep-row"><span class="ep-label">Date of birth</span><span>${esc(dob3)}</span></div>`;
+    if(gender3) htmlEp += `<div class="ep-row"><span class="ep-label">Gender</span><span>${esc(gender3)}</span></div>`;
+    if(summary) htmlEp += `<div class="ep-bar">Personal Statement</div><p style="font-size:.8rem;">${esc(summary)}</p>`;
+    if(expHtml) htmlEp += `<div class="ep-bar">Work Experience</div>${expHtml}`;
+    if(eduHtml) htmlEp += `<div class="ep-bar">Education and Training</div>${eduHtml}`;
+    let langRowsEp='';
+    document.querySelectorAll('#lang-list .repeat-block').forEach(b=>{
+      const lname=b.querySelector('.lang-name').value;
+      if(!lname) return;
+      const r=b.querySelector('.lang-reading').value, w=b.querySelector('.lang-writing').value, s=b.querySelector('.lang-speaking').value;
+      langRowsEp += `<div class="ep-row"><span class="ep-label">${esc(lname)}</span><span>Reading: ${esc(r)} · Writing: ${esc(w)} · Speaking: ${esc(s)}</span></div>`;
+    });
+    if(langRowsEp) htmlEp += `<div class="ep-bar">Personal Skills — Languages</div>${langRowsEp}`;
+    const digitalOs=val('r-computing-os'), digitalSw=val('r-computing-software');
+    if(digitalOs || digitalSw){
+      htmlEp += `<div class="ep-bar">Digital Competence</div>`;
+      if(digitalOs) htmlEp += `<div class="ep-row"><span class="ep-label">Operating systems</span><span>${esc(digitalOs)}</span></div>`;
+      if(digitalSw) htmlEp += `<div class="ep-row"><span class="ep-label">Software</span><span>${esc(digitalSw)}</span></div>`;
+    }
+    const strengthsEp=val('r-strengths');
+    if(strengthsEp) htmlEp += `<div class="ep-bar">Organisational / Communication Skills</div><p style="font-size:.8rem;">${esc(strengthsEp).replace(/\n/g,'<br>')}</p>`;
+    if(skills) htmlEp += `<div class="ep-bar">Other Skills</div><p style="font-size:.8rem;">${esc(skills)}</p>`;
+    htmlEp += `</div>`;
+    preview.innerHTML = htmlEp;
+  } else if(resumeTemplate==='gulf'){
+    const dobG=val('r-dob'), natG=val('r-nationality');
+    const maritalG=document.getElementById('r-marital').value;
+    const passportG=val('r-passport'), visaG=val('r-visa-status'), drivingG=document.getElementById('r-driving-license').value;
+    const langsG=val('r-languages');
+    const referencesG=val('r-references');
+    let personalG='';
+    if(dobG) personalG += `<div><strong>DOB:</strong> ${esc(dobG)}</div>`;
+    if(natG) personalG += `<div><strong>Nationality:</strong> ${esc(natG)}</div>`;
+    if(maritalG) personalG += `<div><strong>Marital status:</strong> ${esc(maritalG)}</div>`;
+    if(passportG) personalG += `<div><strong>Passport No:</strong> ${esc(passportG)}</div>`;
+    if(visaG) personalG += `<div><strong>Visa status:</strong> ${esc(visaG)}</div>`;
+    personalG += `<div><strong>Driving license:</strong> ${esc(drivingG)}</div>`;
+    const photoHtmlG = photoDataUrl ? `<img class="intl-photo" src="${photoDataUrl}">` : `<div class="intl-photo placeholder">Photo</div>`;
+    let mainG = `<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
+    if(summary) mainG += `<div class="section-title">Objective</div><p>${esc(summary)}</p>`;
+    if(expHtml) mainG += `<div class="section-title">Experience</div>${expHtml}`;
+    if(eduHtml) mainG += `<div class="section-title">Education</div>${eduHtml}`;
+    if(skills) mainG += `<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
+    if(langsG) mainG += `<div class="section-title">Languages</div><p>${esc(langsG)}</p>`;
+    if(referencesG) mainG += `<div class="section-title">References</div><p>${esc(referencesG)}</p>`;
+    preview.innerHTML = `<div class="intl-side">${photoHtmlG}<div class="gulf-personal">${personalG}</div></div><div class="intl-main">${mainG}</div>`;
+  } else if(resumeTemplate==='academic'){
+    const researchInterests=val('r-research-interests');
+    const awardsRaw=val('r-awards');
+    let pubHtml='';
+    document.querySelectorAll('#pub-list .repeat-block').forEach(b=>{
+      const t=b.querySelector('.pub-title').value, v=b.querySelector('.pub-venue').value, y=b.querySelector('.pub-year').value;
+      if(!t) return;
+      pubHtml += `<div class="ac-pub-entry">${esc(t)}${v?'. '+esc(v):''}${y?' ('+esc(y)+')':''}.</div>`;
+    });
+    let confHtmlAc='';
+    document.querySelectorAll('#conf-list .repeat-block').forEach(b=>{
+      const t=b.querySelector('.conf-title').value, v=b.querySelector('.conf-venue').value, y=b.querySelector('.conf-year').value;
+      if(!t) return;
+      confHtmlAc += `<div class="ac-pub-entry">${esc(t)}${v?'. '+esc(v):''}${y?' ('+esc(y)+')':''}.</div>`;
+    });
+    let htmlAc = `<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
+    if(researchInterests) htmlAc += `<div class="section-title">Research Interests</div><p>${esc(researchInterests)}</p>`;
+    if(summary) htmlAc += `<div class="section-title">Profile</div><p>${esc(summary)}</p>`;
+    if(eduHtml) htmlAc += `<div class="section-title">Education</div>${eduHtml}`;
+    if(expHtml) htmlAc += `<div class="section-title">Academic & Professional Experience</div>${expHtml}`;
+    if(pubHtml) htmlAc += `<div class="section-title">Publications</div>${pubHtml}`;
+    if(confHtmlAc) htmlAc += `<div class="section-title">Conferences & Presentations</div>${confHtmlAc}`;
+    if(awardsRaw){
+      const items=awardsRaw.split('\n').map(s=>s.trim()).filter(Boolean);
+      htmlAc += `<div class="section-title">Grants & Awards</div><ul style="margin:4px 0 0 0;padding-left:18px;font-size:.85rem;">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+    if(skills) htmlAc += `<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
+    const referencesAc=val('r-references');
+    if(referencesAc) htmlAc += `<div class="section-title">References</div><p>${esc(referencesAc)}</p>`;
+    preview.innerHTML = htmlAc;
   } else {
     preview.innerHTML = bodyHtml;
   }
@@ -1189,6 +1400,20 @@ function collectData(){
       writing:b.querySelector('.lang-writing').value, speaking:b.querySelector('.lang-speaking').value
     });
   });
+  const pubs=[];
+  document.querySelectorAll('#pub-list .repeat-block').forEach(b=>{
+    pubs.push({
+      title:b.querySelector('.pub-title').value, venue:b.querySelector('.pub-venue').value,
+      year:b.querySelector('.pub-year').value
+    });
+  });
+  const confs=[];
+  document.querySelectorAll('#conf-list .repeat-block').forEach(b=>{
+    confs.push({
+      title:b.querySelector('.conf-title').value, venue:b.querySelector('.conf-venue').value,
+      year:b.querySelector('.conf-year').value
+    });
+  });
   const jpEdu=[];
   document.querySelectorAll('#jp-edu-list .repeat-block').forEach(b=>{
     jpEdu.push({
@@ -1221,6 +1446,8 @@ function collectData(){
     presentAddr:val('r-present-addr'), permanentAddr:val('r-permanent-addr'),
     gender:document.getElementById('r-gender').value, computingOs:val('r-computing-os'),
     computingSoftware:val('r-computing-software'), strengths:val('r-strengths'), langs,
+    passport:val('r-passport'), visaStatus:val('r-visa-status'), drivingLicense:document.getElementById('r-driving-license').value,
+    researchInterests:val('r-research-interests'), awards:val('r-awards'), pubs, confs,
     template:resumeTemplate, exp, edu,
     letter:{
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
@@ -1274,6 +1501,11 @@ function loadSavedData(){
   document.getElementById('r-computing-os').value=d.computingOs||'';
   document.getElementById('r-computing-software').value=d.computingSoftware||'';
   document.getElementById('r-strengths').value=d.strengths||'';
+  document.getElementById('r-passport').value=d.passport||'';
+  document.getElementById('r-visa-status').value=d.visaStatus||'';
+  if(d.drivingLicense) document.getElementById('r-driving-license').value=d.drivingLicense;
+  document.getElementById('r-research-interests').value=d.researchInterests||'';
+  document.getElementById('r-awards').value=d.awards||'';
 
   document.getElementById('exp-list').innerHTML='';
   document.getElementById('edu-list').innerHTML='';
@@ -1315,6 +1547,30 @@ function loadSavedData(){
       if(item.reading) block.querySelector('.lang-reading').value=item.reading;
       if(item.writing) block.querySelector('.lang-writing').value=item.writing;
       if(item.speaking) block.querySelector('.lang-speaking').value=item.speaking;
+    });
+  }
+
+  document.getElementById('pub-list').innerHTML='';
+  pubCount=0;
+  if(d.pubs && d.pubs.length){
+    d.pubs.forEach(item=>{
+      addPubRow();
+      const block=document.getElementById('pub-list').lastElementChild;
+      block.querySelector('.pub-title').value=item.title||'';
+      block.querySelector('.pub-venue').value=item.venue||'';
+      block.querySelector('.pub-year').value=item.year||'';
+    });
+  }
+
+  document.getElementById('conf-list').innerHTML='';
+  confCount=0;
+  if(d.confs && d.confs.length){
+    d.confs.forEach(item=>{
+      addConfRow();
+      const block=document.getElementById('conf-list').lastElementChild;
+      block.querySelector('.conf-title').value=item.title||'';
+      block.querySelector('.conf-venue').value=item.venue||'';
+      block.querySelector('.conf-year').value=item.year||'';
     });
   }
 
