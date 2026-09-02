@@ -191,11 +191,11 @@
   /* International (photo + personal details) */
   .resume-preview.tmpl-intl{display:flex;gap:20px;}
   .resume-preview.tmpl-intl .intl-side{width:110px;flex-shrink:0;}
-  .resume-preview.tmpl-intl .intl-photo{
+  .resume-preview .intl-photo{
     width:100px;height:100px;border-radius:6px;background:#EEE;
     object-fit:cover;border:1px solid var(--line);display:block;margin-bottom:10px;
   }
-  .resume-preview.tmpl-intl .intl-photo.placeholder{
+  .resume-preview .intl-photo.placeholder{
     display:flex;align-items:center;justify-content:center;
     color:var(--ink-soft);font-size:.68rem;text-align:center;
   }
@@ -231,7 +231,8 @@
     margin-top:20px;padding-top:14px;border-top:1px solid var(--line);
     font-size:.78rem;color:#444;
   }
-  .resume-preview.tmpl-bd .signature-line{margin-top:36px;display:flex;justify-content:space-between;font-size:.8rem;}
+  .resume-preview.tmpl-bd .signature-line{margin-top:36px;display:flex;justify-content:space-between;align-items:flex-end;font-size:.8rem;}
+  .resume-preview.tmpl-bd .signature-img{max-width:130px;max-height:50px;object-fit:contain;display:block;margin-bottom:2px;}
 
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
   @media (max-width:800px){.two-col{grid-template-columns:1fr;}}
@@ -342,8 +343,10 @@
             <label>Summary</label>
             <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
             <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftSummary()">✨ Auto-draft summary from your details</button>
-            <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International and Bangladesh Standard templates)</span></label>
+            <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International, Bangladesh Standard, and Japan templates)</span></label>
             <input type="file" id="r-photo" accept="image/*">
+            <label>Signature <span style="font-weight:400;color:var(--ink-soft);">(optional — a photo of your signature, used by the Bangladesh Standard declaration)</span></label>
+            <input type="file" id="r-signature" accept="image/*">
             <div class="row2">
               <div><label>Date of birth <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-dob" placeholder="04 Jan 1998"></div>
               <div><label>Nationality <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-nationality" placeholder="Bangladeshi"></div>
@@ -861,6 +864,14 @@ document.getElementById('r-photo').addEventListener('change', e=>{
   reader.onload=ev=>{ photoDataUrl=ev.target.result; renderAll(); };
   reader.readAsDataURL(file);
 });
+let signatureDataUrl=null;
+document.getElementById('r-signature').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ signatureDataUrl=ev.target.result; renderAll(); };
+  reader.readAsDataURL(file);
+});
 let resumeTemplate='classic';
 function setTemplate(t){
   resumeTemplate=t;
@@ -918,8 +929,11 @@ function renderPreview(){
     const references=val('r-references');
     if(languages) bodyHtml+=`<div class="section-title">Languages</div><p>${esc(languages)}</p>`;
     if(references) bodyHtml+=`<div class="section-title">References</div><p>${esc(references)}</p>`;
+    const signatureHtml = signatureDataUrl
+      ? `<img class="signature-img" src="${signatureDataUrl}"><span>Signature</span>`
+      : `<span>Signature: ______________</span>`;
     bodyHtml+=`<div class="declaration">I hereby declare that the information given above is true to the best of my knowledge and belief.</div>
-      <div class="signature-line"><span>Date: ______________</span><span>Signature: ______________</span></div>`;
+      <div class="signature-line"><span>Date: ______________</span>${signatureHtml}</div>`;
   }
 
   const preview=document.getElementById('preview');
