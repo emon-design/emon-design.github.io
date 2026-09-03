@@ -460,8 +460,10 @@
             <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftSummary()">✨ Auto-draft summary from your details</button>
             <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International, Bangladesh Standard, and Japan templates)</span></label>
             <input type="file" id="r-photo" accept="image/*">
-            <label>Signature <span style="font-weight:400;color:var(--ink-soft);">(optional — a photo of your signature, used by the Bangladesh Standard declaration)</span></label>
-            <input type="file" id="r-signature" accept="image/*">
+            <div id="signature-section">
+              <label>Signature <span style="font-weight:400;color:var(--ink-soft);">(optional — a photo of your signature, used by the Bangladesh declaration)</span></label>
+              <input type="file" id="r-signature" accept="image/*">
+            </div>
             <div class="row2">
               <div><label>Date of birth <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-dob" placeholder="04 Jan 1998"></div>
               <div><label>Nationality <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-nationality" placeholder="Bangladeshi"></div>
@@ -504,37 +506,33 @@
                 <textarea id="r-references" placeholder="Will be provided upon request, or list a referee's name, position, and contact."></textarea>
               </div>
             </details>
+          </div>
 
-            <details style="margin-top:10px;" id="training-section">
-              <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Training & Certifications (optional — used by Bangladesh Standard and Gulf templates)</summary>
-              <div style="margin-top:12px;">
-                <label>Training & Certifications <span style="font-weight:400;color:var(--ink-soft);">(one per line)</span></label>
-                <textarea id="r-training" placeholder="Project Management Professional (PMP) - 2019"></textarea>
-              </div>
-            </details>
+          <div class="card" id="training-section">
+            <h2>Training & Certifications <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(optional — used by Bangladesh Standard and Gulf templates)</span></h2>
+            <label>Training & Certifications <span style="font-weight:400;color:var(--ink-soft);">(one per line)</span></label>
+            <textarea id="r-training" placeholder="Project Management Professional (PMP) - 2019"></textarea>
+          </div>
 
-            <details style="margin-top:10px;" id="gulf-fields-section">
-              <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Gulf/Middle East fields (optional — used by the Gulf template)</summary>
-              <div style="margin-top:12px;">
-                <div class="row2">
-                  <div><label>Passport number</label><input type="text" id="r-passport" placeholder="A12345678"></div>
-                  <div><label>Visa status</label><input type="text" id="r-visa-status" placeholder="e.g. Visit visa, Residence visa"></div>
-                </div>
-                <label>Driving license</label>
-                <select id="r-driving-license">
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
-                </select>
-                <label style="margin-top:14px;">Hobbies <span style="font-weight:400;color:var(--ink-soft);">(comma-separated)</span></label>
-                <input type="text" id="r-hobbies" placeholder="Hunting, Sport, Reading">
-                <label style="margin-top:14px;">Software Skills</label>
-                <div id="sw-skill-list"></div>
-                <button class="btn ghost small" onclick="addSwSkillRow()">+ Add software skill</button>
-                <label style="margin-top:14px;">Language Proficiency</label>
-                <div id="gulf-lang-list"></div>
-                <button class="btn ghost small" onclick="addGulfLangRow()">+ Add language</button>
-              </div>
-            </details>
+          <div class="card" id="gulf-fields-section">
+            <h2>Gulf/Middle East Fields <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(used by the Gulf template)</span></h2>
+            <div class="row2">
+              <div><label>Passport number <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-passport" placeholder="A12345678"></div>
+              <div><label>Visa status</label><input type="text" id="r-visa-status" placeholder="e.g. Visit visa, Residence visa"></div>
+            </div>
+            <label>Driving license</label>
+            <select id="r-driving-license">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+            <label style="margin-top:14px;">Hobbies <span style="font-weight:400;color:var(--ink-soft);">(comma-separated)</span></label>
+            <input type="text" id="r-hobbies" placeholder="Hunting, Sport, Reading">
+            <label style="margin-top:14px;">Software Skills</label>
+            <div id="sw-skill-list"></div>
+            <button class="btn ghost small" onclick="addSwSkillRow()">+ Add software skill</button>
+            <label style="margin-top:14px;">Language Proficiency</label>
+            <div id="gulf-lang-list"></div>
+            <button class="btn ghost small" onclick="addGulfLangRow()">+ Add language</button>
           </div>
 
           <div class="card" id="academic-fields-section">
@@ -1173,7 +1171,8 @@ function updateFieldVisibility(){
     'gulf-fields-section': ['gulf'],
     'academic-fields-section': ['academic'],
     'langskills-section': ['bd2','europass'],
-    'training-section': ['bd','gulf']
+    'training-section': ['bd','gulf'],
+    'signature-section': ['bd','bd2']
   };
   const japanPanel=document.getElementById('japan');
   const japanTabActive = japanPanel && japanPanel.classList.contains('active');
@@ -1485,7 +1484,7 @@ function renderPreview(){
           <div>${loc?esc(loc):''}</div>
           <div>${email?esc(email):''}</div>
           ${dobG?`<div>${esc(dobG)}</div>`:''}
-          ${passportG?`<div>Passport: ${esc(passportG)}</div>`:''}
+          <div>Passport: ${esc(passportG)}</div>
           <div>Driving license: ${esc(drivingG)}</div>
         </div>
       </div>
