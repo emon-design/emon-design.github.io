@@ -188,9 +188,8 @@
     font-size:.7rem;letter-spacing:.08em;
   }
   .resume-preview.tmpl-compact .entry{margin-bottom:6px;}
-  /* International (photo + personal details) */
-  .resume-preview.tmpl-intl{display:flex;gap:20px;}
-  .resume-preview.tmpl-intl .intl-side{width:110px;flex-shrink:0;}
+  /* International (dark sidebar + main content) */
+  .resume-preview.tmpl-intl{display:flex;padding:0;}
   .resume-preview .intl-photo{
     width:100px;height:100px;border-radius:6px;background:#EEE;
     object-fit:cover;border:1px solid var(--line);display:block;margin-bottom:10px;
@@ -199,8 +198,47 @@
     display:flex;align-items:center;justify-content:center;
     color:var(--ink-soft);font-size:.68rem;text-align:center;
   }
-  .resume-preview.tmpl-intl .intl-personal{font-size:.72rem;color:#555;line-height:1.5;}
-  .resume-preview.tmpl-intl .intl-main{flex:1;min-width:0;}
+  .resume-preview.tmpl-intl .i2-sidebar{
+    width:190px;flex-shrink:0;background:#1E2B3A;color:#fff;padding:24px 18px;
+  }
+  .resume-preview.tmpl-intl .i2-photo-wrap{text-align:center;margin-bottom:18px;}
+  .resume-preview.tmpl-intl .i2-photo{
+    width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid #fff;
+  }
+  .resume-preview.tmpl-intl .i2-photo.placeholder{
+    display:inline-flex;align-items:center;justify-content:center;
+    background:#33485C;color:#C6D0D9;font-size:.6rem;text-align:center;
+  }
+  .resume-preview.tmpl-intl .i2-side-heading{
+    font-weight:700;font-size:.78rem;letter-spacing:.06em;color:#fff;
+    border-bottom:2px solid #5FA8B5;padding-bottom:4px;margin:18px 0 10px 0;
+  }
+  .resume-preview.tmpl-intl .i2-contact-row{font-size:.7rem;color:#DCE4EC;margin-bottom:8px;word-break:break-word;}
+  .resume-preview.tmpl-intl .i2-skill-item{margin-bottom:9px;}
+  .resume-preview.tmpl-intl .i2-skill-name{font-size:.72rem;color:#EDF1F5;margin-bottom:3px;}
+  .resume-preview.tmpl-intl .i2-bar-track{background:rgba(255,255,255,.15);height:5px;border-radius:3px;overflow:hidden;}
+  .resume-preview.tmpl-intl .i2-bar-fill{background:#5FA8B5;height:100%;}
+  .resume-preview.tmpl-intl .i2-lang-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .resume-preview.tmpl-intl .i2-lang-name{font-size:.72rem;color:#EDF1F5;}
+  .resume-preview.tmpl-intl .i2-dot-row{display:flex;gap:3px;}
+  .resume-preview.tmpl-intl .i2-dot-row span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);}
+  .resume-preview.tmpl-intl .i2-dot-row span.filled{background:#5FA8B5;}
+  .resume-preview.tmpl-intl .i2-hobby-item{font-size:.72rem;color:#DCE4EC;margin-bottom:5px;}
+  .resume-preview.tmpl-intl .i2-main{flex:1;min-width:0;}
+  .resume-preview.tmpl-intl .i2-header{background:#F4F5F6;padding:26px 30px;text-align:center;}
+  .resume-preview.tmpl-intl .i2-header h3{font-size:1.5rem;font-weight:700;letter-spacing:.03em;margin:0 0 10px 0;color:#111;}
+  .resume-preview.tmpl-intl .i2-header-rule{width:60px;height:3px;background:#5FA8B5;margin:0 auto 10px auto;}
+  .resume-preview.tmpl-intl .i2-subtitle{font-size:.85rem;letter-spacing:.08em;color:#555;text-transform:uppercase;}
+  .resume-preview.tmpl-intl .i2-body{padding:22px 30px;}
+  .resume-preview.tmpl-intl .i2-sec-title{
+    font-weight:700;font-size:.9rem;letter-spacing:.03em;color:#111;
+    border-bottom:2px solid #5FA8B5;padding-bottom:4px;margin:18px 0 10px 0;display:inline-block;
+  }
+  .resume-preview.tmpl-intl .i2-exp-entry{margin-bottom:12px;font-size:.82rem;}
+  .resume-preview.tmpl-intl .i2-exp-top{display:flex;justify-content:space-between;font-weight:700;color:#111;}
+  .resume-preview.tmpl-intl .i2-exp-sub{font-weight:600;color:#333;margin:2px 0 4px 0;}
+  .resume-preview.tmpl-intl .i2-exp-entry ul{margin:4px 0 0 0;padding-left:18px;}
+  .resume-preview.tmpl-intl .i2-exp-entry ul li{margin-bottom:3px;}
 
   /* Japan rirekisho */
   .resume-preview.tmpl-jp{font-size:.72rem;padding:20px 24px;}
@@ -525,7 +563,11 @@
               <option value="No">No</option>
               <option value="Yes">Yes</option>
             </select>
-            <label style="margin-top:14px;">Hobbies <span style="font-weight:400;color:var(--ink-soft);">(comma-separated)</span></label>
+          </div>
+
+          <div class="card" id="skills-langs-hobbies-section">
+            <h2>Rated Skills, Languages & Hobbies <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(used by Gulf and International templates)</span></h2>
+            <label>Hobbies <span style="font-weight:400;color:var(--ink-soft);">(comma-separated)</span></label>
             <input type="text" id="r-hobbies" placeholder="Hunting, Sport, Reading">
             <label style="margin-top:14px;">Software Skills</label>
             <div id="sw-skill-list"></div>
@@ -1169,6 +1211,7 @@ function updateFieldVisibility(){
   const relevantMap = {
     'bd-fields-section': ['bd','bd2'],
     'gulf-fields-section': ['gulf'],
+    'skills-langs-hobbies-section': ['gulf','intl'],
     'academic-fields-section': ['academic'],
     'langskills-section': ['bd2','europass'],
     'training-section': ['bd','gulf'],
@@ -1231,14 +1274,91 @@ function renderPreview(){
   preview.className='resume-preview tmpl-'+resumeTemplate;
 
   if(resumeTemplate==='intl'){
-    const dob=val('r-dob'), nat=val('r-nationality');
-    let personal='';
-    if(dob) personal+=`<div><strong>DOB:</strong> ${esc(dob)}</div>`;
-    if(nat) personal+=`<div><strong>Nationality:</strong> ${esc(nat)}</div>`;
-    const photoHtml = photoDataUrl
-      ? `<img class="intl-photo" src="${photoDataUrl}">`
-      : `<div class="intl-photo placeholder">Photo</div>`;
-    preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="intl-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
+    const linkedinI=val('r-linkedin');
+    const titleI=val('r-title');
+    const photoHtmlI = photoDataUrl
+      ? `<img class="i2-photo" src="${photoDataUrl}">`
+      : `<div class="i2-photo placeholder">Photo</div>`;
+
+    let sideHtml = `<div class="i2-photo-wrap">${photoHtmlI}</div>`;
+    sideHtml += `<div class="i2-side-heading">Contact</div>`;
+    if(email) sideHtml += `<div class="i2-contact-row">✉ ${esc(email)}</div>`;
+    if(phone) sideHtml += `<div class="i2-contact-row">☎ ${esc(phone)}</div>`;
+    if(loc) sideHtml += `<div class="i2-contact-row">📍 ${esc(loc)}</div>`;
+    if(linkedinI) sideHtml += `<div class="i2-contact-row">in ${esc(linkedinI)}</div>`;
+
+    let skillBars='';
+    document.querySelectorAll('#sw-skill-list .repeat-block').forEach(b=>{
+      const nm=b.querySelector('.sw-name').value;
+      if(!nm) return;
+      const lvl=parseInt(b.querySelector('.sw-level').value)||0;
+      const pct=Math.round(lvl/6*100);
+      skillBars += `<div class="i2-skill-item"><div class="i2-skill-name">${esc(nm)}</div><div class="i2-bar-track"><div class="i2-bar-fill" style="width:${pct}%;"></div></div></div>`;
+    });
+    if(skillBars) sideHtml += `<div class="i2-side-heading">Skills</div>${skillBars}`;
+
+    let langDots='';
+    document.querySelectorAll('#gulf-lang-list .repeat-block').forEach(b=>{
+      const nm=b.querySelector('.glang-name').value;
+      if(!nm) return;
+      const lvl=parseInt(b.querySelector('.glang-level').value)||0;
+      let dots='';
+      for(let i=1;i<=6;i++) dots += `<span class="${i<=lvl?'filled':''}"></span>`;
+      langDots += `<div class="i2-lang-item"><span class="i2-lang-name">${esc(nm)}</span><div class="i2-dot-row">${dots}</div></div>`;
+    });
+    if(langDots) sideHtml += `<div class="i2-side-heading">Languages</div>${langDots}`;
+
+    const hobbiesI=val('r-hobbies');
+    if(hobbiesI){
+      const items=hobbiesI.split(',').map(s=>s.trim()).filter(Boolean);
+      sideHtml += `<div class="i2-side-heading">Hobbies</div>` + items.map(i=>`<div class="i2-hobby-item">${esc(i)}</div>`).join('');
+    }
+
+    let mainI = `<div class="i2-header"><h3>${esc(name)}</h3><div class="i2-header-rule"></div>${titleI?`<div class="i2-subtitle">${esc(titleI)}</div>`:''}</div><div class="i2-body">`;
+
+    if(summary) mainI += `<div class="i2-sec-title">Summary</div><p style="font-size:.82rem;">${esc(summary)}</p>`;
+
+    let expHtmlI='';
+    document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+      const role=b.querySelector('.exp-role').value;
+      const company=b.querySelector('.exp-company').value;
+      const dates=b.querySelector('.exp-dates').value;
+      const desc=b.querySelector('.exp-desc').value;
+      if(!role && !company) return;
+      const bullets = desc ? desc.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+      expHtmlI += `<div class="i2-exp-entry">
+        <div class="i2-exp-top"><span>${esc(role)}</span><span>${esc(dates)}</span></div>
+        <div class="i2-exp-sub">${esc(company)}</div>
+        ${bullets.length?'<ul>'+bullets.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':''}
+      </div>`;
+    });
+    if(expHtmlI) mainI += `<div class="i2-sec-title">Experience</div>${expHtmlI}`;
+
+    let eduHtmlI='';
+    document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+      const degree=b.querySelector('.edu-degree').value;
+      const inst=b.querySelector('.edu-inst').value;
+      const dates=b.querySelector('.edu-dates').value;
+      const gpa=b.querySelector('.edu-gpa').value;
+      const scale=b.querySelector('.edu-scale').value;
+      if(!degree && !inst) return;
+      const label = scale==='4' ? 'CGPA' : 'GPA';
+      const gpaTxt = gpa ? ` — ${label} ${esc(gpa)}/${parseFloat(scale||5).toFixed(2)}` : '';
+      eduHtmlI += `<div class="i2-exp-entry">
+        <div class="i2-exp-top"><span>${esc(degree)}${gpaTxt}</span><span>${esc(dates)}</span></div>
+        <div class="i2-exp-sub">${esc(inst)}</div>
+      </div>`;
+    });
+    if(eduHtmlI) mainI += `<div class="i2-sec-title">Education</div>${eduHtmlI}`;
+
+    const achievementsI=val('r-awards');
+    if(achievementsI){
+      const items=achievementsI.split('\n').map(s=>s.trim()).filter(Boolean);
+      mainI += `<div class="i2-sec-title">Achievements</div><ul style="margin:4px 0 0 0;padding-left:18px;font-size:.82rem;">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+
+    mainI += `</div>`;
+    preview.innerHTML = `<div class="i2-sidebar">${sideHtml}</div><div class="i2-main">${mainI}</div>`;
   } else if(resumeTemplate==='bd'){
     const dob=val('r-dob'), nat=val('r-nationality')||'Bangladeshi (by birth)';
     const father=val('r-father'), mother=val('r-mother'), marital=document.getElementById('r-marital').value;
