@@ -220,20 +220,31 @@
   .resume-preview.tmpl-jp .jp-photo.placeholder{
     display:flex;align-items:center;justify-content:center;color:#999;font-size:.6rem;text-align:center;background:#F5F5F5;
   }
-  /* Bangladesh Standard */
-  .resume-preview.tmpl-bd{display:flex;gap:20px;font-family:'IBM Plex Sans',sans-serif;}
-  .resume-preview.tmpl-bd .intl-side{width:120px;flex-shrink:0;}
-  .resume-preview.tmpl-bd .intl-main{flex:1;min-width:0;}
-  .resume-preview.tmpl-bd h3{text-align:left;}
-  .resume-preview.tmpl-bd .bd-personal{font-size:.74rem;color:#333;line-height:1.7;margin-bottom:6px;}
-  .resume-preview.tmpl-bd .bd-personal div{border-bottom:1px dotted var(--line);padding-bottom:2px;margin-bottom:3px;}
-  .resume-preview.tmpl-bd .declaration{
-    margin-top:20px;padding-top:14px;border-top:1px solid var(--line);
-    font-size:.78rem;color:#444;
+  /* Bangladesh Standard (clean teal-header layout) */
+  .resume-preview.tmpl-bd{font-family:'IBM Plex Sans',sans-serif;padding:28px 32px;}
+  .resume-preview.tmpl-bd .bd-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;}
+  .resume-preview.tmpl-bd h3{font-family:'IBM Plex Sans',sans-serif;font-size:1.7rem;font-weight:700;margin:0 0 6px 0;color:#111;text-align:left;}
+  .resume-preview.tmpl-bd .bd-contact{font-size:.82rem;color:#333;line-height:1.5;}
+  .resume-preview.tmpl-bd .bd-photo-box{
+    width:110px;height:135px;border:1.5px dashed #999;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    color:#999;font-size:.65rem;padding:6px;
   }
-  .resume-preview.tmpl-bd .signature-line{margin-top:36px;display:flex;justify-content:space-between;align-items:flex-end;font-size:.8rem;}
-  .resume-preview.tmpl-bd .sig-block{display:flex;flex-direction:column;align-items:center;}
-  .resume-preview.tmpl-bd .signature-img{max-width:130px;max-height:45px;object-fit:contain;margin-bottom:3px;}
+  .resume-preview.tmpl-bd .bd-photo-box img{width:100%;height:100%;object-fit:cover;}
+  .resume-preview.tmpl-bd .bd-sec-title{
+    color:#0F766E;font-weight:700;font-size:.85rem;letter-spacing:.06em;
+    border-bottom:2px solid #0F766E;padding-bottom:4px;margin:20px 0 10px 0;
+  }
+  .resume-preview.tmpl-bd .bd-kv{display:flex;font-size:.82rem;margin-bottom:6px;}
+  .resume-preview.tmpl-bd .bd-kv .k{width:190px;flex-shrink:0;font-weight:700;color:#222;}
+  .resume-preview.tmpl-bd .bd-kv .v{color:#222;}
+  .resume-preview.tmpl-bd .bd-entry{margin-bottom:12px;}
+  .resume-preview.tmpl-bd .bd-entry .bd-entry-top{display:flex;justify-content:space-between;font-weight:700;font-size:.85rem;color:#111;}
+  .resume-preview.tmpl-bd .bd-entry .bd-entry-sub{font-style:italic;color:#555;font-size:.8rem;margin:2px 0 4px 0;}
+  .resume-preview.tmpl-bd .bd-entry ul{margin:0;padding-left:18px;font-size:.8rem;}
+  .resume-preview.tmpl-bd .bd-entry ul li{margin-bottom:2px;}
+  .resume-preview.tmpl-bd ul.bd-plain-list{margin:0;padding-left:18px;font-size:.8rem;}
+  .resume-preview.tmpl-bd ul.bd-plain-list li{margin-bottom:4px;}
 
   /* Bangladesh Classic (gray section bars, per-degree education) */
   .resume-preview.tmpl-bd2{font-family:'IBM Plex Sans',sans-serif;padding:26px 30px;}
@@ -410,6 +421,8 @@
             </div>
             <label>Location</label>
             <input type="text" id="r-location" placeholder="Dhaka, Bangladesh">
+            <label>LinkedIn <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+            <input type="text" id="r-linkedin" placeholder="linkedin.com/in/yourname">
             <label>Summary</label>
             <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
             <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftSummary()">✨ Auto-draft summary from your details</button>
@@ -457,6 +470,8 @@
                 <input type="text" id="r-languages" placeholder="Bangla (Native), English (Fluent)">
                 <label>References</label>
                 <textarea id="r-references" placeholder="Will be provided upon request, or list a referee's name, position, and contact."></textarea>
+                <label>Training & Certifications <span style="font-weight:400;color:var(--ink-soft);">(one per line, used by Bangladesh Standard)</span></label>
+                <textarea id="r-training" placeholder="Certificate in Professional Selling — Bangladesh Institute of Management (BIM), 2023"></textarea>
               </div>
             </details>
 
@@ -886,6 +901,8 @@ function addEdu(){
       <div><label>Group/Major <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-group" oninput="renderPreview()" placeholder="Science"></div>
       <div><label>Board <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-board" oninput="renderPreview()" placeholder="Dhaka"></div>
     </div>
+    <label>Achievement/Note <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. thesis title, honors, merit list)</span></label>
+    <input type="text" class="edu-note" oninput="renderPreview()" placeholder="Thesis on rural distribution reach for packaged foods">
   `;
   document.getElementById('edu-list').appendChild(div);
 }
@@ -1035,7 +1052,7 @@ function onEduGpaInput(inp){
   renderPreview();
 }
 function renderAll(){ renderPreview(); renderJapan(); }
-['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths','r-passport','r-visa-status','r-research-interests','r-awards'].forEach(id=>{
+['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths','r-passport','r-visa-status','r-research-interests','r-awards','r-linkedin','r-training'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderAll);
 });
 document.getElementById('r-driving-license').addEventListener('change', renderAll);
@@ -1116,31 +1133,17 @@ function renderPreview(){
     if(gpa){
       const label = scale==='4' ? 'CGPA' : 'GPA';
       gpaLine = ` — ${label}: ${esc(gpa)}/${parseFloat(scale||5).toFixed(2)}`;
-      if(resumeTemplate==='bd' && classDiv) gpaLine += ` (${esc(classDiv)})`;
+      if(classDiv) gpaLine += ` (${esc(classDiv)})`;
     }
     eduHtml+=`<div class="entry"><div class="top"><span>${esc(degree)}${gpaLine}</span><span>${esc(dates)}</span></div>
       <div class="sub">${esc(inst)}</div></div>`;
   });
 
   let bodyHtml=`<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
-  const summaryLabel = resumeTemplate==='bd' ? 'Career Objective' : 'Summary';
-  if(summary) bodyHtml+=`<div class="section-title">${summaryLabel}</div><p>${esc(summary)}</p>`;
-  if(resumeTemplate==='bd' && eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
+  if(summary) bodyHtml+=`<div class="section-title">Summary</div><p>${esc(summary)}</p>`;
   if(expHtml) bodyHtml+=`<div class="section-title">Experience</div>${expHtml}`;
-  if(resumeTemplate!=='bd' && eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
+  if(eduHtml) bodyHtml+=`<div class="section-title">Education</div>${eduHtml}`;
   if(skills) bodyHtml+=`<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
-
-  if(resumeTemplate==='bd'){
-    const languages=val('r-languages');
-    const references=val('r-references');
-    if(languages) bodyHtml+=`<div class="section-title">Languages</div><p>${esc(languages)}</p>`;
-    if(references) bodyHtml+=`<div class="section-title">References</div><p>${esc(references)}</p>`;
-    const signatureHtml = signatureDataUrl
-      ? `<div class="sig-block"><img class="signature-img" src="${signatureDataUrl}"><span>Signature</span></div>`
-      : `<span>Signature: ______________</span>`;
-    bodyHtml+=`<div class="declaration">I hereby declare that the information given above is true to the best of my knowledge and belief.</div>
-      <div class="signature-line"><span>Date: ______________</span>${signatureHtml}</div>`;
-  }
 
   const preview=document.getElementById('preview');
   preview.className='resume-preview tmpl-'+resumeTemplate;
@@ -1155,23 +1158,84 @@ function renderPreview(){
       : `<div class="intl-photo placeholder">Photo</div>`;
     preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="intl-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
   } else if(resumeTemplate==='bd'){
-    const dob=val('r-dob'), nat=val('r-nationality')||'Bangladeshi';
-    const father=val('r-father'), mother=val('r-mother'), marital=document.getElementById('r-marital').value, religion=val('r-religion'), nid=val('r-nid');
-    const presentAddr=val('r-present-addr'), permanentAddr=val('r-permanent-addr');
-    let personal='';
-    if(father) personal+=`<div><strong>Father:</strong> ${esc(father)}</div>`;
-    if(mother) personal+=`<div><strong>Mother:</strong> ${esc(mother)}</div>`;
-    if(dob) personal+=`<div><strong>DOB:</strong> ${esc(dob)}</div>`;
-    if(nat) personal+=`<div><strong>Nationality:</strong> ${esc(nat)}</div>`;
-    if(marital) personal+=`<div><strong>Marital status:</strong> ${esc(marital)}</div>`;
-    if(religion) personal+=`<div><strong>Religion:</strong> ${esc(religion)}</div>`;
-    if(nid) personal+=`<div><strong>NID:</strong> ${esc(nid)}</div>`;
-    if(presentAddr) personal+=`<div><strong>Present address:</strong> ${esc(presentAddr)}</div>`;
-    if(permanentAddr) personal+=`<div><strong>Permanent address:</strong> ${esc(permanentAddr)}</div>`;
+    const dob=val('r-dob'), nat=val('r-nationality')||'Bangladeshi (by birth)';
+    const father=val('r-father'), mother=val('r-mother'), marital=document.getElementById('r-marital').value;
+    const nid=val('r-nid'), presentAddr=val('r-present-addr'), permanentAddr=val('r-permanent-addr');
+    const linkedin=val('r-linkedin');
+    const contactLine=[loc,phone,email,linkedin].filter(Boolean).join(' · ');
+
     const photoHtml = photoDataUrl
-      ? `<img class="intl-photo" src="${photoDataUrl}">`
-      : `<div class="intl-photo placeholder">Photo</div>`;
-    preview.innerHTML = `<div class="intl-side">${photoHtml}<div class="bd-personal">${personal}</div></div><div class="intl-main">${bodyHtml}</div>`;
+      ? `<img src="${photoDataUrl}">`
+      : `Passport-size photo`;
+
+    let html = `<div class="bd-top">
+      <div><h3>${esc(name)}</h3><div class="bd-contact">${esc(contactLine)}</div></div>
+      <div class="bd-photo-box">${photoHtml}</div>
+    </div>`;
+
+    if(summary) html += `<div class="bd-sec-title">Career Objective</div><p style="font-size:.82rem;">${esc(summary)}</p>`;
+
+    let personalKvBd='';
+    if(father) personalKvBd += `<div class="bd-kv"><span class="k">Father's Name</span><span class="v">${esc(father)}</span></div>`;
+    if(mother) personalKvBd += `<div class="bd-kv"><span class="k">Mother's Name</span><span class="v">${esc(mother)}</span></div>`;
+    if(dob) personalKvBd += `<div class="bd-kv"><span class="k">Date of Birth</span><span class="v">${esc(dob)}</span></div>`;
+    personalKvBd += `<div class="bd-kv"><span class="k">Nationality</span><span class="v">${esc(nat)}</span></div>`;
+    if(marital) personalKvBd += `<div class="bd-kv"><span class="k">Marital Status</span><span class="v">${esc(marital)}</span></div>`;
+    if(nid) personalKvBd += `<div class="bd-kv"><span class="k">NID No.</span><span class="v">${esc(nid)}</span></div>`;
+    if(presentAddr) personalKvBd += `<div class="bd-kv"><span class="k">Present Address</span><span class="v">${esc(presentAddr)}</span></div>`;
+    if(permanentAddr) personalKvBd += `<div class="bd-kv"><span class="k">Permanent Address</span><span class="v">${esc(permanentAddr)}</span></div>`;
+    if(personalKvBd) html += `<div class="bd-sec-title">Personal Details</div>${personalKvBd}`;
+
+    let eduHtmlBd='';
+    document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+      const degree=b.querySelector('.edu-degree').value;
+      const inst=b.querySelector('.edu-inst').value;
+      const dates=b.querySelector('.edu-dates').value;
+      const gpa=b.querySelector('.edu-gpa').value;
+      const scale=b.querySelector('.edu-scale').value;
+      const classDiv=b.querySelector('.edu-class').value;
+      const group=b.querySelector('.edu-group').value;
+      const board=b.querySelector('.edu-board').value;
+      const note=b.querySelector('.edu-note').value;
+      if(!degree && !inst) return;
+      const label = scale==='4' ? 'CGPA' : 'GPA';
+      const gpaTxt = gpa ? ` (${label} ${esc(gpa)} out of ${parseFloat(scale||5).toFixed(2)})` : '';
+      const majorTxt = group ? ` — Major in ${esc(group)}` : '';
+      const instLine = board ? `${esc(inst)} — ${esc(board)} Board` : esc(inst);
+      const noteBits=[classDiv,note].filter(Boolean).map(esc);
+      eduHtmlBd += `<div class="bd-entry">
+        <div class="bd-entry-top"><span>${esc(degree)}${majorTxt}${gpaTxt}</span><span>${esc(dates)}</span></div>
+        <div class="bd-entry-sub">${instLine}</div>
+        ${noteBits.length?'<ul><li>'+noteBits.join(' · ')+'</li></ul>':''}
+      </div>`;
+    });
+    if(eduHtmlBd) html += `<div class="bd-sec-title">Educational Qualifications</div>${eduHtmlBd}`;
+
+    let expHtmlBd='';
+    document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+      const role=b.querySelector('.exp-role').value;
+      const company=b.querySelector('.exp-company').value;
+      const locv=b.querySelector('.exp-loc').value;
+      const dates=b.querySelector('.exp-dates').value;
+      const desc=b.querySelector('.exp-desc').value;
+      if(!role && !company) return;
+      const companyLine = locv ? `${esc(company)} — ${esc(locv)}` : esc(company);
+      const bullets = desc ? desc.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+      expHtmlBd += `<div class="bd-entry">
+        <div class="bd-entry-top"><span>${esc(role)}</span><span>${esc(dates)}</span></div>
+        <div class="bd-entry-sub">${companyLine}</div>
+        ${bullets.length?'<ul>'+bullets.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':''}
+      </div>`;
+    });
+    if(expHtmlBd) html += `<div class="bd-sec-title">Employment History</div>${expHtmlBd}`;
+
+    const training=val('r-training');
+    if(training){
+      const items=training.split('\n').map(s=>s.trim()).filter(Boolean);
+      html += `<div class="bd-sec-title">Training & Certifications</div><ul class="bd-plain-list">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+
+    preview.innerHTML = html;
   } else if(resumeTemplate==='bd2'){
     const email2=val('r-email'), phone2=val('r-phone'), presentAddr2=val('r-present-addr')||val('r-location');
     const dob2=val('r-dob'), religion2=val('r-religion'), nat2=val('r-nationality')||'Bangladeshi';
@@ -1408,7 +1472,8 @@ function collectData(){
       degree:b.querySelector('.edu-degree').value, inst:b.querySelector('.edu-inst').value,
       dates:b.querySelector('.edu-dates').value, gpa:b.querySelector('.edu-gpa').value,
       scale:b.querySelector('.edu-scale').value, classDiv:b.querySelector('.edu-class').value,
-      group:b.querySelector('.edu-group').value, board:b.querySelector('.edu-board').value
+      group:b.querySelector('.edu-group').value, board:b.querySelector('.edu-board').value,
+      note:b.querySelector('.edu-note').value
     });
   });
   const langs=[];
@@ -1466,6 +1531,7 @@ function collectData(){
     computingSoftware:val('r-computing-software'), strengths:val('r-strengths'), langs,
     passport:val('r-passport'), visaStatus:val('r-visa-status'), drivingLicense:document.getElementById('r-driving-license').value,
     researchInterests:val('r-research-interests'), awards:val('r-awards'), pubs, confs,
+    linkedin:val('r-linkedin'), training:val('r-training'),
     template:resumeTemplate, exp, edu,
     letter:{
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
@@ -1524,6 +1590,8 @@ function loadSavedData(){
   if(d.drivingLicense) document.getElementById('r-driving-license').value=d.drivingLicense;
   document.getElementById('r-research-interests').value=d.researchInterests||'';
   document.getElementById('r-awards').value=d.awards||'';
+  document.getElementById('r-linkedin').value=d.linkedin||'';
+  document.getElementById('r-training').value=d.training||'';
 
   document.getElementById('exp-list').innerHTML='';
   document.getElementById('edu-list').innerHTML='';
@@ -1553,6 +1621,7 @@ function loadSavedData(){
     block.querySelector('.edu-class').value=item.classDiv||'';
     block.querySelector('.edu-group').value=item.group||'';
     block.querySelector('.edu-board').value=item.board||'';
+    block.querySelector('.edu-note').value=item.note||'';
   });
 
   document.getElementById('lang-list').innerHTML='';
