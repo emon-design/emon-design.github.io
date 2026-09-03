@@ -302,13 +302,43 @@
   .resume-preview.tmpl-europass .ep-row .ep-label{width:150px;flex-shrink:0;font-weight:600;color:#333;}
   .resume-preview.tmpl-europass .intl-photo{width:80px;height:100px;border-radius:2px;}
 
-  /* Gulf / Middle East */
-  .resume-preview.tmpl-gulf{display:flex;gap:20px;font-family:'IBM Plex Sans',sans-serif;}
-  .resume-preview.tmpl-gulf .intl-side{width:120px;flex-shrink:0;}
-  .resume-preview.tmpl-gulf .intl-main{flex:1;min-width:0;}
-  .resume-preview.tmpl-gulf h3{text-align:left;}
-  .resume-preview.tmpl-gulf .gulf-personal{font-size:.74rem;color:#333;line-height:1.7;}
-  .resume-preview.tmpl-gulf .gulf-personal div{border-bottom:1px dotted var(--line);padding-bottom:2px;margin-bottom:3px;}
+  /* Gulf / Middle East (navy header, skill bars) */
+  .resume-preview.tmpl-gulf{font-family:'IBM Plex Sans',sans-serif;padding:0;}
+  .resume-preview.tmpl-gulf .gulf-header{background:#22405C;color:#fff;padding:22px 26px;display:flex;justify-content:space-between;align-items:flex-start;}
+  .resume-preview.tmpl-gulf .gulf-header h3{color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:1.5rem;margin:0 0 2px 0;}
+  .resume-preview.tmpl-gulf .gulf-title{color:#B9C6D4;font-size:.85rem;margin-bottom:12px;}
+  .resume-preview.tmpl-gulf .gulf-contact-row{display:flex;gap:24px;flex-wrap:wrap;font-size:.75rem;color:#DCE4EC;}
+  .resume-preview.tmpl-gulf .gulf-contact-row div{margin-bottom:3px;}
+  .resume-preview.tmpl-gulf .gulf-photo{
+    width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #fff;flex-shrink:0;
+  }
+  .resume-preview.tmpl-gulf .gulf-photo.placeholder{
+    display:flex;align-items:center;justify-content:center;background:#3C5A78;color:#DCE4EC;font-size:.6rem;text-align:center;
+  }
+  .resume-preview.tmpl-gulf .gulf-body{padding:20px 26px;}
+  .resume-preview.tmpl-gulf .gulf-sec-title{
+    font-weight:700;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;
+    border-bottom:1px solid #999;padding-bottom:4px;margin:18px 0 10px 0;color:#111;
+  }
+  .resume-preview.tmpl-gulf .gulf-edu-entry{display:flex;gap:14px;font-size:.8rem;margin-bottom:10px;}
+  .resume-preview.tmpl-gulf .gulf-edu-entry .gulf-edu-dates{font-weight:700;white-space:nowrap;flex-shrink:0;width:120px;}
+  .resume-preview.tmpl-gulf .gulf-edu-entry .gulf-edu-inst{font-weight:700;color:#111;}
+  .resume-preview.tmpl-gulf .gulf-edu-entry .gulf-edu-degree{color:#555;}
+  .resume-preview.tmpl-gulf ul.gulf-check-list{list-style:none;margin:0;padding:0;font-size:.8rem;}
+  .resume-preview.tmpl-gulf ul.gulf-check-list li{margin-bottom:4px;padding-left:20px;position:relative;}
+  .resume-preview.tmpl-gulf ul.gulf-check-list li::before{content:"✓";position:absolute;left:0;color:#2E9E4F;font-weight:700;}
+  .resume-preview.tmpl-gulf ul.gulf-square-list{list-style:none;margin:0;padding:0;font-size:.8rem;}
+  .resume-preview.tmpl-gulf ul.gulf-square-list li{margin-bottom:4px;padding-left:16px;position:relative;}
+  .resume-preview.tmpl-gulf ul.gulf-square-list li::before{content:"▪";position:absolute;left:0;color:#22405C;}
+  .resume-preview.tmpl-gulf .gulf-bar-row{display:flex;align-items:center;gap:10px;font-size:.78rem;margin-bottom:6px;}
+  .resume-preview.tmpl-gulf .gulf-bar-row .lbl{width:150px;flex-shrink:0;}
+  .resume-preview.tmpl-gulf .gulf-bar-segs{display:flex;gap:3px;}
+  .resume-preview.tmpl-gulf .gulf-bar-segs span{width:14px;height:8px;background:#DDD;border-radius:1px;}
+  .resume-preview.tmpl-gulf .gulf-bar-segs span.filled{background:#22405C;}
+  .resume-preview.tmpl-gulf .gulf-dot-segs{display:flex;gap:4px;}
+  .resume-preview.tmpl-gulf .gulf-dot-segs span{width:9px;height:9px;border-radius:50%;background:#DDD;}
+  .resume-preview.tmpl-gulf .gulf-dot-segs span.filled{background:#22405C;}
+  .resume-preview.tmpl-gulf .gulf-hobbies-row{display:flex;gap:24px;flex-wrap:wrap;}
 
   /* Academic */
   .resume-preview.tmpl-academic{font-family:'IBM Plex Sans',sans-serif;}
@@ -415,6 +445,8 @@
             <p class="desc">Fill this in — the preview updates as you type.</p>
             <label>Full name</label>
             <input type="text" id="r-name" placeholder="Jordan Rivera">
+            <label>Professional Title <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. "Networks Engineer", used by the Gulf template)</span></label>
+            <input type="text" id="r-title" placeholder="Networks Engineer">
             <div class="row2">
               <div><label>Email</label><input type="text" id="r-email" placeholder="jordan@email.com"></div>
               <div><label>Phone</label><input type="text" id="r-phone" placeholder="+1 555 010 2020"></div>
@@ -470,8 +502,14 @@
                 <input type="text" id="r-languages" placeholder="Bangla (Native), English (Fluent)">
                 <label>References</label>
                 <textarea id="r-references" placeholder="Will be provided upon request, or list a referee's name, position, and contact."></textarea>
-                <label>Training & Certifications <span style="font-weight:400;color:var(--ink-soft);">(one per line, used by Bangladesh Standard)</span></label>
-                <textarea id="r-training" placeholder="Certificate in Professional Selling — Bangladesh Institute of Management (BIM), 2023"></textarea>
+              </div>
+            </details>
+
+            <details style="margin-top:10px;" id="training-section">
+              <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Training & Certifications (optional — used by Bangladesh Standard and Gulf templates)</summary>
+              <div style="margin-top:12px;">
+                <label>Training & Certifications <span style="font-weight:400;color:var(--ink-soft);">(one per line)</span></label>
+                <textarea id="r-training" placeholder="Project Management Professional (PMP) - 2019"></textarea>
               </div>
             </details>
 
@@ -487,6 +525,14 @@
                   <option value="No">No</option>
                   <option value="Yes">Yes</option>
                 </select>
+                <label style="margin-top:14px;">Hobbies <span style="font-weight:400;color:var(--ink-soft);">(comma-separated)</span></label>
+                <input type="text" id="r-hobbies" placeholder="Hunting, Sport, Reading">
+                <label style="margin-top:14px;">Software Skills</label>
+                <div id="sw-skill-list"></div>
+                <button class="btn ghost small" onclick="addSwSkillRow()">+ Add software skill</button>
+                <label style="margin-top:14px;">Language Proficiency</label>
+                <div id="gulf-lang-list"></div>
+                <button class="btn ghost small" onclick="addGulfLangRow()">+ Add language</button>
               </div>
             </details>
           </div>
@@ -1030,6 +1076,42 @@ function addConfRow(){
   `;
   document.getElementById('conf-list').appendChild(div);
 }
+
+// ---- Gulf template: rated skills/languages ----
+let swSkillCount=0, gulfLangCount=0;
+function levelSelectOptions(){
+  return '<option value="6">6/6</option><option value="5">5/6</option><option value="4">4/6</option><option value="3">3/6</option><option value="2">2/6</option><option value="1">1/6</option>';
+}
+function addSwSkillRow(){
+  swSkillCount++;
+  const id='swskill'+swSkillCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <div class="row2">
+      <div><label>Skill</label><input type="text" class="sw-name" oninput="renderPreview()" placeholder="Microsoft Word"></div>
+      <div><label>Level</label><select class="sw-level" onchange="renderPreview()">${levelSelectOptions()}</select></div>
+    </div>
+  `;
+  document.getElementById('sw-skill-list').appendChild(div);
+}
+function addGulfLangRow(){
+  gulfLangCount++;
+  const id='gulflang'+gulfLangCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderPreview();">remove</button>
+    <div class="row2">
+      <div><label>Language</label><input type="text" class="glang-name" oninput="renderPreview()" placeholder="English"></div>
+      <div><label>Level</label><select class="glang-level" onchange="renderPreview()">${levelSelectOptions()}</select></div>
+    </div>
+  `;
+  document.getElementById('gulf-lang-list').appendChild(div);
+}
 function onEduScaleChange(sel){
   const block=sel.closest('.repeat-block');
   const gpaInput=block.querySelector('.edu-gpa');
@@ -1052,7 +1134,7 @@ function onEduGpaInput(inp){
   renderPreview();
 }
 function renderAll(){ renderPreview(); renderJapan(); }
-['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths','r-passport','r-visa-status','r-research-interests','r-awards','r-linkedin','r-training'].forEach(id=>{
+['r-name','r-email','r-phone','r-location','r-summary','r-skills','r-dob','r-nationality','r-father','r-mother','r-marital','r-religion','r-nid','r-languages','r-references','r-present-addr','r-permanent-addr','r-gender','r-computing-os','r-computing-software','r-strengths','r-passport','r-visa-status','r-research-interests','r-awards','r-linkedin','r-training','r-title','r-hobbies'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderAll);
 });
 document.getElementById('r-driving-license').addEventListener('change', renderAll);
@@ -1087,10 +1169,11 @@ function setTemplate(t){
 }
 function updateFieldVisibility(){
   const relevantMap = {
-    'bd-fields-section': ['bd','bd2','gulf'],
+    'bd-fields-section': ['bd','bd2'],
     'gulf-fields-section': ['gulf'],
     'academic-fields-section': ['academic'],
-    'langskills-section': ['bd2','europass']
+    'langskills-section': ['bd2','europass'],
+    'training-section': ['bd','gulf']
   };
   const japanPanel=document.getElementById('japan');
   const japanTabActive = japanPanel && japanPanel.classList.contains('active');
@@ -1389,26 +1472,83 @@ function renderPreview(){
     preview.innerHTML = htmlEp;
   } else if(resumeTemplate==='gulf'){
     const dobG=val('r-dob'), natG=val('r-nationality');
-    const maritalG=document.getElementById('r-marital').value;
-    const passportG=val('r-passport'), visaG=val('r-visa-status'), drivingG=document.getElementById('r-driving-license').value;
-    const langsG=val('r-languages');
-    const referencesG=val('r-references');
-    let personalG='';
-    if(dobG) personalG += `<div><strong>DOB:</strong> ${esc(dobG)}</div>`;
-    if(natG) personalG += `<div><strong>Nationality:</strong> ${esc(natG)}</div>`;
-    if(maritalG) personalG += `<div><strong>Marital status:</strong> ${esc(maritalG)}</div>`;
-    if(passportG) personalG += `<div><strong>Passport No:</strong> ${esc(passportG)}</div>`;
-    if(visaG) personalG += `<div><strong>Visa status:</strong> ${esc(visaG)}</div>`;
-    personalG += `<div><strong>Driving license:</strong> ${esc(drivingG)}</div>`;
-    const photoHtmlG = photoDataUrl ? `<img class="intl-photo" src="${photoDataUrl}">` : `<div class="intl-photo placeholder">Photo</div>`;
-    let mainG = `<h3>${esc(name)}</h3><div class="contact">${esc(contact)}</div>`;
-    if(summary) mainG += `<div class="section-title">Objective</div><p>${esc(summary)}</p>`;
-    if(expHtml) mainG += `<div class="section-title">Experience</div>${expHtml}`;
-    if(eduHtml) mainG += `<div class="section-title">Education</div>${eduHtml}`;
-    if(skills) mainG += `<div class="section-title">Skills</div><div class="skills-list">${esc(skills)}</div>`;
-    if(langsG) mainG += `<div class="section-title">Languages</div><p>${esc(langsG)}</p>`;
-    if(referencesG) mainG += `<div class="section-title">References</div><p>${esc(referencesG)}</p>`;
-    preview.innerHTML = `<div class="intl-side">${photoHtmlG}<div class="gulf-personal">${personalG}</div></div><div class="intl-main">${mainG}</div>`;
+    const titleG=val('r-title'), passportG=val('r-passport'), drivingG=document.getElementById('r-driving-license').value;
+    const photoHtmlG = photoDataUrl ? `<img class="gulf-photo" src="${photoDataUrl}">` : `<div class="gulf-photo placeholder">Photo</div>`;
+
+    let html = `<div class="gulf-header">
+      <div>
+        <h3>${esc(name)}</h3>
+        ${titleG?`<div class="gulf-title">${esc(titleG)}</div>`:''}
+        <div class="gulf-contact-row">
+          <div>${natG?esc(natG):''}</div>
+          <div>${phone?esc(phone):''}</div>
+          <div>${loc?esc(loc):''}</div>
+          <div>${email?esc(email):''}</div>
+          ${dobG?`<div>${esc(dobG)}</div>`:''}
+          ${passportG?`<div>Passport: ${esc(passportG)}</div>`:''}
+          <div>Driving license: ${esc(drivingG)}</div>
+        </div>
+      </div>
+      ${photoHtmlG}
+    </div><div class="gulf-body">`;
+
+    if(summary) html += `<div class="gulf-sec-title">Profile</div><p style="font-size:.82rem;">${esc(summary)}</p>`;
+
+    let eduHtmlG='';
+    document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+      const degree=b.querySelector('.edu-degree').value;
+      const inst=b.querySelector('.edu-inst').value;
+      const dates=b.querySelector('.edu-dates').value;
+      if(!degree && !inst) return;
+      eduHtmlG += `<div class="gulf-edu-entry">
+        <div class="gulf-edu-dates">${esc(dates)}</div>
+        <div><div class="gulf-edu-inst">${esc(inst)}</div><div class="gulf-edu-degree">${esc(degree)}</div></div>
+      </div>`;
+    });
+    if(eduHtmlG) html += `<div class="gulf-sec-title">Education</div>${eduHtmlG}`;
+
+    const strengthsG=val('r-strengths');
+    if(strengthsG){
+      const items=strengthsG.split('\n').map(s=>s.trim()).filter(Boolean);
+      html += `<div class="gulf-sec-title">Personal Skills</div><ul class="gulf-check-list">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+
+    let swRows='';
+    document.querySelectorAll('#sw-skill-list .repeat-block').forEach(b=>{
+      const swName=b.querySelector('.sw-name').value;
+      if(!swName) return;
+      const lvl=parseInt(b.querySelector('.sw-level').value)||0;
+      let segs='';
+      for(let i=1;i<=6;i++) segs += `<span class="${i<=lvl?'filled':''}"></span>`;
+      swRows += `<div class="gulf-bar-row"><span class="lbl">${esc(swName)}</span><div class="gulf-bar-segs">${segs}</div></div>`;
+    });
+    if(swRows) html += `<div class="gulf-sec-title">Software Skills</div>${swRows}`;
+
+    let glangRows='';
+    document.querySelectorAll('#gulf-lang-list .repeat-block').forEach(b=>{
+      const lname=b.querySelector('.glang-name').value;
+      if(!lname) return;
+      const lvl=parseInt(b.querySelector('.glang-level').value)||0;
+      let dots='';
+      for(let i=1;i<=6;i++) dots += `<span class="${i<=lvl?'filled':''}"></span>`;
+      glangRows += `<div class="gulf-bar-row"><span class="lbl">${esc(lname)}</span><div class="gulf-dot-segs">${dots}</div></div>`;
+    });
+    if(glangRows) html += `<div class="gulf-sec-title">Languages</div>${glangRows}`;
+
+    const hobbiesG=val('r-hobbies');
+    if(hobbiesG){
+      const items=hobbiesG.split(',').map(s=>s.trim()).filter(Boolean);
+      html += `<div class="gulf-sec-title">Hobbies</div><div class="gulf-hobbies-row">${items.map(i=>`<span>✓ ${esc(i)}</span>`).join('')}</div>`;
+    }
+
+    const trainingG=val('r-training');
+    if(trainingG){
+      const items=trainingG.split('\n').map(s=>s.trim()).filter(Boolean);
+      html += `<div class="gulf-sec-title">Training Courses</div><ul class="gulf-square-list">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+
+    html += `</div>`;
+    preview.innerHTML = html;
   } else if(resumeTemplate==='academic'){
     const researchInterests=val('r-research-interests');
     const awardsRaw=val('r-awards');
@@ -1497,6 +1637,14 @@ function collectData(){
       year:b.querySelector('.conf-year').value
     });
   });
+  const swSkills=[];
+  document.querySelectorAll('#sw-skill-list .repeat-block').forEach(b=>{
+    swSkills.push({ name:b.querySelector('.sw-name').value, level:b.querySelector('.sw-level').value });
+  });
+  const gulfLangs=[];
+  document.querySelectorAll('#gulf-lang-list .repeat-block').forEach(b=>{
+    gulfLangs.push({ name:b.querySelector('.glang-name').value, level:b.querySelector('.glang-level').value });
+  });
   const jpEdu=[];
   document.querySelectorAll('#jp-edu-list .repeat-block').forEach(b=>{
     jpEdu.push({
@@ -1532,6 +1680,7 @@ function collectData(){
     passport:val('r-passport'), visaStatus:val('r-visa-status'), drivingLicense:document.getElementById('r-driving-license').value,
     researchInterests:val('r-research-interests'), awards:val('r-awards'), pubs, confs,
     linkedin:val('r-linkedin'), training:val('r-training'),
+    title:val('r-title'), hobbies:val('r-hobbies'), swSkills, gulfLangs,
     template:resumeTemplate, exp, edu,
     letter:{
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
@@ -1592,6 +1741,8 @@ function loadSavedData(){
   document.getElementById('r-awards').value=d.awards||'';
   document.getElementById('r-linkedin').value=d.linkedin||'';
   document.getElementById('r-training').value=d.training||'';
+  document.getElementById('r-title').value=d.title||'';
+  document.getElementById('r-hobbies').value=d.hobbies||'';
 
   document.getElementById('exp-list').innerHTML='';
   document.getElementById('edu-list').innerHTML='';
@@ -1658,6 +1809,28 @@ function loadSavedData(){
       block.querySelector('.conf-title').value=item.title||'';
       block.querySelector('.conf-venue').value=item.venue||'';
       block.querySelector('.conf-year').value=item.year||'';
+    });
+  }
+
+  document.getElementById('sw-skill-list').innerHTML='';
+  swSkillCount=0;
+  if(d.swSkills && d.swSkills.length){
+    d.swSkills.forEach(item=>{
+      addSwSkillRow();
+      const block=document.getElementById('sw-skill-list').lastElementChild;
+      block.querySelector('.sw-name').value=item.name||'';
+      if(item.level) block.querySelector('.sw-level').value=item.level;
+    });
+  }
+
+  document.getElementById('gulf-lang-list').innerHTML='';
+  gulfLangCount=0;
+  if(d.gulfLangs && d.gulfLangs.length){
+    d.gulfLangs.forEach(item=>{
+      addGulfLangRow();
+      const block=document.getElementById('gulf-lang-list').lastElementChild;
+      block.querySelector('.glang-name').value=item.name||'';
+      if(item.level) block.querySelector('.glang-level').value=item.level;
     });
   }
 
