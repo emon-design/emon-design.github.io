@@ -421,7 +421,7 @@
               <div><label>Date of birth <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-dob" placeholder="04 Jan 1998"></div>
               <div><label>Nationality <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-nationality" placeholder="Bangladeshi"></div>
             </div>
-            <details style="margin-top:16px;">
+            <details style="margin-top:16px;" id="bd-fields-section">
               <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Bangladesh-standard fields (optional — used by the Bangladesh Standard template)</summary>
               <div style="margin-top:12px;">
                 <div class="row2">
@@ -460,7 +460,7 @@
               </div>
             </details>
 
-            <details style="margin-top:10px;">
+            <details style="margin-top:10px;" id="gulf-fields-section">
               <summary style="cursor:pointer;font-size:.85rem;font-weight:500;color:var(--ink-soft);">Gulf/Middle East fields (optional — used by the Gulf template)</summary>
               <div style="margin-top:12px;">
                 <div class="row2">
@@ -476,7 +476,7 @@
             </details>
           </div>
 
-          <div class="card">
+          <div class="card" id="academic-fields-section">
             <h2>Academic Fields <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(optional — used by the Academic template)</span></h2>
             <label>Research interests</label>
             <textarea id="r-research-interests" placeholder="Machine learning, computational biology, ..."></textarea>
@@ -507,8 +507,8 @@
             <input type="text" id="r-skills" placeholder="Python, SQL, Project Management">
           </div>
 
-          <div class="card">
-            <h2>Language Proficiency, Computing & Strengths <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(optional — used by Bangladesh Classic template)</span></h2>
+          <div class="card" id="langskills-section">
+            <h2>Language Proficiency, Computing & Strengths <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">(optional — used by Bangladesh Classic and Europass templates)</span></h2>
             <p class="desc">Rate each language you speak.</p>
             <div id="lang-list"></div>
             <button class="btn ghost small" onclick="addLangRow()">+ Add language</button>
@@ -830,6 +830,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.panel).classList.add('active');
+    if(typeof updateFieldVisibility==='function') updateFieldVisibility();
   });
 });
 
@@ -1064,7 +1065,24 @@ let resumeTemplate='classic';
 function setTemplate(t){
   resumeTemplate=t;
   document.querySelectorAll('.tmpl-btn').forEach(b=>b.classList.toggle('active', b.dataset.tmpl===t));
+  updateFieldVisibility();
   renderPreview();
+}
+function updateFieldVisibility(){
+  const relevantMap = {
+    'bd-fields-section': ['bd','bd2','gulf'],
+    'gulf-fields-section': ['gulf'],
+    'academic-fields-section': ['academic'],
+    'langskills-section': ['bd2','europass']
+  };
+  const japanPanel=document.getElementById('japan');
+  const japanTabActive = japanPanel && japanPanel.classList.contains('active');
+  Object.keys(relevantMap).forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const shouldShow = relevantMap[id].includes(resumeTemplate) || (id==='bd-fields-section' && japanTabActive);
+    el.style.display = shouldShow ? '' : 'none';
+  });
 }
 function renderPreview(){
   const name=val('r-name')||'Your Name';
@@ -1818,6 +1836,7 @@ if(!loadSavedData()){
   addExp(); addEdu();
   addJpEdu(); addJpWork(); addJpFamily();
 }
+updateFieldVisibility();
 renderPreview();
 renderLetter();
 renderJapan();
