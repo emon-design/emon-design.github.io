@@ -507,13 +507,15 @@
             <label>Summary</label>
             <textarea id="r-summary" placeholder="One or two sentences on who you are and what you're looking for."></textarea>
             <button class="btn ghost small" style="margin-top:8px;" onclick="autoDraftSummary()">✨ Auto-draft summary from your details</button>
-            <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by the International, Bangladesh Standard, and Japan templates)</span></label>
-            <input type="file" id="r-photo" accept="image/*">
+            <div id="photo-section">
+              <label>Photo <span style="font-weight:400;color:var(--ink-soft);">(optional — used by templates with a photo slot)</span></label>
+              <input type="file" id="r-photo" accept="image/*">
+            </div>
             <div id="signature-section">
               <label>Signature <span style="font-weight:400;color:var(--ink-soft);">(optional — a photo of your signature, used by the Bangladesh declaration)</span></label>
               <input type="file" id="r-signature" accept="image/*">
             </div>
-            <div class="row2">
+            <div class="row2" id="dob-nat-section">
               <div><label>Date of birth <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-dob" placeholder="04 Jan 1998"></div>
               <div><label>Nationality <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" id="r-nationality" placeholder="Bangladeshi"></div>
             </div>
@@ -992,18 +994,23 @@ function addEdu(){
       </div>
       <div><label>Result</label><input type="number" class="edu-gpa" min="0" max="5" step="0.01" placeholder="e.g. 4.83" oninput="onEduGpaInput(this)"></div>
     </div>
-    <label>Class/Division <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. "1st Class", used by Bangladesh templates)</span></label>
-    <input type="text" class="edu-class" oninput="renderPreview()" placeholder="1st Class">
-    <div class="row2">
-      <div><label>Group/Major <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-group" oninput="renderPreview()" placeholder="Science"></div>
-      <div><label>Board <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-board" oninput="renderPreview()" placeholder="Dhaka"></div>
+    <div class="edu-extra-fields">
+      <label>Class/Division <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. "1st Class", used by Bangladesh templates)</span></label>
+      <input type="text" class="edu-class" oninput="renderPreview()" placeholder="1st Class">
+      <div class="row2">
+        <div><label>Group/Major <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-group" oninput="renderPreview()" placeholder="Science"></div>
+        <div><label>Board <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label><input type="text" class="edu-board" oninput="renderPreview()" placeholder="Dhaka"></div>
+      </div>
+      <label>Achievement/Note <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. thesis title, honors, merit list)</span></label>
+      <input type="text" class="edu-note" oninput="renderPreview()" placeholder="Thesis on rural distribution reach for packaged foods">
     </div>
-    <label>Achievement/Note <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. thesis title, honors, merit list)</span></label>
-    <input type="text" class="edu-note" oninput="renderPreview()" placeholder="Thesis on rural distribution reach for packaged foods">
-    <label>Institution Location <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. city/state)</span></label>
-    <input type="text" class="edu-loc" oninput="renderPreview()" placeholder="Sydney, NSW">
+    <div class="edu-loc-field">
+      <label>Institution Location <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. city/state)</span></label>
+      <input type="text" class="edu-loc" oninput="renderPreview()" placeholder="Sydney, NSW">
+    </div>
   `;
   document.getElementById('edu-list').appendChild(div);
+  updateFieldVisibility();
 }
 
 // ---- Japan format repeatable rows ----
@@ -1228,16 +1235,23 @@ function updateFieldVisibility(){
     'academic-fields-section': ['academic'],
     'langskills-section': ['bd2','europass'],
     'training-section': ['bd','gulf','compact'],
-    'signature-section': ['bd','bd2']
+    'signature-section': ['bd','bd2'],
+    'photo-section': ['intl','bd','bd2','gulf','sidebar','europass'],
+    'dob-nat-section': ['bd','bd2','gulf','europass']
   };
   const japanPanel=document.getElementById('japan');
   const japanTabActive = japanPanel && japanPanel.classList.contains('active');
+  const japanDependent = ['bd-fields-section','photo-section','dob-nat-section'];
   Object.keys(relevantMap).forEach(id=>{
     const el=document.getElementById(id);
     if(!el) return;
-    const shouldShow = relevantMap[id].includes(resumeTemplate) || (id==='bd-fields-section' && japanTabActive);
+    const shouldShow = relevantMap[id].includes(resumeTemplate) || (japanDependent.includes(id) && japanTabActive);
     el.style.display = shouldShow ? '' : 'none';
   });
+  const eduExtraShow = ['bd','bd2'].includes(resumeTemplate);
+  document.querySelectorAll('.edu-extra-fields').forEach(el=>{ el.style.display = eduExtraShow ? '' : 'none'; });
+  const eduLocShow = resumeTemplate==='compact';
+  document.querySelectorAll('.edu-loc-field').forEach(el=>{ el.style.display = eduLocShow ? '' : 'none'; });
 }
 function renderPreview(){
   const name=val('r-name')||'Your Name';
