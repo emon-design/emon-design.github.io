@@ -180,14 +180,25 @@
     color:#fff;background:var(--ink);border-bottom:none;
     padding:3px 8px;display:inline-block;border-radius:2px;
   }
-  /* Compact / ATS-friendly */
-  .resume-preview.tmpl-compact{font-family:Georgia,'Times New Roman',serif;}
-  .resume-preview.tmpl-compact h3{font-family:inherit;font-weight:700;text-transform:none;letter-spacing:0;}
-  .resume-preview.tmpl-compact .section-title{
-    color:#111;border-bottom:1px solid #111;text-transform:uppercase;
-    font-size:.7rem;letter-spacing:.08em;
+  /* Compact / ATS-friendly (centered header, plain black text) */
+  .resume-preview.tmpl-compact{font-family:'IBM Plex Sans',Arial,sans-serif;color:#000;}
+  .resume-preview.tmpl-compact h3{
+    font-family:inherit;font-weight:700;text-align:center;font-size:1.6rem;
+    letter-spacing:.02em;margin-bottom:6px;
   }
-  .resume-preview.tmpl-compact .entry{margin-bottom:6px;}
+  .resume-preview.tmpl-compact .cp-subtitle{text-align:center;font-weight:700;font-size:.85rem;margin-bottom:6px;}
+  .resume-preview.tmpl-compact .cp-contact{text-align:center;font-size:.8rem;margin-bottom:16px;}
+  .resume-preview.tmpl-compact .cp-sec-title{
+    font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.02em;
+    border-bottom:1.5px solid #000;padding-bottom:3px;margin:16px 0 8px 0;
+  }
+  .resume-preview.tmpl-compact .cp-entry{margin-bottom:10px;font-size:.82rem;}
+  .resume-preview.tmpl-compact .cp-role{font-weight:700;}
+  .resume-preview.tmpl-compact .cp-org-row{display:flex;justify-content:space-between;font-weight:700;margin-bottom:3px;}
+  .resume-preview.tmpl-compact .cp-entry ul{margin:4px 0 0 0;padding-left:18px;}
+  .resume-preview.tmpl-compact .cp-entry ul li{margin-bottom:2px;}
+  .resume-preview.tmpl-compact ul.cp-plain-list{margin:0;padding-left:18px;font-size:.82rem;}
+  .resume-preview.tmpl-compact ul.cp-plain-list li{margin-bottom:4px;}
   /* International (dark sidebar + main content) */
   .resume-preview.tmpl-intl{display:flex;padding:0;}
   .resume-preview .intl-photo{
@@ -989,6 +1000,8 @@ function addEdu(){
     </div>
     <label>Achievement/Note <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. thesis title, honors, merit list)</span></label>
     <input type="text" class="edu-note" oninput="renderPreview()" placeholder="Thesis on rural distribution reach for packaged foods">
+    <label>Institution Location <span style="font-weight:400;color:var(--ink-soft);">(optional — e.g. city/state)</span></label>
+    <input type="text" class="edu-loc" oninput="renderPreview()" placeholder="Sydney, NSW">
   `;
   document.getElementById('edu-list').appendChild(div);
 }
@@ -1214,7 +1227,7 @@ function updateFieldVisibility(){
     'skills-langs-hobbies-section': ['gulf','intl'],
     'academic-fields-section': ['academic'],
     'langskills-section': ['bd2','europass'],
-    'training-section': ['bd','gulf'],
+    'training-section': ['bd','gulf','compact'],
     'signature-section': ['bd','bd2']
   };
   const japanPanel=document.getElementById('japan');
@@ -1698,6 +1711,64 @@ function renderPreview(){
     const referencesAc=val('r-references');
     if(referencesAc) htmlAc += `<div class="section-title">References</div><p>${esc(referencesAc)}</p>`;
     preview.innerHTML = htmlAc;
+  } else if(resumeTemplate==='compact'){
+    const linkedinC=val('r-linkedin');
+    const titleC=val('r-title');
+    const contactC=[loc,email,phone,linkedinC].filter(Boolean).join(' | ');
+
+    let html = `<h3>${esc(name)}</h3>`;
+    if(titleC) html += `<div class="cp-subtitle">${esc(titleC)}</div>`;
+    if(contactC) html += `<div class="cp-contact">${esc(contactC)}</div>`;
+
+    if(summary) html += `<div class="cp-sec-title">Professional Summary</div><p style="font-size:.82rem;">${esc(summary)}</p>`;
+
+    let expHtmlC='';
+    document.querySelectorAll('#exp-list .repeat-block').forEach(b=>{
+      const role=b.querySelector('.exp-role').value;
+      const company=b.querySelector('.exp-company').value;
+      const locv=b.querySelector('.exp-loc').value;
+      const dates=b.querySelector('.exp-dates').value;
+      const desc=b.querySelector('.exp-desc').value;
+      if(!role && !company) return;
+      const orgLine = locv ? `${esc(company)}, ${esc(locv)}` : esc(company);
+      const bullets = desc ? desc.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+      expHtmlC += `<div class="cp-entry">
+        <div class="cp-role">${esc(role)}</div>
+        <div class="cp-org-row"><span>${orgLine}</span><span>${esc(dates)}</span></div>
+        ${bullets.length?'<ul>'+bullets.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':''}
+      </div>`;
+    });
+    if(expHtmlC) html += `<div class="cp-sec-title">Work Experience</div>${expHtmlC}`;
+
+    let eduHtmlC='';
+    document.querySelectorAll('#edu-list .repeat-block').forEach(b=>{
+      const degree=b.querySelector('.edu-degree').value;
+      const inst=b.querySelector('.edu-inst').value;
+      const locv=b.querySelector('.edu-loc').value;
+      const dates=b.querySelector('.edu-dates').value;
+      if(!degree && !inst) return;
+      const orgLine = locv ? `${esc(inst)}, ${esc(locv)}` : esc(inst);
+      eduHtmlC += `<div class="cp-entry">
+        <div class="cp-role">${esc(degree)}</div>
+        <div class="cp-org-row"><span>${orgLine}</span><span>${dates?'Graduated: '+esc(dates):''}</span></div>
+      </div>`;
+    });
+    if(eduHtmlC) html += `<div class="cp-sec-title">Education</div>${eduHtmlC}`;
+
+    if(skills){
+      const items=skills.split(',').map(s=>s.trim()).filter(Boolean);
+      const groups=[];
+      for(let i=0;i<items.length;i+=4) groups.push(items.slice(i,i+4).join(', '));
+      html += `<div class="cp-sec-title">Skills</div><ul class="cp-plain-list">${groups.map(g=>`<li>${esc(g)}</li>`).join('')}</ul>`;
+    }
+
+    const certsC=val('r-training');
+    if(certsC){
+      const items=certsC.split('\n').map(s=>s.trim()).filter(Boolean);
+      html += `<div class="cp-sec-title">Certifications</div><ul class="cp-plain-list">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`;
+    }
+
+    preview.innerHTML = html;
   } else {
     preview.innerHTML = bodyHtml;
   }
@@ -1732,7 +1803,7 @@ function collectData(){
       dates:b.querySelector('.edu-dates').value, gpa:b.querySelector('.edu-gpa').value,
       scale:b.querySelector('.edu-scale').value, classDiv:b.querySelector('.edu-class').value,
       group:b.querySelector('.edu-group').value, board:b.querySelector('.edu-board').value,
-      note:b.querySelector('.edu-note').value
+      note:b.querySelector('.edu-note').value, loc:b.querySelector('.edu-loc').value
     });
   });
   const langs=[];
@@ -1892,6 +1963,7 @@ function loadSavedData(){
     block.querySelector('.edu-group').value=item.group||'';
     block.querySelector('.edu-board').value=item.board||'';
     block.querySelector('.edu-note').value=item.note||'';
+    block.querySelector('.edu-loc').value=item.loc||'';
   });
 
   document.getElementById('lang-list').innerHTML='';
