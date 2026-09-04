@@ -671,22 +671,31 @@
         <div>
           <div class="card">
             <h2>Basic Information <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">基本情報</span></h2>
-            <p class="desc">Name, DOB, religion, marital status, permanent address, and photo are shared with the Resume Builder tab — fill them there once.</p>
-            <label>Furigana <span style="font-weight:400;color:var(--ink-soft);">フリガナ (katakana reading of your name)</span></label>
+            <label>フルネーム / Full Name</label>
+            <input type="text" id="jp-fullname" placeholder="MD EMON AHMED">
+            <label>フリガナ / Furigana <span style="font-weight:400;color:var(--ink-soft);">(katakana reading of your name)</span></label>
             <input type="text" id="jp-furigana" placeholder="モハンマド エモン アハメド">
-            <label>Age</label>
+            <label>婚姻 / Marriage</label>
+            <select id="jp-marriage"><option value="Unmarried">未婚 / Unmarried</option><option value="Married">既婚 / Married</option></select>
+            <label>生年月日 / Date of Birth</label>
+            <input type="text" id="jp-dob" placeholder="17 July 2004">
+            <label>年齢 / Age</label>
             <input type="text" id="jp-age" placeholder="22">
+            <label>本籍地 / Permanent Address</label>
+            <input type="text" id="jp-permanent-addr" placeholder="HARIDIA, LOUHAJONG - 1533, MUNSHIGANJ">
+            <label>写真 / Photo</label>
+            <input type="file" id="jp-photo" accept="image/*">
           </div>
 
           <div class="card">
             <h2>Physical & Health <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">身体・健康情報</span></h2>
             <div class="row2">
-              <div><label>Height (cm)</label><input type="text" id="jp-height" placeholder="167"></div>
-              <div><label>Weight (kg)</label><input type="text" id="jp-weight" placeholder="56"></div>
+              <div><label>身長 / Height (cm)</label><input type="text" id="jp-height" placeholder="167"></div>
+              <div><label>体重 / Weight (kg)</label><input type="text" id="jp-weight" placeholder="56"></div>
             </div>
             <div class="row2">
-              <div><label>Dominant hand</label><select id="jp-hand"><option value="Right">Right</option><option value="Left">Left</option></select></div>
-              <div><label>Blood type</label><select id="jp-blood">
+              <div><label>利き手 / Dominant hand</label><select id="jp-hand"><option value="Right">右 / Right</option><option value="Left">左 / Left</option></select></div>
+              <div><label>血液型 / Blood type</label><select id="jp-blood">
                 <option>O+</option><option>O-</option>
                 <option>A+</option><option>A-</option>
                 <option>B+</option><option>B-</option>
@@ -694,19 +703,21 @@
               </select></div>
             </div>
             <div class="row2">
-              <div><label>Eyesight — Left</label><input type="text" id="jp-eye-left" placeholder="6"></div>
-              <div><label>Eyesight — Right</label><input type="text" id="jp-eye-right" placeholder="6"></div>
+              <div><label>視力 / Eyesight — Left</label><input type="text" id="jp-eye-left" placeholder="6"></div>
+              <div><label>視力 / Eyesight — Right</label><input type="text" id="jp-eye-right" placeholder="6"></div>
             </div>
             <div class="row2">
-              <div><label>Tattoo</label><select id="jp-tattoo"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-              <div><label>Color blindness</label><select id="jp-colorblind"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>入れ墨 / Tattoo</label><select id="jp-tattoo"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select></div>
+              <div><label>色覚異常 / Color blindness</label><select id="jp-colorblind"><option value="No">無 / No abnormality</option><option value="Yes">有 / Abnormality</option></select></div>
             </div>
             <div class="row2">
-              <div><label>Smoking</label><select id="jp-smoking"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-              <div><label>Drinking</label><select id="jp-drinking"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>喫煙 / Smoking</label><select id="jp-smoking"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select></div>
+              <div><label>飲酒 / Drinking</label><select id="jp-drinking"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select></div>
             </div>
-            <label>Medical history</label>
-            <select id="jp-medical"><option value="No abnormality">No abnormality</option><option value="Abnormality">Abnormality</option></select>
+            <label>病歴 / Medical history</label>
+            <select id="jp-medical"><option value="No">無 / No abnormality</option><option value="Yes">有 / Abnormality</option></select>
+            <label style="margin-top:10px;">運転免許 / Driving License</label>
+            <select id="jp-driving-license"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select>
           </div>
 
           <div class="card">
@@ -717,21 +728,14 @@
 
           <div class="card">
             <h2>Language Proficiency <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">日本語・英語レベル</span></h2>
-            <label>Japanese level</label>
-            <select id="jp-jp-level">
-              <option value="">Not tested</option>
-              <option value="JLPT N5">JLPT N5</option>
-              <option value="JLPT N4">JLPT N4</option>
-              <option value="JLPT N3">JLPT N3</option>
-              <option value="JLPT N2">JLPT N2</option>
-              <option value="JLPT N1">JLPT N1</option>
-              <option value="JFT Basic">JFT Basic</option>
-            </select>
-            <label>English level</label>
+            <p class="desc">Add every certification you've completed — you can list several.</p>
+            <div id="jp-lang-cert-list"></div>
+            <button class="btn ghost small" onclick="addJpLangCert()">+ Add certification</button>
+            <label style="margin-top:14px;">英語レベル / English level</label>
             <select id="jp-english">
-              <option value="Beginner">Beginner</option>
-              <option value="Daily conversation">Daily conversation</option>
-              <option value="Business level">Business level</option>
+              <option value="Beginner">初心者 / Beginner</option>
+              <option value="Daily conversation">日常会話 / Daily conversation</option>
+              <option value="Business level">ビジネスレベル / Business level</option>
             </select>
           </div>
 
@@ -743,34 +747,34 @@
 
           <div class="card">
             <h2>Other Information <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">その他情報</span></h2>
-            <label>Other qualifications</label>
+            <label>その他資格・受講済研修など / Other qualifications</label>
             <input type="text" id="jp-other-qual" placeholder="Agriculture, Driving">
-            <label>Personality</label>
+            <label>性格 / Personality</label>
             <input type="text" id="jp-personality" placeholder="Responsible and hard-working">
             <div class="row2">
-              <div><label>Hobby</label><input type="text" id="jp-hobby" placeholder="Reading"></div>
-              <div><label>Favorite subject</label><input type="text" id="jp-favorite-subject" placeholder="Japanese language study"></div>
+              <div><label>趣味 / Hobby</label><input type="text" id="jp-hobby" placeholder="Reading"></div>
+              <div><label>得意科目・分野 / Favorite subjects</label><input type="text" id="jp-favorite-subject" placeholder="Japanese language study"></div>
             </div>
             <div class="row2">
-              <div><label>Group living experience</label><select id="jp-group-living"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-              <div><label>Cooking experience</label><select id="jp-cooking"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>集団生活経験 / Group living experience</label><select id="jp-group-living"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select></div>
+              <div><label>料理経験 / Cooking experience</label><select id="jp-cooking"><option value="No">不可 / No</option><option value="Yes">可 / Yes</option></select></div>
             </div>
-            <label>Dietary restrictions <span style="font-weight:400;color:var(--ink-soft);">(religiously prohibited foods, if any)</span></label>
+            <label>宗教上の禁止食材 / Religiously prohibited foods</label>
             <input type="text" id="jp-dietary" placeholder="Pork, Alcohol">
-            <label>Worship practice</label>
+            <label>礼拝 / Worship practice</label>
             <input type="text" id="jp-worship" placeholder="Will worship without disrupting work">
-            <label>Fasting</label>
-            <select id="jp-fasting"><option value="No">No</option><option value="Yes">Yes</option></select>
+            <label>断食 / Fasting</label>
+            <select id="jp-fasting"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select>
           </div>
 
           <div class="card">
             <h2>Future Plans <span style="font-weight:400;font-size:.8rem;color:var(--ink-soft);">今後の予定</span></h2>
-            <label>Monthly remittance intention</label>
+            <label>毎月いくら位を現地に送金したいか？ / Monthly remittance intention</label>
             <input type="text" id="jp-remittance" placeholder="e.g. About half of my salary">
-            <label>Desire to stay in Japan long-term</label>
+            <label>5年後以降も日本に住みたいか？ / Desire to stay in Japan long-term</label>
             <input type="text" id="jp-longterm" placeholder="e.g. Would like to stay longer if there's an opportunity">
             <div class="row2">
-              <div><label>Previously applied for residence status?</label><select id="jp-residence-applied"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>在留資格申請歴 / Previously applied for residence status?</label><select id="jp-residence-applied"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select></div>
               <div><label>If yes, details</label><input type="text" id="jp-residence-detail" placeholder="When and what status"></div>
             </div>
           </div>
@@ -780,11 +784,11 @@
             <div id="jp-family-list"></div>
             <button class="btn ghost small" onclick="addJpFamily()">+ Add family member</button>
             <div class="row2" style="margin-top:14px;">
-              <div><label>Relatives living in Japan?</label><select id="jp-relatives-japan"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+              <div><label>在日親族はいますか？ / Relatives living in Japan?</label><select id="jp-relatives-japan"><option value="No">無 / No</option><option value="Yes">有 / Yes</option></select></div>
               <div><label>If yes, who</label><input type="text" id="jp-relatives-who" placeholder="Name and relationship"></div>
             </div>
-            <label>Family's view on you going to Japan</label>
-            <select id="jp-family-opinion"><option value="Agree">Agree</option><option value="Not agree">Not agree</option></select>
+            <label>家族の意見 / Family's view on you going to Japan</label>
+            <select id="jp-family-opinion"><option value="Agree">賛成 / Agree</option><option value="Not agree">反対 / Not agree</option></select>
           </div>
         </div>
 
@@ -1033,8 +1037,46 @@ function addJpEdu(){
       <div><label>Specialty</label><input type="text" class="jp-edu-specialty" oninput="renderJapan()" placeholder="Science"></div>
       <div><label>License/Qualification</label><input type="text" class="jp-edu-license" oninput="renderJapan()" placeholder="SSC"></div>
     </div>
+    <label>Result <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+    <div class="row2">
+      <div><input type="text" class="jp-edu-result" oninput="renderJapan()" placeholder="e.g. 3.62"></div>
+      <div><select class="jp-edu-result-scale" onchange="renderJapan()">
+        <option value="4">Out of CGPA 4.00</option>
+        <option value="5">Out of GPA 5.00</option>
+        <option value="running">Running (not finished yet)</option>
+      </select></div>
+    </div>
   `;
   document.getElementById('jp-edu-list').appendChild(div);
+}
+let jpLangCertCount=0;
+function addJpLangCert(){
+  jpLangCertCount++;
+  const id='jplangcert'+jpLangCertCount;
+  const div=document.createElement('div');
+  div.className='repeat-block';
+  div.id=id;
+  div.innerHTML=`
+    <button class="remove" onclick="document.getElementById('${id}').remove();renderJapan();">remove</button>
+    <label>Test</label>
+    <select class="jp-langcert-test" onchange="renderJapan()">
+      <option value="JLPT N5">JLPT N5</option>
+      <option value="JLPT N4">JLPT N4</option>
+      <option value="JLPT N3">JLPT N3</option>
+      <option value="JLPT N2">JLPT N2</option>
+      <option value="JLPT N1">JLPT N1</option>
+      <option value="JFT-Basic">JFT-Basic</option>
+      <option value="JPT Test">JPT Test</option>
+      <option value="NAT Test">NAT Test</option>
+      <option value="J-Test">J-Test</option>
+    </select>
+    <label>Result <span style="font-weight:400;color:var(--ink-soft);">(optional, e.g. 250 out of 300)</span></label>
+    <div class="row2">
+      <div><input type="text" class="jp-langcert-value" oninput="renderJapan()" placeholder="e.g. 250"></div>
+      <div><input type="text" class="jp-langcert-max" oninput="renderJapan()" placeholder="out of e.g. 300"></div>
+    </div>
+  `;
+  document.getElementById('jp-lang-cert-list').appendChild(div);
 }
 function addJpWork(){
   jpWorkCount++;
@@ -1198,11 +1240,18 @@ function renderAll(){ renderPreview(); renderJapan(); }
   document.getElementById(id).addEventListener('input', renderAll);
 });
 document.getElementById('r-driving-license').addEventListener('change', renderAll);
-['jp-furigana','jp-age','jp-height','jp-weight','jp-eye-left','jp-eye-right','jp-other-qual','jp-personality','jp-hobby','jp-favorite-subject','jp-dietary','jp-worship','jp-remittance','jp-longterm','jp-residence-detail','jp-relatives-who'].forEach(id=>{
+['jp-fullname','jp-furigana','jp-dob','jp-permanent-addr','jp-age','jp-height','jp-weight','jp-eye-left','jp-eye-right','jp-other-qual','jp-personality','jp-hobby','jp-favorite-subject','jp-dietary','jp-worship','jp-remittance','jp-longterm','jp-residence-detail','jp-relatives-who'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderJapan);
 });
-['jp-hand','jp-blood','jp-tattoo','jp-colorblind','jp-smoking','jp-drinking','jp-medical','jp-jp-level','jp-english','jp-group-living','jp-cooking','jp-fasting','jp-residence-applied','jp-relatives-japan','jp-family-opinion'].forEach(id=>{
+['jp-marriage','jp-hand','jp-blood','jp-tattoo','jp-colorblind','jp-smoking','jp-drinking','jp-medical','jp-driving-license','jp-english','jp-group-living','jp-cooking','jp-fasting','jp-residence-applied','jp-relatives-japan','jp-family-opinion'].forEach(id=>{
   document.getElementById(id).addEventListener('change', renderJapan);
+});
+document.getElementById('jp-photo').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ jpPhotoDataUrl=ev.target.result; renderJapan(); };
+  reader.readAsDataURL(file);
 });
 let photoDataUrl=null;
 document.getElementById('r-photo').addEventListener('change', e=>{
@@ -1241,7 +1290,7 @@ function updateFieldVisibility(){
   };
   const japanPanel=document.getElementById('japan');
   const japanTabActive = japanPanel && japanPanel.classList.contains('active');
-  const japanDependent = ['bd-fields-section','photo-section','dob-nat-section'];
+  const japanDependent = ['bd-fields-section'];
   Object.keys(relevantMap).forEach(id=>{
     const el=document.getElementById(id);
     if(!el) return;
@@ -1854,7 +1903,15 @@ function collectData(){
     jpEdu.push({
       start:b.querySelector('.jp-edu-start').value, end:b.querySelector('.jp-edu-end').value,
       school:b.querySelector('.jp-edu-school').value, specialty:b.querySelector('.jp-edu-specialty').value,
-      license:b.querySelector('.jp-edu-license').value
+      license:b.querySelector('.jp-edu-license').value,
+      resultVal:b.querySelector('.jp-edu-result').value, resultScale:b.querySelector('.jp-edu-result-scale').value
+    });
+  });
+  const jpLangCerts=[];
+  document.querySelectorAll('#jp-lang-cert-list .repeat-block').forEach(b=>{
+    jpLangCerts.push({
+      test:b.querySelector('.jp-langcert-test').value,
+      value:b.querySelector('.jp-langcert-value').value, max:b.querySelector('.jp-langcert-max').value
     });
   });
   const jpWork=[];
@@ -1891,13 +1948,14 @@ function collectData(){
       opening:val('l-opening'), body:val('l-body'), closing:val('l-closing')
     },
     japan:{
-      furigana:val('jp-furigana'), age:val('jp-age'),
+      fullname:val('jp-fullname'), furigana:val('jp-furigana'), marriage:document.getElementById('jp-marriage').value,
+      dob:val('jp-dob'), age:val('jp-age'), permanentAddr:val('jp-permanent-addr'),
       height:val('jp-height'), weight:val('jp-weight'), hand:document.getElementById('jp-hand').value,
       blood:document.getElementById('jp-blood').value, eyeLeft:val('jp-eye-left'), eyeRight:val('jp-eye-right'),
       tattoo:document.getElementById('jp-tattoo').value, colorblind:document.getElementById('jp-colorblind').value,
       smoking:document.getElementById('jp-smoking').value, drinking:document.getElementById('jp-drinking').value,
-      medical:document.getElementById('jp-medical').value,
-      jpLevel:document.getElementById('jp-jp-level').value, english:document.getElementById('jp-english').value,
+      medical:document.getElementById('jp-medical').value, drivingLicense:document.getElementById('jp-driving-license').value,
+      english:document.getElementById('jp-english').value,
       otherQual:val('jp-other-qual'), personality:val('jp-personality'), hobby:val('jp-hobby'),
       favoriteSubject:val('jp-favorite-subject'), groupLiving:document.getElementById('jp-group-living').value,
       cooking:document.getElementById('jp-cooking').value, dietary:val('jp-dietary'), worship:val('jp-worship'),
@@ -1906,7 +1964,7 @@ function collectData(){
       residenceApplied:document.getElementById('jp-residence-applied').value, residenceDetail:val('jp-residence-detail'),
       relativesJapan:document.getElementById('jp-relatives-japan').value, relativesWho:val('jp-relatives-who'),
       familyOpinion:document.getElementById('jp-family-opinion').value,
-      edu:jpEdu, work:jpWork, family:jpFamily
+      edu:jpEdu, work:jpWork, family:jpFamily, langCerts:jpLangCerts
     }
   };
 }
@@ -2059,8 +2117,12 @@ function loadSavedData(){
   jpEduCount=0; jpWorkCount=0; jpFamilyCount=0;
 
   const j=d.japan||{};
+  document.getElementById('jp-fullname').value=j.fullname||'';
   document.getElementById('jp-furigana').value=j.furigana||'';
+  if(j.marriage) document.getElementById('jp-marriage').value=j.marriage;
+  document.getElementById('jp-dob').value=j.dob||'';
   document.getElementById('jp-age').value=j.age||'';
+  document.getElementById('jp-permanent-addr').value=j.permanentAddr||'';
   document.getElementById('jp-height').value=j.height||'';
   document.getElementById('jp-weight').value=j.weight||'';
   if(j.hand) document.getElementById('jp-hand').value=j.hand;
@@ -2072,7 +2134,7 @@ function loadSavedData(){
   if(j.smoking) document.getElementById('jp-smoking').value=j.smoking;
   if(j.drinking) document.getElementById('jp-drinking').value=j.drinking;
   if(j.medical) document.getElementById('jp-medical').value=j.medical;
-  if(j.jpLevel) document.getElementById('jp-jp-level').value=j.jpLevel;
+  if(j.drivingLicense) document.getElementById('jp-driving-license').value=j.drivingLicense;
   if(j.english) document.getElementById('jp-english').value=j.english;
   document.getElementById('jp-other-qual').value=j.otherQual||'';
   document.getElementById('jp-personality').value=j.personality||'';
@@ -2100,6 +2162,17 @@ function loadSavedData(){
     b.querySelector('.jp-edu-school').value=item.school||'';
     b.querySelector('.jp-edu-specialty').value=item.specialty||'';
     b.querySelector('.jp-edu-license').value=item.license||'';
+    b.querySelector('.jp-edu-result').value=item.resultVal||'';
+    if(item.resultScale) b.querySelector('.jp-edu-result-scale').value=item.resultScale;
+  });
+
+  const jpLangCertArr=(j.langCerts && j.langCerts.length) ? j.langCerts : [];
+  jpLangCertArr.forEach(item=>{
+    addJpLangCert();
+    const b=document.getElementById('jp-lang-cert-list').lastElementChild;
+    if(item.test) b.querySelector('.jp-langcert-test').value=item.test;
+    b.querySelector('.jp-langcert-value').value=item.value||'';
+    b.querySelector('.jp-langcert-max').value=item.max||'';
   });
 
   const jpWorkArr=(j.work && j.work.length) ? j.work : [{}];
@@ -2178,52 +2251,79 @@ function autoDraftLetter(){
 function printLetter(){ window.print(); }
 
 // ---- Japan format (rirekisho) ----
-function renderJapan(){
-  const name=val('r-name')||'Your Name';
-  const furigana=val('jp-furigana');
-  const dob=val('r-dob'), age=val('jp-age'), permAddr=val('r-permanent-addr');
-  const marital=document.getElementById('r-marital').value||'Unmarried';
+function jpCheck(selected, valA, labelA, valB, labelB){
+  const a = selected===valA ? '☑' : '☐';
+  const b = selected===valB ? '☑' : '☐';
+  return `${a}${labelA} ${b}${labelB}`;
+}
 
-  const photoHtml = photoDataUrl
-    ? `<img class="jp-photo" src="${photoDataUrl}">`
+let jpPhotoDataUrl=null;
+
+function renderJapan(){
+  const name=val('jp-fullname')||val('r-name')||'Your Name';
+  const furigana=val('jp-furigana');
+  const dob=val('jp-dob')||val('r-dob'), age=val('jp-age'), permAddr=val('jp-permanent-addr')||val('r-permanent-addr');
+  const marriage=document.getElementById('jp-marriage').value;
+
+  const photoHtml = jpPhotoDataUrl
+    ? `<img class="jp-photo" src="${jpPhotoDataUrl}">`
     : `<div class="jp-photo placeholder">Photo</div>`;
 
   let html = `<h3>履歴書 / Resume</h3><div class="jp-sub">Date: ${esc(new Date().toLocaleDateString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'}))}</div>`;
   html += `<div class="jp-photo-wrap">${photoHtml}</div>`;
   html += `<table>
-    <tr><td class="jp-label">Furigana</td><td>${esc(furigana)}</td></tr>
-    <tr><td class="jp-label">Full Name</td><td>${esc(name)}</td></tr>
-    <tr><td class="jp-label">Marriage</td><td>${esc(marital)}</td></tr>
-    <tr><td class="jp-label">Date of Birth</td><td>${esc(dob)}</td></tr>
-    <tr><td class="jp-label">Age</td><td>${esc(age)}</td></tr>
-    <tr><td class="jp-label">Permanent Address</td><td>${esc(permAddr)}</td></tr>
+    <tr><td class="jp-label">フリガナ / Furigana</td><td>${esc(furigana)}</td></tr>
+    <tr><td class="jp-label">氏名 / Full Name</td><td>${esc(name)}</td></tr>
+    <tr><td class="jp-label">婚姻 / Marriage</td><td>${jpCheck(marriage,'Unmarried','未婚/Unmarried','Married','既婚/Married')}</td></tr>
+    <tr><td class="jp-label">生年月日 / Date of Birth</td><td>${esc(dob)}</td></tr>
+    <tr><td class="jp-label">年齢 / Age</td><td>${esc(age)}</td></tr>
+    <tr><td class="jp-label">本籍地 / Permanent Address</td><td>${esc(permAddr)}</td></tr>
   </table>`;
 
+  const drivingLic=document.getElementById('jp-driving-license').value;
   html += `<div class="jp-section-title">Physical & Health / 身体・健康情報</div>`;
   html += `<table>
-    <tr><td class="jp-label">Height</td><td>${esc(val('jp-height'))} cm</td><td class="jp-label">Weight</td><td>${esc(val('jp-weight'))} kg</td></tr>
-    <tr><td class="jp-label">Dominant hand</td><td>${esc(document.getElementById('jp-hand').value)}</td><td class="jp-label">Blood type</td><td>${esc(document.getElementById('jp-blood').value)}</td></tr>
-    <tr><td class="jp-label">Eyesight (L/R)</td><td>${esc(val('jp-eye-left'))} / ${esc(val('jp-eye-right'))}</td><td class="jp-label">Tattoo</td><td>${esc(document.getElementById('jp-tattoo').value)}</td></tr>
-    <tr><td class="jp-label">Color blindness</td><td>${esc(document.getElementById('jp-colorblind').value)}</td><td class="jp-label">Smoking</td><td>${esc(document.getElementById('jp-smoking').value)}</td></tr>
-    <tr><td class="jp-label">Drinking</td><td>${esc(document.getElementById('jp-drinking').value)}</td><td class="jp-label">Medical history</td><td>${esc(document.getElementById('jp-medical').value)}</td></tr>
+    <tr><td class="jp-label">身長 / Height</td><td>${esc(val('jp-height'))} cm</td><td class="jp-label">体重 / Weight</td><td>${esc(val('jp-weight'))} kg</td></tr>
+    <tr><td class="jp-label">利き手 / Dominant hand</td><td>${jpCheck(document.getElementById('jp-hand').value,'Left','左/Left','Right','右/Right')}</td><td class="jp-label">血液型 / Blood type</td><td>${esc(document.getElementById('jp-blood').value)}</td></tr>
+    <tr><td class="jp-label">視力 / Eyesight (L/R)</td><td>${esc(val('jp-eye-left'))} / ${esc(val('jp-eye-right'))}</td><td class="jp-label">入れ墨 / Tattoo</td><td>${jpCheck(document.getElementById('jp-tattoo').value,'No','無/No','Yes','有/Yes')}</td></tr>
+    <tr><td class="jp-label">色覚異常 / Color blindness</td><td>${jpCheck(document.getElementById('jp-colorblind').value,'No','無/No','Yes','有/Yes')}</td><td class="jp-label">喫煙 / Smoking</td><td>${jpCheck(document.getElementById('jp-smoking').value,'No','無/No','Yes','有/Yes')}</td></tr>
+    <tr><td class="jp-label">飲酒 / Drinking</td><td>${jpCheck(document.getElementById('jp-drinking').value,'No','無/No','Yes','有/Yes')}</td><td class="jp-label">病歴 / Medical history</td><td>${jpCheck(document.getElementById('jp-medical').value,'No','無/No','Yes','有/Yes')}</td></tr>
+    <tr><td class="jp-label">運転免許 / Driving License</td><td colspan="3">${jpCheck(drivingLic,'No','無/No','Yes','有/Yes')}</td></tr>
   </table>`;
 
   let eduRows='';
   document.querySelectorAll('#jp-edu-list .repeat-block').forEach(b=>{
     const start=b.querySelector('.jp-edu-start').value, end=b.querySelector('.jp-edu-end').value;
     const school=b.querySelector('.jp-edu-school').value, spec=b.querySelector('.jp-edu-specialty').value, lic=b.querySelector('.jp-edu-license').value;
+    const resultVal=b.querySelector('.jp-edu-result').value, resultScale=b.querySelector('.jp-edu-result-scale').value;
     if(!school) return;
-    eduRows+=`<tr><td>${esc(start)}</td><td>${esc(end)}</td><td>${esc(school)}</td><td>${esc(spec)}</td><td>${esc(lic)}</td></tr>`;
+    let resultTxt='';
+    if(resultScale==='running'){
+      resultTxt='Running';
+    } else if(resultVal){
+      resultTxt=`${resultScale==='4'?'CGPA':'GPA'} ${esc(resultVal)}/${resultScale}.00`;
+    }
+    eduRows+=`<tr><td>${esc(start)}</td><td>${esc(end)}</td><td>${esc(school)}</td><td>${esc(spec)}</td><td>${esc(lic)}</td><td>${resultTxt}</td></tr>`;
   });
   if(eduRows){
     html += `<div class="jp-section-title">Academic Background / 学歴</div>
-    <table><tr><th>Start</th><th>End</th><th>School</th><th>Specialty</th><th>License/Qualification</th></tr>${eduRows}</table>`;
+    <table><tr><th>Start</th><th>End</th><th>School</th><th>Specialty</th><th>License</th><th>Result</th></tr>${eduRows}</table>`;
   }
 
+  let langCertRows='';
+  document.querySelectorAll('#jp-lang-cert-list .repeat-block').forEach(b=>{
+    const test=b.querySelector('.jp-langcert-test').value;
+    const rv=b.querySelector('.jp-langcert-value').value, rm=b.querySelector('.jp-langcert-max').value;
+    let resultTxt='';
+    if(rv || rm) resultTxt = `${esc(rv)}${rm?' out of '+esc(rm):''}`;
+    langCertRows += `<tr><td>${esc(test)}</td><td>${resultTxt}</td></tr>`;
+  });
   html += `<div class="jp-section-title">Language Proficiency / 日本語・英語レベル</div>`;
+  if(langCertRows){
+    html += `<table><tr><th>Test</th><th>Result</th></tr>${langCertRows}</table>`;
+  }
   html += `<table>
-    <tr><td class="jp-label">Japanese level</td><td>${esc(document.getElementById('jp-jp-level').value||'Not tested')}</td></tr>
-    <tr><td class="jp-label">English level</td><td>${esc(document.getElementById('jp-english').value)}</td></tr>
+    <tr><td class="jp-label">英語レベル / English level</td><td>${esc(document.getElementById('jp-english').value)}</td></tr>
   </table>`;
 
   let workRows='';
@@ -2240,19 +2340,20 @@ function renderJapan(){
 
   html += `<div class="jp-section-title">Other Information / その他情報</div>`;
   html += `<table>
-    <tr><td class="jp-label">Other qualifications</td><td>${esc(val('jp-other-qual'))}</td></tr>
-    <tr><td class="jp-label">Personality</td><td>${esc(val('jp-personality'))}</td></tr>
-    <tr><td class="jp-label">Hobby</td><td>${esc(val('jp-hobby'))}</td><td class="jp-label">Favorite subject</td><td>${esc(val('jp-favorite-subject'))}</td></tr>
-    <tr><td class="jp-label">Group living experience</td><td>${esc(document.getElementById('jp-group-living').value)}</td><td class="jp-label">Cooking experience</td><td>${esc(document.getElementById('jp-cooking').value)}</td></tr>
-    <tr><td class="jp-label">Religion</td><td>${esc(val('r-religion'))}</td><td class="jp-label">Dietary restrictions</td><td>${esc(val('jp-dietary'))}</td></tr>
-    <tr><td class="jp-label">Worship practice</td><td>${esc(val('jp-worship'))}</td><td class="jp-label">Fasting</td><td>${esc(document.getElementById('jp-fasting').value)}</td></tr>
+    <tr><td class="jp-label">その他資格 / Other qualifications</td><td>${esc(val('jp-other-qual'))}</td></tr>
+    <tr><td class="jp-label">性格 / Personality</td><td>${esc(val('jp-personality'))}</td></tr>
+    <tr><td class="jp-label">趣味 / Hobby</td><td>${esc(val('jp-hobby'))}</td><td class="jp-label">得意科目 / Favorite subjects</td><td>${esc(val('jp-favorite-subject'))}</td></tr>
+    <tr><td class="jp-label">集団生活経験 / Group living</td><td>${jpCheck(document.getElementById('jp-group-living').value,'No','無/No','Yes','有/Yes')}</td><td class="jp-label">料理経験 / Cooking</td><td>${jpCheck(document.getElementById('jp-cooking').value,'No','不可/No','Yes','可/Yes')}</td></tr>
+    <tr><td class="jp-label">宗教 / Religion</td><td>${esc(val('r-religion'))}</td><td class="jp-label">禁止食材 / Dietary restrictions</td><td>${esc(val('jp-dietary'))}</td></tr>
+    <tr><td class="jp-label">礼拝 / Worship practice</td><td>${esc(val('jp-worship'))}</td><td class="jp-label">断食 / Fasting</td><td>${jpCheck(document.getElementById('jp-fasting').value,'No','無/No','Yes','有/Yes')}</td></tr>
   </table>`;
 
+  const residApplied=document.getElementById('jp-residence-applied').value;
   html += `<div class="jp-section-title">Future Plans / 今後の予定</div>`;
   html += `<table>
-    <tr><td class="jp-label">Monthly remittance</td><td>${esc(val('jp-remittance'))}</td></tr>
-    <tr><td class="jp-label">Long-term stay in Japan</td><td>${esc(val('jp-longterm'))}</td></tr>
-    <tr><td class="jp-label">Applied for residence status?</td><td>${esc(document.getElementById('jp-residence-applied').value)}</td></tr>
+    <tr><td class="jp-label">送金希望 / Monthly remittance</td><td>${esc(val('jp-remittance'))}</td></tr>
+    <tr><td class="jp-label">長期滞在希望 / Long-term stay</td><td>${esc(val('jp-longterm'))}</td></tr>
+    <tr><td class="jp-label">在留資格申請歴 / Applied for residence status?</td><td>${jpCheck(residApplied,'No','無/No','Yes','有/Yes')}</td></tr>
     <tr><td class="jp-label">Details, if yes</td><td>${esc(val('jp-residence-detail'))}</td></tr>
   </table>`;
 
@@ -2262,16 +2363,18 @@ function renderJapan(){
     const fage=b.querySelector('.jp-fam-age').value, occ=b.querySelector('.jp-fam-occupation').value;
     const living=b.querySelector('.jp-fam-living').value;
     if(!fname) return;
-    famRows+=`<tr><td>${esc(fname)}</td><td>${esc(rel)}</td><td>${esc(fage)}</td><td>${esc(occ)}</td><td>${esc(living)}</td></tr>`;
+    famRows+=`<tr><td>${esc(fname)}</td><td>${esc(rel)}</td><td>${esc(fage)}</td><td>${esc(occ)}</td><td>${jpCheck(living,'Yes','○','No','')}</td></tr>`;
   });
+  const relJapan=document.getElementById('jp-relatives-japan').value;
+  const famOpinion=document.getElementById('jp-family-opinion').value;
   html += `<div class="jp-section-title">Family Structure / 家族構成</div>`;
   if(famRows){
     html += `<table><tr><th>Name</th><th>Relationship</th><th>Age</th><th>Occupation</th><th>Living together</th></tr>${famRows}</table>`;
   }
   html += `<table>
-    <tr><td class="jp-label">Relatives living in Japan?</td><td>${esc(document.getElementById('jp-relatives-japan').value)}</td></tr>
+    <tr><td class="jp-label">在日親族 / Relatives in Japan?</td><td>${jpCheck(relJapan,'No','無/No','Yes','有/Yes')}</td></tr>
     <tr><td class="jp-label">If yes, who</td><td>${esc(val('jp-relatives-who'))}</td></tr>
-    <tr><td class="jp-label">Family's view on this move</td><td>${esc(document.getElementById('jp-family-opinion').value)}</td></tr>
+    <tr><td class="jp-label">家族の意見 / Family's view</td><td>${jpCheck(famOpinion,'Agree','賛成/Agree','Not agree','反対/Not agree')}</td></tr>
   </table>`;
 
   document.getElementById('jp-preview').innerHTML=html;
