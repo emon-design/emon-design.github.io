@@ -664,10 +664,11 @@
           <div class="card" style="padding:16px;">
             <h2 style="font-size:1rem;">Preview</h2>
             <div class="resume-preview" id="preview"></div>
-            <div style="margin-top:14px;display:flex;gap:10px;">
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn primary" onclick="window.print()">Download as PDF</button>
+              <button class="btn ghost" onclick="downloadAsWord('preview','resume.doc')">Download as Word</button>
             </div>
-            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and under "More settings" turn on <strong>Background graphics</strong> so colors and shading print correctly.</p>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">PDF uses your browser's print dialog — under "More settings" turn on <strong>Background graphics</strong> so colors print correctly. Word downloads directly and opens in every version of Word.</p>
           </div>
           <div class="card">
             <h2 style="font-size:1rem;">Templates <span class="premium-badge">10 free</span></h2>
@@ -822,10 +823,11 @@
           <div class="card" style="padding:16px;">
             <h2 style="font-size:1rem;">Preview</h2>
             <div class="resume-preview tmpl-jp" id="jp-preview"></div>
-            <div style="margin-top:14px;">
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn primary" onclick="window.print()">Download as PDF</button>
+              <button class="btn ghost" onclick="downloadAsWord('jp-preview','rirekisho.doc')">Download as Word</button>
             </div>
-            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF", and turn on Background graphics for the table borders to print.</p>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">PDF uses your browser's print dialog — turn on Background graphics for the table borders. Word downloads directly and keeps your tables intact — opens in every version of Word; re-save as .docx from inside Word if you prefer that extension.</p>
           </div>
         </div>
       </div>
@@ -865,10 +867,11 @@
           <div class="card" style="padding:16px;">
             <h2 style="font-size:1rem;">Preview</h2>
             <div class="resume-preview" id="letter-preview" style="font-family:'IBM Plex Sans',sans-serif;"></div>
-            <div style="margin-top:14px;">
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn primary" onclick="printLetter()">Download as PDF</button>
+              <button class="btn ghost" onclick="downloadAsWord('letter-preview','cover-letter.doc')">Download as Word</button>
             </div>
-            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF".</p>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">PDF uses your browser's print dialog. Word downloads directly and opens in every version of Word.</p>
           </div>
         </div>
       </div>
@@ -2334,6 +2337,34 @@ function autoDraftLetter(){
   showToast('Draft added — feel free to personalize it.');
 }
 function printLetter(){ window.print(); }
+
+// ---- Download as Word (native, no external library — Word opens this format natively) ----
+function downloadAsWord(previewElementId, filename){
+  const source=document.getElementById(previewElementId);
+  if(!source || !source.innerHTML.trim()){
+    showToast('Nothing to download yet — fill in some details first.');
+    return;
+  }
+  const preHtml=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+  <head><meta charset='utf-8'><title>Document</title>
+  <style>
+    body{font-family:Calibri, Arial, sans-serif; font-size:11pt; color:#111;}
+    table{border-collapse:collapse;width:100%;}
+    td, th{border:1px solid #999; padding:4px 6px; font-size:9pt; vertical-align:top;}
+    h1,h2,h3{font-family:Calibri, Arial, sans-serif;}
+    img{max-width:150px;}
+  </style>
+  </head><body>`;
+  const postHtml='</body></html>';
+  const fullHtml=preHtml + source.innerHTML + postHtml;
+  const blob=new Blob(['\ufeff', fullHtml], {type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  a.click();
+  showToast('Downloaded as Word — tables and structure preserved.');
+}
 
 // ---- Japan format (rirekisho) ----
 function jpCheck(selected, valA, labelA, valB, labelB){
