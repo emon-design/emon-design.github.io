@@ -893,11 +893,21 @@
             <option value="image/png">PNG</option>
             <option value="image/webp">WebP</option>
           </select>
-          <div class="slider-row">
+          <label>Size control</label>
+          <select id="size-mode" onchange="toggleSizeMode()">
+            <option value="quality">By quality</option>
+            <option value="target">By target file size</option>
+          </select>
+          <div id="quality-mode-row" class="slider-row">
             <label style="margin:0;white-space:nowrap;">Quality</label>
             <input type="range" id="quality" min="10" max="100" value="80">
             <span id="quality-val">80%</span>
           </div>
+          <div id="target-mode-row" class="row2" style="display:none;">
+            <div><input type="number" id="target-size-value" min="1" placeholder="e.g. 50" value="50"></div>
+            <div><select id="target-size-unit"><option value="KB">KB</option><option value="MB">MB</option></select></div>
+          </div>
+          <p id="target-size-note" style="display:none;font-size:.78rem;color:var(--ink-soft);margin-top:6px;">Target size works with JPG and WebP. PNG is lossless, so its size can't be controlled this way — switch format if needed.</p>
           <button class="btn primary" onclick="processImage()">Convert & Download</button>
           <div class="filemeta" id="result-meta"></div>
         </div>
@@ -928,11 +938,21 @@
             <option value="image/jpeg">JPG</option>
             <option value="image/webp">WebP</option>
           </select>
-          <div class="slider-row">
+          <label>Size control</label>
+          <select id="resize-size-mode" onchange="toggleResizeSizeMode()">
+            <option value="quality">By quality</option>
+            <option value="target">By target file size</option>
+          </select>
+          <div id="resize-quality-mode-row" class="slider-row">
             <label style="margin:0;white-space:nowrap;">Quality</label>
             <input type="range" id="resize-quality" min="10" max="100" value="90">
             <span id="resize-quality-val">90%</span>
           </div>
+          <div id="resize-target-mode-row" class="row2" style="display:none;">
+            <div><input type="number" id="resize-target-size-value" min="1" placeholder="e.g. 50" value="50"></div>
+            <div><select id="resize-target-size-unit"><option value="KB">KB</option><option value="MB">MB</option></select></div>
+          </div>
+          <p id="resize-target-size-note" style="display:none;font-size:.78rem;color:var(--ink-soft);margin-top:6px;">Target size works with JPG and WebP. PNG is lossless, so its size can't be controlled this way — switch format if needed.</p>
           <button class="btn primary" onclick="resizeImage()">Resize & Download</button>
           <div class="filemeta" id="resize-result-meta"></div>
         </div>
@@ -2594,7 +2614,36 @@ document.getElementById('quality').addEventListener('input',e=>{
   document.getElementById('quality-val').textContent=e.target.value+'%';
 });
 
-function processImage(){
+// ---- Shared: target file size via binary search on quality ----
+function canvasToBlobP(canvas, format, quality){
+  return new Promise(resolve => canvas.toBlob(resolve, format, quality));
+}
+async function compressToTargetSize(canvas, format, targetBytes){
+  let lo=0.05, hi=0.98, bestBlob=null;
+  for(let i=0;i<8;i++){
+    const mid=(lo+hi)/2;
+    const blob=await canvasToBlobP(canvas, format, mid);
+    if(!blob) break;
+    if(blob.size>targetBytes){ hi=mid; }
+    else { bestBlob=blob; lo=mid; }
+  }
+  if(!bestBlob) bestBlob=await canvasToBlobP(canvas, format, lo);
+  return bestBlob;
+}
+function toggleSizeMode(){
+  const mode=document.getElementById('size-mode').value;
+  document.getElementById('quality-mode-row').style.display = mode==='quality' ? '' : 'none';
+  document.getElementById('target-mode-row').style.display = mode==='target' ? '' : 'none';
+  document.getElementById('target-size-note').style.display = mode==='target' ? '' : 'none';
+}
+function toggleResizeSizeMode(){
+  const mode=document.getElementById('resize-size-mode').value;
+  document.getElementById('resize-quality-mode-row').style.display = mode==='quality' ? '' : 'none';
+  document.getElementById('resize-target-mode-row').style.display = mode==='target' ? '' : 'none';
+  document.getElementById('resize-target-size-note').style.display = mode==='target' ? '' : 'none';
+}
+
+async function processImage(){
   if(!currentImg) return;
   const canvas=document.createElement('canvas');
   canvas.width=currentImg.width;
@@ -2602,18 +2651,28 @@ function processImage(){
   const ctx=canvas.getContext('2d');
   ctx.drawImage(currentImg,0,0);
   const format=document.getElementById('out-format').value;
-  const quality=document.getElementById('quality').value/100;
-  canvas.toBlob(blob=>{
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    const ext=format.split('/')[1];
-    a.href=url;
-    a.download='converted.'+ext;
-    a.click();
-    document.getElementById('result-meta').textContent=
-      `Done — new size: ${(blob.size/1024).toFixed(0)} KB (was ${(currentFile.size/1024).toFixed(0)} KB)`;
-    showToast('Image converted and downloaded.');
-  }, format, quality);
+  const mode=document.getElementById('size-mode').value;
+
+  let blob;
+  if(mode==='target'){
+    const val=parseFloat(document.getElementById('target-size-value').value)||50;
+    const unit=document.getElementById('target-size-unit').value;
+    const targetBytes = unit==='MB' ? val*1024*1024 : val*1024;
+    blob = await compressToTargetSize(canvas, format, targetBytes);
+  } else {
+    const quality=document.getElementById('quality').value/100;
+    blob = await canvasToBlobP(canvas, format, quality);
+  }
+
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const ext=format.split('/')[1];
+  a.href=url;
+  a.download='converted.'+ext;
+  a.click();
+  document.getElementById('result-meta').textContent=
+    `Done — new size: ${(blob.size/1024).toFixed(0)} KB (was ${(currentFile.size/1024).toFixed(0)} KB)`;
+  showToast('Image converted and downloaded.');
 }
 
 // ---- Image resizer ----
@@ -2666,7 +2725,7 @@ document.getElementById('resize-quality').addEventListener('input',e=>{
   document.getElementById('resize-quality-val').textContent=e.target.value+'%';
 });
 
-function resizeImage(){
+async function resizeImage(){
   if(!resizeCurrentImg) return;
   const w=parseInt(document.getElementById('resize-width').value)||resizeCurrentImg.width;
   const h=parseInt(document.getElementById('resize-height').value)||resizeCurrentImg.height;
@@ -2677,18 +2736,28 @@ function resizeImage(){
   const ctx=canvas.getContext('2d');
   ctx.drawImage(resizeCurrentImg,0,0,w,h);
   const format=document.getElementById('resize-format').value;
-  const quality=document.getElementById('resize-quality').value/100;
-  canvas.toBlob(blob=>{
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    const ext=format.split('/')[1];
-    a.href=url;
-    a.download=`resized-${w}x${h}.${ext}`;
-    a.click();
-    document.getElementById('resize-result-meta').textContent=
-      `Done — ${w}×${h}px, ${(blob.size/1024).toFixed(0)} KB`;
-    showToast('Image resized and downloaded.');
-  }, format, quality);
+  const mode=document.getElementById('resize-size-mode').value;
+
+  let blob;
+  if(mode==='target'){
+    const val=parseFloat(document.getElementById('resize-target-size-value').value)||50;
+    const unit=document.getElementById('resize-target-size-unit').value;
+    const targetBytes = unit==='MB' ? val*1024*1024 : val*1024;
+    blob = await compressToTargetSize(canvas, format, targetBytes);
+  } else {
+    const quality=document.getElementById('resize-quality').value/100;
+    blob = await canvasToBlobP(canvas, format, quality);
+  }
+
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const ext=format.split('/')[1];
+  a.href=url;
+  a.download=`resized-${w}x${h}.${ext}`;
+  a.click();
+  document.getElementById('resize-result-meta').textContent=
+    `Done — ${w}×${h}px, ${(blob.size/1024).toFixed(0)} KB`;
+  showToast('Image resized and downloaded.');
 }
 
 // ---- Student tools: GPA ----
