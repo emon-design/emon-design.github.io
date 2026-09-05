@@ -877,45 +877,8 @@
     <!-- FILE TOOLS -->
     <section class="panel" id="convert">
       <div class="card">
-        <h2>Image compressor & converter</h2>
-        <p class="desc">Shrinks file size or converts format (JPG/PNG/WebP) — runs entirely on your device, nothing is uploaded.</p>
-        <div class="drop" id="drop-zone" onclick="document.getElementById('file-input').click()">
-          <div id="drop-label">Tap to choose an image, or drag one here</div>
-          <input type="file" id="file-input" accept="image/*">
-        </div>
-        <img id="preview-img" class="preview-img" style="display:none;">
-        <div class="filemeta" id="file-meta"></div>
-
-        <div id="controls" style="display:none;">
-          <label>Output format</label>
-          <select id="out-format">
-            <option value="image/jpeg">JPG</option>
-            <option value="image/png">PNG</option>
-            <option value="image/webp">WebP</option>
-          </select>
-          <label>Size control</label>
-          <select id="size-mode" onchange="toggleSizeMode()">
-            <option value="quality">By quality</option>
-            <option value="target">By target file size</option>
-          </select>
-          <div id="quality-mode-row" class="slider-row">
-            <label style="margin:0;white-space:nowrap;">Quality</label>
-            <input type="range" id="quality" min="10" max="100" value="80">
-            <span id="quality-val">80%</span>
-          </div>
-          <div id="target-mode-row" class="row2" style="display:none;">
-            <div><input type="number" id="target-size-value" min="1" placeholder="e.g. 50" value="50"></div>
-            <div><select id="target-size-unit"><option value="KB">KB</option><option value="MB">MB</option></select></div>
-          </div>
-          <p id="target-size-note" style="display:none;font-size:.78rem;color:var(--ink-soft);margin-top:6px;">Target size works with JPG and WebP. PNG is lossless, so its size can't be controlled this way — switch format if needed.</p>
-          <button class="btn primary" onclick="processImage()">Convert & Download</button>
-          <div class="filemeta" id="result-meta"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Image resizer</h2>
-        <p class="desc">Resize an image to any custom width and height, then download it as PNG, JPG, or WebP — runs entirely on your device.</p>
+        <h2>Image resizer, compressor & converter</h2>
+        <p class="desc">Resize to any custom dimensions, control file size by quality or target size (KB/MB), and export as PNG, JPG, or WebP — runs entirely on your device, nothing is uploaded.</p>
         <div class="drop" id="resize-drop-zone" onclick="document.getElementById('resize-file-input').click()">
           <div id="resize-drop-label">Tap to choose an image, or drag one here</div>
           <input type="file" id="resize-file-input" accept="image/*">
@@ -961,9 +924,41 @@
       <div class="ad-slot">Ad space — 728×90 leaderboard placeholder</div>
 
       <div class="card">
-        <h2>More file tools <span class="premium-badge">Premium</span></h2>
-        <p class="desc">PDF ↔ Word conversion, batch processing, and PDF page merging unlock with premium.</p>
-        <button class="btn ghost small" disabled>Coming with premium</button>
+        <h2>File Compressor & Converter</h2>
+        <p class="desc">Convert PDF → Word or Word → PDF, or shrink a PDF's file size — runs in your browser, nothing uploaded. <strong>Format conversion is best-effort:</strong> works well on simple, single-column documents; complex multi-column layouts or heavy tables may need a manual touch-up afterward. <code>.doc</code> (pre-2007 Word) isn't supported — <code>.docx</code> and the Word-compatible <code>.rtf</code> output work in all Word versions.</p>
+        <div class="drop" id="doc-drop-zone" onclick="document.getElementById('doc-file-input').click()">
+          <div id="doc-drop-label">Tap to choose a PDF or Word (.docx) file</div>
+          <input type="file" id="doc-file-input" accept=".pdf,.docx">
+        </div>
+        <div class="filemeta" id="doc-file-meta"></div>
+
+        <div id="doc-pdf-actions" style="display:none;margin-top:14px;">
+          <button class="btn primary" onclick="convertPdfToWord()">Convert to Word (.rtf)</button>
+          <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line);">
+            <label>Compress PDF — Size control</label>
+            <select id="doc-size-mode" onchange="toggleDocSizeMode()">
+              <option value="quality">By quality</option>
+              <option value="target">By target file size</option>
+            </select>
+            <div id="doc-quality-mode-row" class="slider-row">
+              <label style="margin:0;white-space:nowrap;">Quality</label>
+              <input type="range" id="doc-quality" min="10" max="100" value="70">
+              <span id="doc-quality-val">70%</span>
+            </div>
+            <div id="doc-target-mode-row" class="row2" style="display:none;">
+              <div><input type="number" id="doc-target-size-value" min="1" placeholder="e.g. 500" value="500"></div>
+              <div><select id="doc-target-size-unit"><option value="KB">KB</option><option value="MB">MB</option></select></div>
+            </div>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:8px;">Compresses by converting each page to an optimized image — great for shrinking file size, but text won't be selectable afterward.</p>
+            <button class="btn primary" style="margin-top:8px;" onclick="compressPdfFile()">Compress & Download</button>
+          </div>
+        </div>
+
+        <div id="doc-docx-actions" style="display:none;margin-top:14px;">
+          <button class="btn primary" onclick="convertDocxToPdf()">Convert to PDF</button>
+        </div>
+
+        <div class="filemeta" id="doc-result-meta"></div>
       </div>
     </section>
 
@@ -1023,7 +1018,14 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+if(typeof pdfjsLib !== 'undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
 // ---- Tabs ----
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -2579,41 +2581,6 @@ function checkCode(){
   }
 }
 
-// ---- File tool: image compress/convert ----
-const dropZone=document.getElementById('drop-zone');
-const fileInput=document.getElementById('file-input');
-const previewImg=document.getElementById('preview-img');
-let currentFile=null, currentImg=null;
-
-fileInput.addEventListener('change',e=>handleFile(e.target.files[0]));
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover');});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop',e=>{
-  e.preventDefault();dropZone.classList.remove('dragover');
-  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-});
-
-function handleFile(file){
-  if(!file || !file.type.startsWith('image/')) return;
-  currentFile=file;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    previewImg.src=e.target.result;
-    previewImg.style.display='block';
-    const img=new Image();
-    img.onload=()=>{ currentImg=img; };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
-  document.getElementById('file-meta').textContent=`${file.name} — ${(file.size/1024).toFixed(0)} KB`;
-  document.getElementById('controls').style.display='block';
-  document.getElementById('drop-label').textContent='Tap to choose a different image';
-}
-
-document.getElementById('quality').addEventListener('input',e=>{
-  document.getElementById('quality-val').textContent=e.target.value+'%';
-});
-
 // ---- Shared: target file size via binary search on quality ----
 function canvasToBlobP(canvas, format, quality){
   return new Promise(resolve => canvas.toBlob(resolve, format, quality));
@@ -2630,49 +2597,11 @@ async function compressToTargetSize(canvas, format, targetBytes){
   if(!bestBlob) bestBlob=await canvasToBlobP(canvas, format, lo);
   return bestBlob;
 }
-function toggleSizeMode(){
-  const mode=document.getElementById('size-mode').value;
-  document.getElementById('quality-mode-row').style.display = mode==='quality' ? '' : 'none';
-  document.getElementById('target-mode-row').style.display = mode==='target' ? '' : 'none';
-  document.getElementById('target-size-note').style.display = mode==='target' ? '' : 'none';
-}
 function toggleResizeSizeMode(){
   const mode=document.getElementById('resize-size-mode').value;
   document.getElementById('resize-quality-mode-row').style.display = mode==='quality' ? '' : 'none';
   document.getElementById('resize-target-mode-row').style.display = mode==='target' ? '' : 'none';
   document.getElementById('resize-target-size-note').style.display = mode==='target' ? '' : 'none';
-}
-
-async function processImage(){
-  if(!currentImg) return;
-  const canvas=document.createElement('canvas');
-  canvas.width=currentImg.width;
-  canvas.height=currentImg.height;
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(currentImg,0,0);
-  const format=document.getElementById('out-format').value;
-  const mode=document.getElementById('size-mode').value;
-
-  let blob;
-  if(mode==='target'){
-    const val=parseFloat(document.getElementById('target-size-value').value)||50;
-    const unit=document.getElementById('target-size-unit').value;
-    const targetBytes = unit==='MB' ? val*1024*1024 : val*1024;
-    blob = await compressToTargetSize(canvas, format, targetBytes);
-  } else {
-    const quality=document.getElementById('quality').value/100;
-    blob = await canvasToBlobP(canvas, format, quality);
-  }
-
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const ext=format.split('/')[1];
-  a.href=url;
-  a.download='converted.'+ext;
-  a.click();
-  document.getElementById('result-meta').textContent=
-    `Done — new size: ${(blob.size/1024).toFixed(0)} KB (was ${(currentFile.size/1024).toFixed(0)} KB)`;
-  showToast('Image converted and downloaded.');
 }
 
 // ---- Image resizer ----
@@ -2758,6 +2687,216 @@ async function resizeImage(){
   document.getElementById('resize-result-meta').textContent=
     `Done — ${w}×${h}px, ${(blob.size/1024).toFixed(0)} KB`;
   showToast('Image resized and downloaded.');
+}
+
+// ---- File Compressor & Converter ----
+let docCurrentFile=null;
+
+document.getElementById('doc-file-input').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  docCurrentFile=file;
+  document.getElementById('doc-file-meta').textContent=`${file.name} — ${(file.size/1024).toFixed(0)} KB`;
+  document.getElementById('doc-result-meta').textContent='';
+  const ext=file.name.split('.').pop().toLowerCase();
+  document.getElementById('doc-pdf-actions').style.display = ext==='pdf' ? 'block' : 'none';
+  document.getElementById('doc-docx-actions').style.display = ext==='docx' ? 'block' : 'none';
+  if(ext!=='pdf' && ext!=='docx'){
+    showToast('Please choose a .pdf or .docx file.');
+  }
+  document.getElementById('doc-drop-label').textContent='Tap to choose a different file';
+});
+document.getElementById('doc-quality').addEventListener('input', e=>{
+  document.getElementById('doc-quality-val').textContent=e.target.value+'%';
+});
+function toggleDocSizeMode(){
+  const mode=document.getElementById('doc-size-mode').value;
+  document.getElementById('doc-quality-mode-row').style.display = mode==='quality' ? '' : 'none';
+  document.getElementById('doc-target-mode-row').style.display = mode==='target' ? '' : 'none';
+}
+
+function rtfEscape(text){
+  let out='';
+  for(const ch of text){
+    const code=ch.codePointAt(0);
+    if(ch==='\\' || ch==='{' || ch==='}'){ out+='\\'+ch; }
+    else if(code>127){ out+='\\u'+code+'?'; }
+    else { out+=ch; }
+  }
+  return out;
+}
+
+async function pdfToRtfText(arrayBuffer){
+  const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+  let body='';
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p);
+    const viewport=page.getViewport({scale:1});
+    const textContent=await page.getTextContent();
+    const items=textContent.items.map(it=>({
+      str:it.str, x:it.transform[4], y:it.transform[5], fontName:it.fontName
+    }));
+    items.sort((a,b)=> b.y-a.y || a.x-b.x);
+    let lines=[];
+    let current=null;
+    const yTol=3;
+    items.forEach(it=>{
+      if(!current || Math.abs(current.y-it.y)>yTol){
+        current={y:it.y, items:[it]};
+        lines.push(current);
+      } else {
+        current.items.push(it);
+      }
+    });
+    lines.forEach(line=>{
+      line.items.sort((a,b)=>a.x-b.x);
+      const lineText=line.items.map(it=>it.str).join(' ').trim();
+      if(!lineText) return;
+      const firstX=line.items[0].x;
+      const pageWidth=viewport.width;
+      let align='\\ql';
+      if(firstX>pageWidth*0.3 && firstX<pageWidth*0.6) align='\\qc';
+      const isBold=line.items.some(it=>/bold/i.test(it.fontName||''));
+      const esc=rtfEscape(lineText);
+      const wrapped=isBold ? `{\\b ${esc}}` : esc;
+      body+=`${align} ${wrapped}\\par\n`;
+    });
+    body+='\\par\n';
+  }
+  return `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Calibri;}}\\fs22\n${body}}`;
+}
+
+async function convertPdfToWord(){
+  if(!docCurrentFile) return;
+  if(typeof pdfjsLib==='undefined'){ showToast('The PDF engine failed to load — check your connection and refresh.'); return; }
+  showToast('Converting — this can take a moment...');
+  try{
+    const buf=await docCurrentFile.arrayBuffer();
+    const rtf=await pdfToRtfText(buf);
+    const blob=new Blob([rtf], {type:'application/rtf'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=docCurrentFile.name.replace(/\.pdf$/i,'')+'.rtf';
+    a.click();
+    document.getElementById('doc-result-meta').textContent='Done — opens directly in Microsoft Word.';
+    showToast('Converted — check simple sections first for accuracy.');
+  }catch(err){
+    showToast('Conversion failed — this PDF may be scanned/image-based rather than text.');
+  }
+}
+
+function blobToDataUrlP(blob){
+  return new Promise(resolve=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function compressPdfFile(){
+  if(!docCurrentFile) return;
+  if(typeof pdfjsLib==='undefined' || typeof jspdf==='undefined'){ showToast('A required engine failed to load — check your connection and refresh.'); return; }
+  showToast('Compressing — this can take a moment...');
+  try{
+    const buf=await docCurrentFile.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    const mode=document.getElementById('doc-size-mode').value;
+    let targetBytesPerPage=null, quality=0.7;
+    if(mode==='target'){
+      const val=parseFloat(document.getElementById('doc-target-size-value').value)||500;
+      const unit=document.getElementById('doc-target-size-unit').value;
+      const totalTarget = unit==='MB' ? val*1024*1024 : val*1024;
+      targetBytesPerPage = totalTarget / pdf.numPages;
+    } else {
+      quality=document.getElementById('doc-quality').value/100;
+    }
+
+    const outPdf=new jspdf.jsPDF({unit:'pt', format:'a4'});
+    for(let p=1;p<=pdf.numPages;p++){
+      const page=await pdf.getPage(p);
+      const viewport=page.getViewport({scale:1.5});
+      const canvas=document.createElement('canvas');
+      canvas.width=viewport.width;
+      canvas.height=viewport.height;
+      const ctx=canvas.getContext('2d');
+      await page.render({canvasContext:ctx, viewport}).promise;
+
+      let blob;
+      if(mode==='target'){
+        blob=await compressToTargetSize(canvas, 'image/jpeg', targetBytesPerPage);
+      } else {
+        blob=await canvasToBlobP(canvas, 'image/jpeg', quality);
+      }
+      const dataUrl=await blobToDataUrlP(blob);
+      if(p>1) outPdf.addPage();
+      const pw=outPdf.internal.pageSize.getWidth();
+      const ph=outPdf.internal.pageSize.getHeight();
+      outPdf.addImage(dataUrl, 'JPEG', 0, 0, pw, ph);
+    }
+    const originalKb=(docCurrentFile.size/1024).toFixed(0);
+    outPdf.save(docCurrentFile.name.replace(/\.pdf$/i,'')+'-compressed.pdf');
+    document.getElementById('doc-result-meta').textContent=`Done — compressed from ${originalKb} KB. Text is no longer selectable in the output.`;
+    showToast('Compressed PDF downloaded.');
+  }catch(err){
+    showToast('Compression failed — please try a different file.');
+  }
+}
+
+async function docxToPdf(arrayBuffer){
+  const result=await mammoth.convertToHtml({arrayBuffer});
+  const container=document.createElement('div');
+  container.style.width='794px';
+  container.style.padding='48px';
+  container.style.background='#fff';
+  container.style.position='fixed';
+  container.style.left='-9999px';
+  container.style.top='0';
+  container.style.fontFamily='Arial, sans-serif';
+  container.style.fontSize='14px';
+  container.style.lineHeight='1.5';
+  container.style.color='#111';
+  container.innerHTML=result.value;
+  document.body.appendChild(container);
+
+  const canvas=await html2canvas(container, {scale:2});
+  document.body.removeChild(container);
+
+  const imgData=canvas.toDataURL('image/jpeg', 0.92);
+  const pdf=new jspdf.jsPDF({unit:'pt', format:'a4'});
+  const pageWidth=pdf.internal.pageSize.getWidth();
+  const pageHeight=pdf.internal.pageSize.getHeight();
+  const imgWidth=pageWidth;
+  const imgHeight=canvas.height*imgWidth/canvas.width;
+  let heightLeft=imgHeight;
+  let position=0;
+  pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight);
+  heightLeft-=pageHeight;
+  while(heightLeft>0){
+    position=heightLeft-imgHeight;
+    pdf.addPage();
+    pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight);
+    heightLeft-=pageHeight;
+  }
+  return pdf;
+}
+
+async function convertDocxToPdf(){
+  if(!docCurrentFile) return;
+  if(typeof mammoth==='undefined' || typeof html2canvas==='undefined' || typeof jspdf==='undefined'){
+    showToast('A required engine failed to load — check your connection and refresh.');
+    return;
+  }
+  showToast('Converting — this can take a moment...');
+  try{
+    const buf=await docCurrentFile.arrayBuffer();
+    const pdf=await docxToPdf(buf);
+    pdf.save(docCurrentFile.name.replace(/\.docx$/i,'')+'.pdf');
+    document.getElementById('doc-result-meta').textContent='Done — downloaded as PDF.';
+    showToast('Converted to PDF.');
+  }catch(err){
+    showToast('Conversion failed — please try a different file.');
+  }
 }
 
 // ---- Student tools: GPA ----
