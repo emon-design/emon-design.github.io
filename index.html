@@ -903,6 +903,41 @@
         </div>
       </div>
 
+      <div class="card">
+        <h2>Image resizer</h2>
+        <p class="desc">Resize an image to any custom width and height, then download it as PNG, JPG, or WebP — runs entirely on your device.</p>
+        <div class="drop" id="resize-drop-zone" onclick="document.getElementById('resize-file-input').click()">
+          <div id="resize-drop-label">Tap to choose an image, or drag one here</div>
+          <input type="file" id="resize-file-input" accept="image/*">
+        </div>
+        <img id="resize-preview-img" class="preview-img" style="display:none;">
+        <div class="filemeta" id="resize-file-meta"></div>
+
+        <div id="resize-controls" style="display:none;">
+          <div class="row2">
+            <div><label>Width (px)</label><input type="number" id="resize-width" min="1" max="8000"></div>
+            <div><label>Height (px)</label><input type="number" id="resize-height" min="1" max="8000"></div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:400;">
+            <input type="checkbox" id="resize-lock-aspect" checked style="width:auto;">
+            Lock aspect ratio
+          </label>
+          <label>Output format</label>
+          <select id="resize-format">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+          <div class="slider-row">
+            <label style="margin:0;white-space:nowrap;">Quality</label>
+            <input type="range" id="resize-quality" min="10" max="100" value="90">
+            <span id="resize-quality-val">90%</span>
+          </div>
+          <button class="btn primary" onclick="resizeImage()">Resize & Download</button>
+          <div class="filemeta" id="resize-result-meta"></div>
+        </div>
+      </div>
+
       <div class="ad-slot">Ad space — 728×90 leaderboard placeholder</div>
 
       <div class="card">
@@ -2578,6 +2613,81 @@ function processImage(){
     document.getElementById('result-meta').textContent=
       `Done — new size: ${(blob.size/1024).toFixed(0)} KB (was ${(currentFile.size/1024).toFixed(0)} KB)`;
     showToast('Image converted and downloaded.');
+  }, format, quality);
+}
+
+// ---- Image resizer ----
+const resizeDropZone=document.getElementById('resize-drop-zone');
+const resizeFileInput=document.getElementById('resize-file-input');
+const resizePreviewImg=document.getElementById('resize-preview-img');
+let resizeCurrentFile=null, resizeCurrentImg=null, resizeAspectRatio=1;
+
+resizeFileInput.addEventListener('change',e=>handleResizeFile(e.target.files[0]));
+resizeDropZone.addEventListener('dragover',e=>{e.preventDefault();resizeDropZone.classList.add('dragover');});
+resizeDropZone.addEventListener('dragleave',()=>resizeDropZone.classList.remove('dragover'));
+resizeDropZone.addEventListener('drop',e=>{
+  e.preventDefault();resizeDropZone.classList.remove('dragover');
+  if(e.dataTransfer.files[0]) handleResizeFile(e.dataTransfer.files[0]);
+});
+
+function handleResizeFile(file){
+  if(!file || !file.type.startsWith('image/')) return;
+  resizeCurrentFile=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    resizePreviewImg.src=e.target.result;
+    resizePreviewImg.style.display='block';
+    const img=new Image();
+    img.onload=()=>{
+      resizeCurrentImg=img;
+      resizeAspectRatio=img.width/img.height;
+      document.getElementById('resize-width').value=img.width;
+      document.getElementById('resize-height').value=img.height;
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('resize-file-meta').textContent=`${file.name} — ${(file.size/1024).toFixed(0)} KB`;
+  document.getElementById('resize-controls').style.display='block';
+  document.getElementById('resize-drop-label').textContent='Tap to choose a different image';
+}
+
+document.getElementById('resize-width').addEventListener('input',e=>{
+  if(document.getElementById('resize-lock-aspect').checked && resizeAspectRatio){
+    document.getElementById('resize-height').value=Math.round(e.target.value/resizeAspectRatio);
+  }
+});
+document.getElementById('resize-height').addEventListener('input',e=>{
+  if(document.getElementById('resize-lock-aspect').checked && resizeAspectRatio){
+    document.getElementById('resize-width').value=Math.round(e.target.value*resizeAspectRatio);
+  }
+});
+document.getElementById('resize-quality').addEventListener('input',e=>{
+  document.getElementById('resize-quality-val').textContent=e.target.value+'%';
+});
+
+function resizeImage(){
+  if(!resizeCurrentImg) return;
+  const w=parseInt(document.getElementById('resize-width').value)||resizeCurrentImg.width;
+  const h=parseInt(document.getElementById('resize-height').value)||resizeCurrentImg.height;
+  if(w<1 || h<1){ showToast('Width and height must be at least 1px.'); return; }
+  const canvas=document.createElement('canvas');
+  canvas.width=w;
+  canvas.height=h;
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(resizeCurrentImg,0,0,w,h);
+  const format=document.getElementById('resize-format').value;
+  const quality=document.getElementById('resize-quality').value/100;
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const ext=format.split('/')[1];
+    a.href=url;
+    a.download=`resized-${w}x${h}.${ext}`;
+    a.click();
+    document.getElementById('resize-result-meta').textContent=
+      `Done — ${w}×${h}px, ${(blob.size/1024).toFixed(0)} KB`;
+    showToast('Image resized and downloaded.');
   }, format, quality);
 }
 
