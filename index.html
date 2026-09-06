@@ -458,6 +458,20 @@
     padding:16px;border-radius:var(--radius-sm);margin:24px 0;
   }
 
+  /* Document scanner */
+  .scan-handle{
+    position:absolute;width:24px;height:24px;border-radius:50%;
+    background:var(--stamp);border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.4);
+    transform:translate(-50%,-50%);cursor:grab;touch-action:none;z-index:5;
+  }
+  .scan-page-thumb{position:relative;display:inline-block;margin:0 8px 8px 0;}
+  .scan-page-thumb img{width:80px;height:106px;object-fit:cover;border:1px solid var(--line);border-radius:4px;}
+  .scan-page-thumb .remove-x{
+    position:absolute;top:-7px;right:-7px;background:var(--stamp);color:#fff;
+    width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:.75rem;cursor:pointer;border:2px solid #fff;line-height:1;
+  }
+
   footer{
     border-top:1.5px solid var(--line);padding:28px 0 44px 0;
     color:var(--ink-soft);font-size:.82rem;
@@ -969,6 +983,47 @@
 
     <!-- STUDENT TOOLS -->
     <section class="panel" id="student">
+      <div class="card">
+        <h2>Document Scanner</h2>
+        <p class="desc">Snap or upload a photo of a page, drag the 4 dots onto its corners, and it'll flatten the perspective into a clean scan — like laying it flat under a real scanner. Corner-fitting is manual (drag to match), not AI auto-detect, but the straightening and cleanup happen instantly, right in your browser. Combine multiple pages into one PDF.</p>
+
+        <button class="btn primary" onclick="document.getElementById('scan-file-input').click()">📷 Add a page</button>
+        <input type="file" id="scan-file-input" accept="image/*" capture="environment" style="display:none;">
+
+        <div id="scan-editor" style="display:none;margin-top:16px;">
+          <p class="desc">Drag each dot onto a corner of your document.</p>
+          <div id="scan-canvas-wrap" style="position:relative;display:inline-block;max-width:100%;">
+            <img id="scan-source-img" style="max-width:100%;display:block;">
+            <svg id="scan-quad-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+              <polygon id="scan-quad-poly" fill="rgba(193,68,60,0.15)" stroke="#C1443C" stroke-width="2"></polygon>
+            </svg>
+            <div class="scan-handle" id="scan-handle-0"></div>
+            <div class="scan-handle" id="scan-handle-1"></div>
+            <div class="scan-handle" id="scan-handle-2"></div>
+            <div class="scan-handle" id="scan-handle-3"></div>
+          </div>
+          <label style="margin-top:12px;">Enhance</label>
+          <select id="scan-filter">
+            <option value="original">Original color</option>
+            <option value="enhanced">Enhanced color</option>
+            <option value="grayscale">Grayscale</option>
+            <option value="bw">Black & white scan</option>
+          </select>
+          <div style="margin-top:10px;display:flex;gap:8px;">
+            <button class="btn primary" onclick="applyScanCrop()">Add this page</button>
+            <button class="btn ghost small" onclick="cancelScanEditor()">Cancel</button>
+          </div>
+        </div>
+
+        <div id="scan-pages-wrap" style="margin-top:16px;"></div>
+
+        <div id="scan-actions" style="display:none;margin-top:14px;gap:8px;flex-wrap:wrap;">
+          <button class="btn primary" onclick="downloadScanAsPdf()">Download as PDF</button>
+          <button class="btn ghost" onclick="downloadScanAsImages()">Download pages as images</button>
+          <button class="btn ghost small" onclick="clearScanPages()">Clear all</button>
+        </div>
+      </div>
+
       <div class="card">
         <h2>GPA calculator</h2>
         <p class="desc">Works with the US 4.0 scale, percentage marks, or the 10-point scale used in many countries.</p>
@@ -2902,6 +2957,223 @@ async function convertDocxToPdf(){
   }catch(err){
     showToast('Conversion failed — please try a different file.');
   }
+}
+
+// ---- Document Scanner ----
+let scanImg=null, scanImgNatW=0, scanImgNatH=0;
+let scanPoints=[{x:0.1,y:0.1},{x:0.9,y:0.1},{x:0.9,y:0.9},{x:0.1,y:0.9}];
+let scanPages=[];
+let scanDraggingIdx=null;
+
+document.getElementById('scan-file-input').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=document.getElementById('scan-source-img');
+    img.onload=()=>{
+      scanImg=img;
+      scanImgNatW=img.naturalWidth;
+      scanImgNatH=img.naturalHeight;
+      scanPoints=[{x:0.1,y:0.1},{x:0.9,y:0.1},{x:0.9,y:0.9},{x:0.1,y:0.9}];
+      document.getElementById('scan-editor').style.display='block';
+      requestAnimationFrame(positionScanHandles);
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function positionScanHandles(){
+  const wrap=document.getElementById('scan-canvas-wrap');
+  const rect=wrap.getBoundingClientRect();
+  scanPoints.forEach((pt,i)=>{
+    const handle=document.getElementById('scan-handle-'+i);
+    handle.style.left=(pt.x*rect.width)+'px';
+    handle.style.top=(pt.y*rect.height)+'px';
+  });
+  updateScanQuadOverlay();
+}
+
+function updateScanQuadOverlay(){
+  const wrap=document.getElementById('scan-canvas-wrap');
+  const rect=wrap.getBoundingClientRect();
+  const poly=document.getElementById('scan-quad-poly');
+  const pts=scanPoints.map(p=>`${p.x*rect.width},${p.y*rect.height}`).join(' ');
+  poly.setAttribute('points', pts);
+}
+
+[0,1,2,3].forEach(i=>{
+  const handle=document.getElementById('scan-handle-'+i);
+  handle.addEventListener('pointerdown', e=>{
+    e.preventDefault();
+    scanDraggingIdx=i;
+    handle.setPointerCapture(e.pointerId);
+  });
+  handle.addEventListener('pointermove', e=>{
+    if(scanDraggingIdx!==i) return;
+    const wrap=document.getElementById('scan-canvas-wrap');
+    const rect=wrap.getBoundingClientRect();
+    let nx=(e.clientX-rect.left)/rect.width;
+    let ny=(e.clientY-rect.top)/rect.height;
+    nx=Math.max(0,Math.min(1,nx));
+    ny=Math.max(0,Math.min(1,ny));
+    scanPoints[i]={x:nx,y:ny};
+    positionScanHandles();
+  });
+  handle.addEventListener('pointerup', ()=>{ scanDraggingIdx=null; });
+  handle.addEventListener('pointercancel', ()=>{ scanDraggingIdx=null; });
+});
+window.addEventListener('resize', ()=>{ if(scanImg) positionScanHandles(); });
+
+// Heckbert unit-square -> quadrilateral projective mapping
+function computeSquareToQuad(x0,y0,x1,y1,x2,y2,x3,y3){
+  const dx1=x1-x2, dx2=x3-x2, dx3=x0-x1+x2-x3;
+  const dy1=y1-y2, dy2=y3-y2, dy3=y0-y1+y2-y3;
+  let a13,a23;
+  const denom=(dx1*dy2-dx2*dy1) || 1e-10;
+  if(Math.abs(dx3)<1e-10 && Math.abs(dy3)<1e-10){
+    a13=0; a23=0;
+  } else {
+    a13=(dx3*dy2-dx2*dy3)/denom;
+    a23=(dx1*dy3-dx3*dy1)/denom;
+  }
+  const a11=x1-x0+a13*x1;
+  const a21=x3-x0+a23*x3;
+  const a12=y1-y0+a13*y1;
+  const a22=y3-y0+a23*y3;
+  return {a11,a12,a13,a21,a22,a23,a31:x0,a32:y0,a33:1};
+}
+
+function applyScanFilter(data, filter){
+  for(let i=0;i<data.length;i+=4){
+    let r=data[i], g=data[i+1], b=data[i+2];
+    const gray=0.299*r+0.587*g+0.114*b;
+    if(filter==='grayscale'){
+      data[i]=gray; data[i+1]=gray; data[i+2]=gray;
+    } else if(filter==='bw'){
+      const v = gray>150 ? 255 : (gray<90 ? 0 : gray);
+      data[i]=v; data[i+1]=v; data[i+2]=v;
+    } else if(filter==='enhanced'){
+      const c=1.25;
+      data[i]=Math.max(0,Math.min(255,(r-128)*c+128+8));
+      data[i+1]=Math.max(0,Math.min(255,(g-128)*c+128+8));
+      data[i+2]=Math.max(0,Math.min(255,(b-128)*c+128+8));
+    }
+  }
+}
+
+function applyScanCrop(){
+  if(!scanImg) return;
+  showToast('Processing scan...');
+  setTimeout(()=>{
+    const srcCanvas=document.createElement('canvas');
+    srcCanvas.width=scanImgNatW;
+    srcCanvas.height=scanImgNatH;
+    const srcCtx=srcCanvas.getContext('2d');
+    srcCtx.drawImage(scanImg,0,0,scanImgNatW,scanImgNatH);
+    const srcData=srcCtx.getImageData(0,0,scanImgNatW,scanImgNatH).data;
+
+    const quad=scanPoints.map(p=>({x:p.x*scanImgNatW, y:p.y*scanImgNatH}));
+    const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+    const outW=Math.round((dist(quad[0],quad[1])+dist(quad[3],quad[2]))/2);
+    const outH=Math.round((dist(quad[0],quad[3])+dist(quad[1],quad[2]))/2);
+    const destW=Math.max(200,Math.min(outW,2000));
+    const destH=Math.max(200,Math.min(outH,2600));
+
+    const m=computeSquareToQuad(
+      quad[0].x,quad[0].y, quad[1].x,quad[1].y,
+      quad[2].x,quad[2].y, quad[3].x,quad[3].y
+    );
+
+    const destCanvas=document.createElement('canvas');
+    destCanvas.width=destW;
+    destCanvas.height=destH;
+    const destCtx=destCanvas.getContext('2d');
+    const destImgData=destCtx.createImageData(destW,destH);
+
+    for(let v=0; v<destH; v++){
+      const nv=v/destH;
+      for(let u=0; u<destW; u++){
+        const nu=u/destW;
+        const w=m.a13*nu + m.a23*nv + m.a33;
+        const sx=Math.round((m.a11*nu + m.a21*nv + m.a31)/w);
+        const sy=Math.round((m.a12*nu + m.a22*nv + m.a32)/w);
+        const di=(v*destW+u)*4;
+        if(sx>=0 && sx<scanImgNatW && sy>=0 && sy<scanImgNatH){
+          const si=(sy*scanImgNatW+sx)*4;
+          destImgData.data[di]=srcData[si];
+          destImgData.data[di+1]=srcData[si+1];
+          destImgData.data[di+2]=srcData[si+2];
+          destImgData.data[di+3]=255;
+        } else {
+          destImgData.data[di]=255; destImgData.data[di+1]=255;
+          destImgData.data[di+2]=255; destImgData.data[di+3]=255;
+        }
+      }
+    }
+
+    const filter=document.getElementById('scan-filter').value;
+    if(filter!=='original') applyScanFilter(destImgData.data, filter);
+
+    destCtx.putImageData(destImgData,0,0);
+    scanPages.push(destCanvas.toDataURL('image/jpeg',0.9));
+    renderScanPagesList();
+    cancelScanEditor();
+    showToast('Page added.');
+  }, 30);
+}
+
+function cancelScanEditor(){
+  document.getElementById('scan-editor').style.display='none';
+  document.getElementById('scan-file-input').value='';
+  scanImg=null;
+}
+
+function renderScanPagesList(){
+  const wrap=document.getElementById('scan-pages-wrap');
+  wrap.innerHTML='';
+  scanPages.forEach((dataUrl,idx)=>{
+    const div=document.createElement('div');
+    div.className='scan-page-thumb';
+    div.innerHTML=`<img src="${dataUrl}"><div class="remove-x" onclick="removeScanPage(${idx})">×</div>`;
+    wrap.appendChild(div);
+  });
+  document.getElementById('scan-actions').style.display = scanPages.length ? 'flex' : 'none';
+}
+
+function removeScanPage(idx){
+  scanPages.splice(idx,1);
+  renderScanPagesList();
+}
+
+function clearScanPages(){
+  scanPages=[];
+  renderScanPagesList();
+}
+
+async function downloadScanAsPdf(){
+  if(!scanPages.length) return;
+  if(typeof jspdf==='undefined'){ showToast('PDF engine failed to load — check your connection and refresh.'); return; }
+  const pdf=new jspdf.jsPDF({unit:'pt', format:'a4'});
+  for(let i=0;i<scanPages.length;i++){
+    if(i>0) pdf.addPage();
+    const pw=pdf.internal.pageSize.getWidth();
+    const ph=pdf.internal.pageSize.getHeight();
+    pdf.addImage(scanPages[i],'JPEG',0,0,pw,ph);
+  }
+  pdf.save('scanned-document.pdf');
+  showToast('Downloaded as PDF.');
+}
+
+function downloadScanAsImages(){
+  scanPages.forEach((dataUrl,idx)=>{
+    const a=document.createElement('a');
+    a.href=dataUrl;
+    a.download=`scan-page-${idx+1}.jpg`;
+    a.click();
+  });
+  showToast('Downloading each page as an image.');
 }
 
 // ---- Student tools: GPA ----
