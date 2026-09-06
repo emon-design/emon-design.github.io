@@ -987,8 +987,12 @@
         <h2>Document Scanner</h2>
         <p class="desc">Snap or upload a photo of a page, drag the 4 dots onto its corners, and it'll flatten the perspective into a clean scan — like laying it flat under a real scanner. Corner-fitting is manual (drag to match), not AI auto-detect, but the straightening and cleanup happen instantly, right in your browser. Combine multiple pages into one PDF.</p>
 
-        <button class="btn primary" onclick="document.getElementById('scan-file-input').click()">📷 Add a page</button>
-        <input type="file" id="scan-file-input" accept="image/*" capture="environment" style="display:none;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn primary" onclick="document.getElementById('scan-camera-input').click()">📷 Take a photo</button>
+          <button class="btn ghost" onclick="document.getElementById('scan-gallery-input').click()">🖼️ Choose from gallery</button>
+        </div>
+        <input type="file" id="scan-camera-input" accept="image/*" capture="environment" style="display:none;">
+        <input type="file" id="scan-gallery-input" accept="image/*" style="display:none;">
 
         <div id="scan-editor" style="display:none;margin-top:16px;">
           <p class="desc">Drag each dot onto a corner of your document.</p>
@@ -2965,7 +2969,7 @@ let scanPoints=[{x:0.1,y:0.1},{x:0.9,y:0.1},{x:0.9,y:0.9},{x:0.1,y:0.9}];
 let scanPages=[];
 let scanDraggingIdx=null;
 
-document.getElementById('scan-file-input').addEventListener('change', e=>{
+function handleScanFileSelect(e){
   const file=e.target.files[0];
   if(!file) return;
   const reader=new FileReader();
@@ -2982,7 +2986,9 @@ document.getElementById('scan-file-input').addEventListener('change', e=>{
     img.src=ev.target.result;
   };
   reader.readAsDataURL(file);
-});
+}
+document.getElementById('scan-camera-input').addEventListener('change', handleScanFileSelect);
+document.getElementById('scan-gallery-input').addEventListener('change', handleScanFileSelect);
 
 function positionScanHandles(){
   const wrap=document.getElementById('scan-canvas-wrap');
@@ -3045,6 +3051,26 @@ function computeSquareToQuad(x0,y0,x1,y1,x2,y2,x3,y3){
   return {a11,a12,a13,a21,a22,a23,a31:x0,a32:y0,a33:1};
 }
 
+function sharpenImageData(imgData, width, height){
+  const src=new Uint8ClampedArray(imgData.data);
+  const dst=imgData.data;
+  const kernel=[0,-1,0, -1,5,-1, 0,-1,0];
+  for(let y=1;y<height-1;y++){
+    for(let x=1;x<width-1;x++){
+      for(let c=0;c<3;c++){
+        let sum=0, k=0;
+        for(let ky=-1;ky<=1;ky++){
+          for(let kx=-1;kx<=1;kx++){
+            sum+=src[((y+ky)*width+(x+kx))*4+c]*kernel[k];
+            k++;
+          }
+        }
+        dst[(y*width+x)*4+c]=Math.max(0,Math.min(255,sum));
+      }
+    }
+  }
+}
+
 function applyScanFilter(data, filter){
   for(let i=0;i<data.length;i+=4){
     let r=data[i], g=data[i+1], b=data[i+2];
@@ -3097,14 +3123,19 @@ function applyScanCrop(){
       for(let u=0; u<destW; u++){
         const nu=u/destW;
         const w=m.a13*nu + m.a23*nv + m.a33;
-        const sx=Math.round((m.a11*nu + m.a21*nv + m.a31)/w);
-        const sy=Math.round((m.a12*nu + m.a22*nv + m.a32)/w);
+        const sx=(m.a11*nu + m.a21*nv + m.a31)/w;
+        const sy=(m.a12*nu + m.a22*nv + m.a32)/w;
         const di=(v*destW+u)*4;
-        if(sx>=0 && sx<scanImgNatW && sy>=0 && sy<scanImgNatH){
-          const si=(sy*scanImgNatW+sx)*4;
-          destImgData.data[di]=srcData[si];
-          destImgData.data[di+1]=srcData[si+1];
-          destImgData.data[di+2]=srcData[si+2];
+        if(sx>=0 && sx<scanImgNatW-1 && sy>=0 && sy<scanImgNatH-1){
+          const x0=Math.floor(sx), y0=Math.floor(sy);
+          const fx=sx-x0, fy=sy-y0;
+          const i00=(y0*scanImgNatW+x0)*4, i10=(y0*scanImgNatW+x0+1)*4;
+          const i01=((y0+1)*scanImgNatW+x0)*4, i11=((y0+1)*scanImgNatW+x0+1)*4;
+          for(let c=0;c<3;c++){
+            const top=srcData[i00+c]*(1-fx)+srcData[i10+c]*fx;
+            const bot=srcData[i01+c]*(1-fx)+srcData[i11+c]*fx;
+            destImgData.data[di+c]=top*(1-fy)+bot*fy;
+          }
           destImgData.data[di+3]=255;
         } else {
           destImgData.data[di]=255; destImgData.data[di+1]=255;
@@ -3114,6 +3145,7 @@ function applyScanCrop(){
     }
 
     const filter=document.getElementById('scan-filter').value;
+    if(filter!=='original') sharpenImageData(destImgData, destW, destH);
     if(filter!=='original') applyScanFilter(destImgData.data, filter);
 
     destCtx.putImageData(destImgData,0,0);
@@ -3126,7 +3158,8 @@ function applyScanCrop(){
 
 function cancelScanEditor(){
   document.getElementById('scan-editor').style.display='none';
-  document.getElementById('scan-file-input').value='';
+  document.getElementById('scan-camera-input').value='';
+  document.getElementById('scan-gallery-input').value='';
   scanImg=null;
 }
 
