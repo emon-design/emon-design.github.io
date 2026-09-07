@@ -511,7 +511,7 @@
     <nav class="tabs">
       <button class="tab-btn active" data-panel="resume">Resume Builder</button>
       <button class="tab-btn" data-panel="japan">Japan Format</button>
-      <button class="tab-btn" data-panel="letter">Cover Letter</button>
+      <button class="tab-btn" data-panel="letter">Letter & Email Writer</button>
       <button class="tab-btn" data-panel="convert">File Tools</button>
       <button class="tab-btn" data-panel="student">Student Tools</button>
     </nav>
@@ -852,28 +852,38 @@
       <div class="two-col">
         <div>
           <div class="card">
-            <h2>Applying for</h2>
+            <h2>Letter Details</h2>
             <p class="desc">Your name and contact come from the Resume Builder tab automatically.</p>
+            <label>Purpose</label>
+            <select id="l-purpose" onchange="onLetterPurposeChange()">
+              <option value="job">Job Application</option>
+              <option value="request">General Request / Inquiry</option>
+              <option value="complaint">Complaint / Feedback</option>
+              <option value="school">School / Teacher Email</option>
+              <option value="account">Account Recovery / Support</option>
+              <option value="thanks">Thank You / Follow-up</option>
+              <option value="custom">Custom / Other</option>
+            </select>
             <div class="row2">
-              <div><label>Company name</label><input type="text" id="l-company" placeholder="Acme Inc." oninput="renderLetter()"></div>
-              <div><label>Job title</label><input type="text" id="l-jobtitle" placeholder="Software Engineer" oninput="renderLetter()"></div>
+              <div><label id="l-company-label">Company name</label><input type="text" id="l-company" placeholder="Acme Inc." oninput="renderLetter()"></div>
+              <div><label id="l-jobtitle-label">Job title</label><input type="text" id="l-jobtitle" placeholder="Software Engineer" oninput="renderLetter()"></div>
             </div>
-            <label>Hiring manager <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
-            <input type="text" id="l-manager" placeholder="Leave blank to use \"Hiring Manager\"" oninput="renderLetter()">
+            <label id="l-manager-label">Hiring manager <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+            <input type="text" id="l-manager" placeholder="Leave blank to use &quot;Hiring Manager&quot;" oninput="renderLetter()">
           </div>
 
           <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
 
           <div class="card">
-            <h2>Letter body</h2>
-            <p class="desc">Write your own, or auto-draft a starting point from your resume details.</p>
-            <button class="btn ghost small" onclick="autoDraftLetter()">✨ Auto-draft from my resume</button>
+            <h2>Message body</h2>
+            <p class="desc">Write your own, or auto-draft a starting point.</p>
+            <button class="btn ghost small" onclick="autoDraftLetter()">✨ Auto-draft</button>
             <label style="margin-top:16px;">Opening</label>
-            <textarea id="l-opening" oninput="renderLetter()" placeholder="Why you're writing and the role you're applying for."></textarea>
+            <textarea id="l-opening" oninput="renderLetter()" placeholder="Why you're writing."></textarea>
             <label>Body</label>
-            <textarea id="l-body" oninput="renderLetter()" placeholder="Relevant experience and skills."></textarea>
+            <textarea id="l-body" oninput="renderLetter()" placeholder="The main details."></textarea>
             <label>Closing</label>
-            <textarea id="l-closing" oninput="renderLetter()" placeholder="Thank them and invite next steps."></textarea>
+            <textarea id="l-closing" oninput="renderLetter()" placeholder="Wrap up and next steps."></textarea>
           </div>
         </div>
 
@@ -882,10 +892,11 @@
             <h2 style="font-size:1rem;">Preview</h2>
             <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
             <div class="resume-preview" id="letter-preview" style="font-family:'IBM Plex Sans',sans-serif;"></div>
-            <div style="margin-top:14px;">
-              <button class="btn primary" onclick="printLetter()">Download as PDF</button>
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn primary" onclick="copyLetterToClipboard()">Copy to clipboard</button>
+              <button class="btn ghost" onclick="printLetter()">Download as PDF</button>
             </div>
-            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Uses your browser's print dialog — choose "Save as PDF".</p>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">Copy pastes straight into Gmail, Facebook, or anywhere else. PDF uses your browser's print dialog.</p>
           </div>
         </div>
       </div>
@@ -2093,6 +2104,7 @@ function collectData(){
     title:val('r-title'), hobbies:val('r-hobbies'), swSkills, gulfLangs,
     template:resumeTemplate, exp, edu,
     letter:{
+      purpose:document.getElementById('l-purpose').value,
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
       opening:val('l-opening'), body:val('l-body'), closing:val('l-closing')
     },
@@ -2252,12 +2264,14 @@ function loadSavedData(){
   }
 
   if(d.letter){
+    if(d.letter.purpose) document.getElementById('l-purpose').value=d.letter.purpose;
     document.getElementById('l-company').value=d.letter.company||'';
     document.getElementById('l-jobtitle').value=d.letter.jobtitle||'';
     document.getElementById('l-manager').value=d.letter.manager||'';
     document.getElementById('l-opening').value=d.letter.opening||'';
     document.getElementById('l-body').value=d.letter.body||'';
     document.getElementById('l-closing').value=d.letter.closing||'';
+    onLetterPurposeChange();
   }
 
   document.getElementById('jp-edu-list').innerHTML='';
@@ -2349,12 +2363,37 @@ function loadSavedData(){
 }
 
 // ---- Cover letter ----
+const letterPurposes={
+  job:{ orgLabel:'Company name', orgPh:'Acme Inc.', subjLabel:'Job title', subjPh:'Software Engineer', recLabel:'Hiring manager', recPh:'Leave blank to use "Hiring Manager"', fallback:'Hiring Manager' },
+  request:{ orgLabel:'Organization', orgPh:'Company or organization name', subjLabel:'Subject', subjPh:'What is this about?', recLabel:'Recipient name', recPh:'Leave blank to use "Sir/Madam"', fallback:'Sir/Madam' },
+  complaint:{ orgLabel:'Platform / Company', orgPh:'Facebook, product name, etc.', subjLabel:'Issue', subjPh:'Bug report, complaint topic', recLabel:'Recipient / Team', recPh:'Leave blank to use "Support Team"', fallback:'Support Team' },
+  school:{ orgLabel:'School / Institution', orgPh:'School name', subjLabel:'Subject', subjPh:'Reason for writing', recLabel:"Teacher's name", recPh:'Leave blank to use "Teacher"', fallback:'Teacher' },
+  account:{ orgLabel:'Platform', orgPh:'Facebook, Gmail, etc.', subjLabel:'Issue', subjPh:'Account recovery, locked account, etc.', recLabel:'Recipient / Team', recPh:'Leave blank to use "Support Team"', fallback:'Support Team' },
+  thanks:{ orgLabel:'Organization', orgPh:"Company or person's workplace", subjLabel:'Reason', subjPh:"What you're thanking them for", recLabel:'Recipient name', recPh:'Leave blank to use "there"', fallback:'there' },
+  custom:{ orgLabel:'Organization / Context', orgPh:'Optional', subjLabel:'Subject', subjPh:'What is this about?', recLabel:'Recipient name', recPh:'Leave blank to use "there"', fallback:'there' }
+};
+function currentLetterPurpose(){
+  const p=document.getElementById('l-purpose').value;
+  return letterPurposes[p] || letterPurposes.job;
+}
+function onLetterPurposeChange(){
+  const p=currentLetterPurpose();
+  document.getElementById('l-company-label').textContent=p.orgLabel;
+  document.getElementById('l-company').placeholder=p.orgPh;
+  document.getElementById('l-jobtitle-label').textContent=p.subjLabel;
+  document.getElementById('l-jobtitle').placeholder=p.subjPh;
+  document.getElementById('l-manager-label').innerHTML=`${p.recLabel} <span style="font-weight:400;color:var(--ink-soft);">(optional)</span>`;
+  document.getElementById('l-manager').placeholder=p.recPh;
+  renderLetter();
+}
+
 function renderLetter(){
   const name=val('r-name')||'Your Name';
   const email=val('r-email'), phone=val('r-phone'), loc=val('r-location');
   const contactLine=[email,phone,loc].filter(Boolean).join(' · ');
   const company=val('l-company');
-  const manager=val('l-manager')||'Hiring Manager';
+  const purpose=currentLetterPurpose();
+  const manager=val('l-manager')||purpose.fallback;
   const opening=val('l-opening'), body=val('l-body'), closing=val('l-closing');
   const today=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
 
@@ -2370,9 +2409,11 @@ function renderLetter(){
   document.getElementById('letter-preview').innerHTML=html;
   saveData();
 }
+
 function autoDraftLetter(){
-  const jobtitle=val('l-jobtitle')||'this role';
-  const company=val('l-company')||'your company';
+  const p=document.getElementById('l-purpose').value;
+  const org=val('l-company');
+  const subject=val('l-jobtitle');
   const skillsRaw=val('r-skills');
   const skillList=skillsRaw ? skillsRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
   const roles=[];
@@ -2381,23 +2422,77 @@ function autoDraftLetter(){
     if(role) roles.push(role);
   });
 
-  if(!val('l-opening')){
-    document.getElementById('l-opening').value=
-      `I'm writing to apply for the ${jobtitle} position at ${company}.${roles.length ? ' With experience as a '+roles[0]+',' : ''} I believe I'd be a strong fit for this role.`;
-  }
-  if(!val('l-body')){
-    const skillsSentence=skillList.length ? `My background includes ${skillList.slice(0,3).join(', ')}${skillList.length>3?', among other areas':''}.` : 'My experience has prepared me well for this position.';
-    document.getElementById('l-body').value=
-      `${skillsSentence} I'm confident these skills would let me contribute quickly to your team.`;
-  }
-  if(!val('l-closing')){
-    document.getElementById('l-closing').value=
-      `Thank you for considering my application. I'd welcome the opportunity to discuss how I can contribute to ${company}.`;
-  }
+  const templates={
+    job:{
+      opening:`I'm writing to apply for the ${subject||'this role'} position at ${org||'your company'}.${roles.length ? ' With experience as a '+roles[0]+',' : ''} I believe I'd be a strong fit for this role.`,
+      body:skillList.length ? `My background includes ${skillList.slice(0,3).join(', ')}${skillList.length>3?', among other areas':''}. I'm confident these skills would let me contribute quickly to your team.` : `My experience has prepared me well for this position, and I'm confident I could contribute quickly to your team.`,
+      closing:`Thank you for considering my application. I'd welcome the opportunity to discuss how I can contribute to ${org||'your team'}.`
+    },
+    request:{
+      opening:`I'm writing to ${subject ? 'request assistance with '+subject : 'make a request regarding a matter I\'d like to discuss'}.`,
+      body:`I would appreciate it if you could look into this and let me know the next steps.`,
+      closing:`Thank you for your time and consideration. I look forward to your response.`
+    },
+    complaint:{
+      opening:`I'm writing to report an issue${subject ? ' regarding '+subject : ''} that I've experienced with ${org||'your service'}.`,
+      body:`I wanted to bring this to your attention so it can be looked into and resolved. Please let me know if you need any further details from me.`,
+      closing:`I appreciate your help in resolving this and look forward to your response.`
+    },
+    school:{
+      opening:`I'm writing regarding ${subject || 'a matter concerning my studies'}.`,
+      body:`I wanted to reach out directly to discuss this and would appreciate your guidance.`,
+      closing:`Thank you for your time — please let me know if we could arrange a time to discuss this further.`
+    },
+    account:{
+      opening:`I'm writing to request help with ${subject || 'an issue with my account'} on ${org||'your platform'}.`,
+      body:`I'd appreciate any assistance you can provide in resolving this as soon as possible.`,
+      closing:`Thank you for your help — please let me know if you need any additional information to verify my account or resolve this issue.`
+    },
+    thanks:{
+      opening:`I wanted to reach out and say thank you${subject ? ' for '+subject : ''}.`,
+      body:`I really appreciated it and wanted to make sure you knew.`,
+      closing:`Thanks again — I hope to stay in touch.`
+    },
+    custom:{
+      opening:`I'm writing regarding ${subject || 'the following matter'}.`,
+      body:`I wanted to share the details and would appreciate your response.`,
+      closing:`Thank you for your time and consideration.`
+    }
+  };
+  const t=templates[p]||templates.custom;
+
+  if(!val('l-opening')) document.getElementById('l-opening').value=t.opening;
+  if(!val('l-body')) document.getElementById('l-body').value=t.body;
+  if(!val('l-closing')) document.getElementById('l-closing').value=t.closing;
   renderLetter();
   showToast('Draft added — feel free to personalize it.');
 }
+
 function printLetter(){ window.print(); }
+
+function copyLetterToClipboard(){
+  const name=val('r-name')||'Your Name';
+  const purpose=currentLetterPurpose();
+  const recipient=val('l-manager')||purpose.fallback;
+  const company=val('l-company');
+  const opening=val('l-opening'), body=val('l-body'), closing=val('l-closing');
+
+  let text=`Dear ${recipient},\n\n`;
+  if(opening) text+=opening+'\n\n';
+  if(body) text+=body+'\n\n';
+  if(closing) text+=closing+'\n\n';
+  text+=`Sincerely,\n${name}`;
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{
+      showToast('Copied — paste it into Gmail, Facebook, or anywhere else.');
+    }).catch(()=>{
+      showToast('Could not copy automatically — please select and copy the text manually.');
+    });
+  } else {
+    showToast('Copy isn\'t supported in this browser — please select and copy the text manually.');
+  }
+}
 
 // ---- Japan format (rirekisho) ----
 function jpCheck(selected, valA, labelA, valB, labelB){
