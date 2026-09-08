@@ -853,7 +853,9 @@
         <div>
           <div class="card">
             <h2>Letter Details</h2>
-            <p class="desc">Your name and contact come from the Resume Builder tab automatically.</p>
+            <p class="desc">Contact details come from the Resume Builder tab automatically.</p>
+            <label>Your name <span style="font-weight:400;color:var(--ink-soft);">(optional — leave blank to use the name from Resume Builder)</span></label>
+            <input type="text" id="l-yourname" placeholder="Leave blank to use your Resume Builder name" oninput="renderLetter()">
             <label>Purpose</label>
             <select id="l-purpose" onchange="onLetterPurposeChange()">
               <option value="job">Job Application</option>
@@ -870,6 +872,8 @@
             </div>
             <label id="l-manager-label">Hiring manager <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
             <input type="text" id="l-manager" placeholder="Leave blank to use &quot;Hiring Manager&quot;" oninput="renderLetter()">
+            <label id="l-extra-label">Referral <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+            <input type="text" id="l-extra" placeholder="How you found this role" oninput="renderLetter()">
           </div>
 
           <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
@@ -2105,6 +2109,7 @@ function collectData(){
     template:resumeTemplate, exp, edu,
     letter:{
       purpose:document.getElementById('l-purpose').value,
+      yourname:val('l-yourname'), extra:val('l-extra'),
       company:val('l-company'), jobtitle:val('l-jobtitle'), manager:val('l-manager'),
       opening:val('l-opening'), body:val('l-body'), closing:val('l-closing')
     },
@@ -2265,6 +2270,8 @@ function loadSavedData(){
 
   if(d.letter){
     if(d.letter.purpose) document.getElementById('l-purpose').value=d.letter.purpose;
+    document.getElementById('l-yourname').value=d.letter.yourname||'';
+    document.getElementById('l-extra').value=d.letter.extra||'';
     document.getElementById('l-company').value=d.letter.company||'';
     document.getElementById('l-jobtitle').value=d.letter.jobtitle||'';
     document.getElementById('l-manager').value=d.letter.manager||'';
@@ -2364,13 +2371,13 @@ function loadSavedData(){
 
 // ---- Cover letter ----
 const letterPurposes={
-  job:{ orgLabel:'Company name', orgPh:'Acme Inc.', subjLabel:'Job title', subjPh:'Software Engineer', recLabel:'Hiring manager', recPh:'Leave blank to use "Hiring Manager"', fallback:'Hiring Manager' },
-  request:{ orgLabel:'Organization', orgPh:'Company or organization name', subjLabel:'Subject', subjPh:'What is this about?', recLabel:'Recipient name', recPh:'Leave blank to use "Sir/Madam"', fallback:'Sir/Madam' },
-  complaint:{ orgLabel:'Platform / Company', orgPh:'Facebook, product name, etc.', subjLabel:'Issue', subjPh:'Bug report, complaint topic', recLabel:'Recipient / Team', recPh:'Leave blank to use "Support Team"', fallback:'Support Team' },
-  school:{ orgLabel:'School / Institution', orgPh:'School name', subjLabel:'Subject', subjPh:'Reason for writing', recLabel:"Teacher's name", recPh:'Leave blank to use "Teacher"', fallback:'Teacher' },
-  account:{ orgLabel:'Platform', orgPh:'Facebook, Gmail, etc.', subjLabel:'Issue', subjPh:'Account recovery, locked account, etc.', recLabel:'Recipient / Team', recPh:'Leave blank to use "Support Team"', fallback:'Support Team' },
-  thanks:{ orgLabel:'Organization', orgPh:"Company or person's workplace", subjLabel:'Reason', subjPh:"What you're thanking them for", recLabel:'Recipient name', recPh:'Leave blank to use "there"', fallback:'there' },
-  custom:{ orgLabel:'Organization / Context', orgPh:'Optional', subjLabel:'Subject', subjPh:'What is this about?', recLabel:'Recipient name', recPh:'Leave blank to use "there"', fallback:'there' }
+  job:{ orgLabel:'Company name', orgPh:'Acme Inc.', subjLabel:'Job title', subjPh:'Software Engineer', recLabel:'Hiring manager', recPh:'Leave blank to use "Hiring Manager"', fallback:'Hiring Manager', extraLabel:'Referral', extraPh:'How you found this role, e.g. LinkedIn, referral' },
+  request:{ orgLabel:'Organization', orgPh:'Company or organization name', subjLabel:'Subject', subjPh:'What is this about?', recLabel:'Recipient name', recPh:'Leave blank to use "Sir/Madam"', fallback:'Sir/Madam', extraLabel:'Additional detail', extraPh:'Any reference number or extra context' },
+  complaint:{ orgLabel:'Platform / Company', orgPh:'Facebook, product name, etc.', subjLabel:'Issue', subjPh:'Bug report, complaint topic', recLabel:'Recipient / Team', recPh:'Leave blank to use "Support Team"', fallback:'Support Team', extraLabel:'Reference / Order number', extraPh:'Order #12345' },
+  school:{ orgLabel:'School / Institution', orgPh:'School name', subjLabel:'Subject', subjPh:'Reason for writing', recLabel:"Teacher's name", recPh:'Leave blank to use "Teacher"', fallback:'Teacher', extraLabel:'Class / Roll number', extraPh:'Class 10, Roll 24' },
+  account:{ orgLabel:'Platform', orgPh:'Facebook, Gmail, etc.', subjLabel:'Issue', subjPh:'Account recovery, locked account, etc.', recLabel:'Recipient / Team', recPh:'Leave blank to use "Support Team"', fallback:'Support Team', extraLabel:'Account email or username', extraPh:'The email/username on the affected account' },
+  thanks:{ orgLabel:'Organization', orgPh:"Company or person's workplace", subjLabel:'Reason', subjPh:"What you're thanking them for", recLabel:'Recipient name', recPh:'Leave blank to use "there"', fallback:'there', extraLabel:'Additional detail', extraPh:"What specifically you're following up about" },
+  custom:{ orgLabel:'Organization / Context', orgPh:'Optional', subjLabel:'Subject', subjPh:'What is this about?', recLabel:'Recipient name', recPh:'Leave blank to use "there"', fallback:'there', extraLabel:'Additional detail', extraPh:'Any extra context' }
 };
 function currentLetterPurpose(){
   const p=document.getElementById('l-purpose').value;
@@ -2384,11 +2391,13 @@ function onLetterPurposeChange(){
   document.getElementById('l-jobtitle').placeholder=p.subjPh;
   document.getElementById('l-manager-label').innerHTML=`${p.recLabel} <span style="font-weight:400;color:var(--ink-soft);">(optional)</span>`;
   document.getElementById('l-manager').placeholder=p.recPh;
+  document.getElementById('l-extra-label').innerHTML=`${p.extraLabel} <span style="font-weight:400;color:var(--ink-soft);">(optional)</span>`;
+  document.getElementById('l-extra').placeholder=p.extraPh;
   renderLetter();
 }
 
 function renderLetter(){
-  const name=val('r-name')||'Your Name';
+  const name=val('l-yourname')||val('r-name')||'Your Name';
   const email=val('r-email'), phone=val('r-phone'), loc=val('r-location');
   const contactLine=[email,phone,loc].filter(Boolean).join(' · ');
   const company=val('l-company');
@@ -2414,6 +2423,7 @@ function autoDraftLetter(){
   const p=document.getElementById('l-purpose').value;
   const org=val('l-company');
   const subject=val('l-jobtitle');
+  const extra=val('l-extra');
   const skillsRaw=val('r-skills');
   const skillList=skillsRaw ? skillsRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
   const roles=[];
@@ -2424,46 +2434,46 @@ function autoDraftLetter(){
 
   const templates={
     job:{
-      opening:`I'm writing to apply for the ${subject||'this role'} position at ${org||'your company'}.${roles.length ? ' With experience as a '+roles[0]+',' : ''} I believe I'd be a strong fit for this role.`,
+      opening:`I'm writing to apply for the ${subject||'this role'} position at ${org||'your company'}.${roles.length ? ' With experience as a '+roles[0]+',' : ''} I believe I'd be a strong fit for this role.${extra?' I found this opportunity through '+extra+'.':''}`,
       body:skillList.length ? `My background includes ${skillList.slice(0,3).join(', ')}${skillList.length>3?', among other areas':''}. I'm confident these skills would let me contribute quickly to your team.` : `My experience has prepared me well for this position, and I'm confident I could contribute quickly to your team.`,
       closing:`Thank you for considering my application. I'd welcome the opportunity to discuss how I can contribute to ${org||'your team'}.`
     },
     request:{
-      opening:`I'm writing to ${subject ? 'request assistance with '+subject : 'make a request regarding a matter I\'d like to discuss'}.`,
+      opening:`I'm writing to ${subject ? 'request assistance with '+subject : 'make a request regarding a matter I\'d like to discuss'}.${extra?' ('+extra+')':''}`,
       body:`I would appreciate it if you could look into this and let me know the next steps.`,
       closing:`Thank you for your time and consideration. I look forward to your response.`
     },
     complaint:{
-      opening:`I'm writing to report an issue${subject ? ' regarding '+subject : ''} that I've experienced with ${org||'your service'}.`,
+      opening:`I'm writing to report an issue${subject ? ' regarding '+subject : ''} that I've experienced with ${org||'your service'}.${extra?' Reference: '+extra+'.':''}`,
       body:`I wanted to bring this to your attention so it can be looked into and resolved. Please let me know if you need any further details from me.`,
       closing:`I appreciate your help in resolving this and look forward to your response.`
     },
     school:{
-      opening:`I'm writing regarding ${subject || 'a matter concerning my studies'}.`,
+      opening:`I'm writing regarding ${subject || 'a matter concerning my studies'}.${extra?' I am a student in '+extra+'.':''}`,
       body:`I wanted to reach out directly to discuss this and would appreciate your guidance.`,
       closing:`Thank you for your time — please let me know if we could arrange a time to discuss this further.`
     },
     account:{
-      opening:`I'm writing to request help with ${subject || 'an issue with my account'} on ${org||'your platform'}.`,
+      opening:`I'm writing to request help with ${subject || 'an issue with my account'} on ${org||'your platform'}.${extra?' The account in question is: '+extra+'.':''}`,
       body:`I'd appreciate any assistance you can provide in resolving this as soon as possible.`,
       closing:`Thank you for your help — please let me know if you need any additional information to verify my account or resolve this issue.`
     },
     thanks:{
-      opening:`I wanted to reach out and say thank you${subject ? ' for '+subject : ''}.`,
+      opening:`I wanted to reach out and say thank you${subject ? ' for '+subject : ''}.${extra?' '+extra+'.':''}`,
       body:`I really appreciated it and wanted to make sure you knew.`,
       closing:`Thanks again — I hope to stay in touch.`
     },
     custom:{
-      opening:`I'm writing regarding ${subject || 'the following matter'}.`,
+      opening:`I'm writing regarding ${subject || 'the following matter'}.${extra?' '+extra+'.':''}`,
       body:`I wanted to share the details and would appreciate your response.`,
       closing:`Thank you for your time and consideration.`
     }
   };
   const t=templates[p]||templates.custom;
 
-  if(!val('l-opening')) document.getElementById('l-opening').value=t.opening;
-  if(!val('l-body')) document.getElementById('l-body').value=t.body;
-  if(!val('l-closing')) document.getElementById('l-closing').value=t.closing;
+  document.getElementById('l-opening').value=t.opening;
+  document.getElementById('l-body').value=t.body;
+  document.getElementById('l-closing').value=t.closing;
   renderLetter();
   showToast('Draft added — feel free to personalize it.');
 }
@@ -2471,7 +2481,7 @@ function autoDraftLetter(){
 function printLetter(){ window.print(); }
 
 function copyLetterToClipboard(){
-  const name=val('r-name')||'Your Name';
+  const name=val('l-yourname')||val('r-name')||'Your Name';
   const purpose=currentLetterPurpose();
   const recipient=val('l-manager')||purpose.fallback;
   const company=val('l-company');
