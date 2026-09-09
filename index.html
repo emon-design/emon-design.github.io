@@ -459,7 +459,45 @@
     padding:16px;border-radius:var(--radius-sm);margin:24px 0;
   }
 
-  /* Document scanner */
+  /* Blog composer */
+  #bw-toolbar{
+    display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;
+    border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:6px;background:#FAFBFC;
+  }
+  #bw-toolbar button{
+    background:#fff;border:1.5px solid var(--line);border-radius:4px;
+    padding:6px 10px;font-size:.85rem;cursor:pointer;color:var(--ink);
+    transition:background .15s ease;
+  }
+  #bw-toolbar button:hover{background:var(--paper);}
+  #bw-editor{
+    min-height:280px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+    padding:16px;font-size:.95rem;line-height:1.7;color:var(--ink);background:#fff;
+  }
+  #bw-editor:focus{outline:none;border-color:var(--stamp);box-shadow:0 0 0 3px rgba(193,68,60,.12);}
+  #bw-editor img{max-width:100%;border-radius:6px;margin:10px 0;}
+  #bw-editor h2, #bw-editor h3{font-family:'Fraunces',serif;}
+  #bw-editor blockquote{border-left:3px solid var(--stamp);padding-left:14px;color:var(--ink-soft);margin:12px 0;}
+
+  .blog-article-preview{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:0;overflow:hidden;}
+  .blog-article-preview .bap-cover{width:100%;display:block;max-height:220px;object-fit:cover;}
+  .blog-article-preview .bap-body{padding:20px;}
+  .blog-article-preview .bap-category{
+    display:inline-block;background:var(--paper);color:var(--stamp-dark);
+    font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    padding:3px 9px;border-radius:3px;margin-bottom:10px;
+  }
+  .blog-article-preview h1{font-family:'Fraunces',serif;font-size:1.5rem;margin:0 0 8px 0;line-height:1.25;}
+  .blog-article-preview .bap-excerpt{color:var(--ink-soft);font-size:.9rem;margin-bottom:12px;}
+  .blog-article-preview .bap-byline{font-size:.78rem;color:var(--ink-soft);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+  .blog-article-preview .bap-content{font-size:.88rem;line-height:1.75;color:var(--ink);}
+  .blog-article-preview .bap-content h2{font-family:'Fraunces',serif;font-size:1.15rem;margin:20px 0 8px 0;}
+  .blog-article-preview .bap-content h3{font-family:'Fraunces',serif;font-size:1rem;margin:16px 0 6px 0;}
+  .blog-article-preview .bap-content blockquote{border-left:3px solid var(--stamp);padding-left:14px;color:var(--ink-soft);margin:12px 0;}
+  .blog-article-preview .bap-content img{max-width:100%;border-radius:6px;margin:10px 0;}
+  .blog-article-preview .bap-content p{margin:0 0 12px 0;}
+
+
   .scan-handle{
     position:absolute;width:24px;height:24px;border-radius:50%;
     background:var(--stamp);border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.4);
@@ -515,6 +553,7 @@
       <button class="tab-btn" data-panel="letter">Letter & Email Writer</button>
       <button class="tab-btn" data-panel="convert">File Tools</button>
       <button class="tab-btn" data-panel="student">Student Tools</button>
+      <button class="tab-btn" data-panel="blogwriter">Blog Composer</button>
     </nav>
   </div>
 </header>
@@ -1084,12 +1123,74 @@
       <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
     </section>
 
+    <!-- BLOG COMPOSER -->
+    <section class="panel" id="blogwriter">
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <h2>Post Details</h2>
+            <p class="desc">This site has no backend, so publishing is a two-step process: compose here, then download and push the files like everything else on this site. Instructions are at the bottom of the preview panel.</p>
+            <label>Title</label>
+            <input type="text" id="bw-title" placeholder="How to Write a Rirekisho for a Japan Visa Application" oninput="renderBlogPreview()">
+            <label>Subtitle / Excerpt <span style="font-weight:400;color:var(--ink-soft);">(shown on the blog listing page)</span></label>
+            <textarea id="bw-excerpt" placeholder="A short one or two sentence summary that makes someone want to click." oninput="renderBlogPreview()"></textarea>
+            <div class="row2">
+              <div><label>Author</label><input type="text" id="bw-author" placeholder="Your name" oninput="renderBlogPreview()"></div>
+              <div><label>Category</label><input type="text" id="bw-category" placeholder="Guides, Career, Students..." oninput="renderBlogPreview()"></div>
+            </div>
+            <label>Cover image <span style="font-weight:400;color:var(--ink-soft);">(optional)</span></label>
+            <input type="file" id="bw-cover-input" accept="image/*">
+            <label>Meta description <span style="font-weight:400;color:var(--ink-soft);">(for search engines, ~150 characters)</span></label>
+            <textarea id="bw-meta-desc" placeholder="A concise summary for Google search results."></textarea>
+          </div>
+
+          <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
+
+          <div class="card">
+            <h2>Write</h2>
+            <p class="desc">Select text and use the toolbar to format it. Click the image button to insert a photo anywhere in the post.</p>
+            <div id="bw-toolbar">
+              <button type="button" onclick="bwCmd('bold')"><b>B</b></button>
+              <button type="button" onclick="bwCmd('italic')"><i>I</i></button>
+              <button type="button" onclick="bwFormatBlock('h2')">H2</button>
+              <button type="button" onclick="bwFormatBlock('h3')">H3</button>
+              <button type="button" onclick="bwFormatBlock('p')">¶</button>
+              <button type="button" onclick="bwFormatBlock('blockquote')">" "</button>
+              <button type="button" onclick="bwCmd('insertUnorderedList')">• List</button>
+              <button type="button" onclick="bwCmd('insertOrderedList')">1. List</button>
+              <button type="button" onclick="document.getElementById('bw-img-input').click()">🖼️ Image</button>
+              <input type="file" id="bw-img-input" accept="image/*" style="display:none;">
+            </div>
+            <div id="bw-editor" contenteditable="true" oninput="renderBlogPreview()">
+              <p>Start writing here...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky">
+          <div class="card" style="padding:16px;">
+            <h2 style="font-size:1rem;">Preview</h2>
+            <div id="bw-preview" class="blog-article-preview"></div>
+            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn primary" onclick="downloadBlogPost()">Download post (.html)</button>
+              <button class="btn ghost" onclick="copyBlogListingSnippet()">Copy listing entry</button>
+            </div>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin-top:10px;">
+              <strong>To publish:</strong> 1) Download the post file, push it to a new <code>/blog/&lt;filename&gt;.html</code> file in Termux. 2) Copy the listing entry, paste it into the array in <code>/blog/posts.json</code>, then push that too.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </main>
 
 <footer>
   <div class="wrap">
     <div style="margin-bottom:8px;">
+      <a href="blog/index.html">Blog</a>
+      <span style="margin:0 10px;color:var(--line);">·</span>
       <a href="about.html">About</a>
       <span style="margin:0 10px;color:var(--line);">·</span>
       <a href="privacy.html">Privacy Policy</a>
@@ -2132,6 +2233,11 @@ function collectData(){
       relativesJapan:document.getElementById('jp-relatives-japan').value, relativesWho:val('jp-relatives-who'),
       familyOpinion:document.getElementById('jp-family-opinion').value,
       edu:jpEdu, work:jpWork, family:jpFamily, langCerts:jpLangCerts
+    },
+    blog:{
+      title:val('bw-title'), excerpt:val('bw-excerpt'), author:val('bw-author'),
+      category:val('bw-category'), metaDesc:val('bw-meta-desc'),
+      body:document.getElementById('bw-editor').innerHTML
     }
   };
 }
@@ -2366,6 +2472,15 @@ function loadSavedData(){
     b.querySelector('.jp-fam-occupation').value=item.occupation||'';
     if(item.living) b.querySelector('.jp-fam-living').value=item.living;
   });
+
+  if(d.blog){
+    document.getElementById('bw-title').value=d.blog.title||'';
+    document.getElementById('bw-excerpt').value=d.blog.excerpt||'';
+    document.getElementById('bw-author').value=d.blog.author||'';
+    document.getElementById('bw-category').value=d.blog.category||'';
+    document.getElementById('bw-meta-desc').value=d.blog.metaDesc||'';
+    if(d.blog.body) document.getElementById('bw-editor').innerHTML=d.blog.body;
+  }
 
   return true;
 }
@@ -2645,6 +2760,7 @@ updateFieldVisibility();
 renderPreview();
 renderLetter();
 renderJapan();
+renderBlogPreview();
 
 let toastTimer;
 function showToast(msg){
@@ -3313,6 +3429,203 @@ function downloadScanAsImages(){
     a.click();
   });
   showToast('Downloading each page as an image.');
+}
+
+// ---- Blog Composer ----
+let bwCoverDataUrl=null;
+
+function bwCmd(command){
+  document.getElementById('bw-editor').focus();
+  document.execCommand(command, false, null);
+  renderBlogPreview();
+}
+function bwFormatBlock(tag){
+  document.getElementById('bw-editor').focus();
+  document.execCommand('formatBlock', false, tag);
+  renderBlogPreview();
+}
+
+document.getElementById('bw-cover-input').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{ bwCoverDataUrl=ev.target.result; renderBlogPreview(); };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('bw-img-input').addEventListener('change', e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    document.getElementById('bw-editor').focus();
+    document.execCommand('insertImage', false, ev.target.result);
+    renderBlogPreview();
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+});
+
+function bwSlugify(text){
+  return (text||'untitled-post').toLowerCase().trim()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .slice(0,60) || 'untitled-post';
+}
+function bwReadTime(){
+  const text=document.getElementById('bw-editor').innerText || '';
+  const words=text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words/200)) + ' min read';
+}
+
+function renderBlogPreview(){
+  const title=val('bw-title')||'Untitled Post';
+  const excerpt=val('bw-excerpt');
+  const author=val('bw-author')||'Deskwork';
+  const category=val('bw-category');
+  const bodyHtml=document.getElementById('bw-editor').innerHTML;
+  const today=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  const readTime=bwReadTime();
+
+  let html='';
+  if(bwCoverDataUrl) html+=`<img class="bap-cover" src="${bwCoverDataUrl}">`;
+  html+=`<div class="bap-body">`;
+  if(category) html+=`<span class="bap-category">${esc(category)}</span>`;
+  html+=`<h1>${esc(title)}</h1>`;
+  if(excerpt) html+=`<div class="bap-excerpt">${esc(excerpt)}</div>`;
+  html+=`<div class="bap-byline">By ${esc(author)} · ${today} · ${readTime}</div>`;
+  html+=`<div class="bap-content">${bodyHtml}</div>`;
+  html+=`</div>`;
+
+  document.getElementById('bw-preview').innerHTML=html;
+}
+
+function buildBlogPostHtml(){
+  const title=val('bw-title')||'Untitled Post';
+  const excerpt=val('bw-excerpt');
+  const author=val('bw-author')||'Deskwork';
+  const category=val('bw-category');
+  const metaDesc=val('bw-meta-desc')||excerpt;
+  const bodyHtml=document.getElementById('bw-editor').innerHTML;
+  const today=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  const readTime=bwReadTime();
+  const coverHtml=bwCoverDataUrl ? `<img class="bap-cover" src="${bwCoverDataUrl}">` : '';
+  const categoryHtml=category ? `<span class="bap-category">${esc(category)}</span>` : '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(title)} — Deskwork Blog</title>
+<meta name="description" content="${esc(metaDesc)}">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#EDF1F5;--paper-raised:#FFFFFF;--ink:#1B2430;--ink-soft:#4B5563;--stamp:#C1443C;--stamp-dark:#9E362F;--line:#D9E1E8;--radius:10px;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.6;}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+  header{padding:32px 0 0 0;}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .brand h1{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;margin:0;}
+  .mark{width:14px;height:14px;background:var(--stamp);transform:rotate(45deg);flex-shrink:0;}
+  a.back-link{color:var(--ink-soft);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line);}
+  main{padding:26px 0 60px 0;}
+  article{background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 6px 20px rgba(27,36,48,.08);}
+  .bap-cover{width:100%;display:block;max-height:360px;object-fit:cover;}
+  .bap-body{padding:32px;}
+  .bap-category{display:inline-block;background:var(--paper);color:var(--stamp-dark);font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:3px;margin-bottom:12px;}
+  h1{font-family:'Fraunces',serif;font-size:2rem;margin:0 0 10px 0;line-height:1.2;}
+  .bap-excerpt{color:var(--ink-soft);font-size:1.05rem;margin-bottom:14px;}
+  .bap-byline{font-size:.82rem;color:var(--ink-soft);margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+  .bap-content{font-size:1.02rem;line-height:1.8;}
+  .bap-content h2{font-family:'Fraunces',serif;font-size:1.4rem;margin:28px 0 10px 0;}
+  .bap-content h3{font-family:'Fraunces',serif;font-size:1.15rem;margin:22px 0 8px 0;}
+  .bap-content blockquote{border-left:3px solid var(--stamp);padding-left:16px;color:var(--ink-soft);margin:16px 0;font-style:italic;}
+  .bap-content img{max-width:100%;border-radius:8px;margin:14px 0;}
+  .bap-content p{margin:0 0 16px 0;}
+  .bap-content ul, .bap-content ol{margin:0 0 16px 0;padding-left:22px;}
+  .ad-slot{display:none;background:#E4E9EE;border:1px dashed var(--line);text-align:center;color:var(--ink-soft);font-size:.78rem;padding:16px;border-radius:6px;margin:24px 0;}
+  footer{border-top:1.5px solid var(--line);padding:24px 0 40px 0;color:var(--ink-soft);font-size:.82rem;margin-top:20px;}
+  footer a{color:var(--ink-soft);margin-right:16px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="mark"></span><h1>Deskwork</h1></div>
+    <a class="back-link" href="index.html">← All posts</a>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <article>
+      ${coverHtml}
+      <div class="bap-body">
+        ${categoryHtml}
+        <h1>${esc(title)}</h1>
+        ${excerpt ? `<div class="bap-excerpt">${esc(excerpt)}</div>` : ''}
+        <div class="bap-byline">By ${esc(author)} · ${today} · ${readTime}</div>
+        <div class="ad-slot">Ad space — 728×90 leaderboard placeholder</div>
+        <div class="bap-content">${bodyHtml}</div>
+        <div class="ad-slot">Ad space — 300×250 rectangle placeholder</div>
+      </div>
+    </article>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <a href="index.html">All posts</a>
+    <a href="../about.html">About</a>
+    <a href="../privacy.html">Privacy Policy</a>
+    <span>Deskwork Blog</span>
+  </div>
+</footer>
+</body>
+</html>`;
+}
+
+function downloadBlogPost(){
+  const title=val('bw-title');
+  if(!title){ showToast('Add a title first.'); return; }
+  const html=buildBlogPostHtml();
+  const slug=bwSlugify(title);
+  const blob=new Blob([html], {type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=slug+'.html';
+  a.click();
+  showToast(`Downloaded as ${slug}.html — push this into your /blog/ folder.`);
+}
+
+function copyBlogListingSnippet(){
+  const title=val('bw-title');
+  if(!title){ showToast('Add a title first.'); return; }
+  const excerpt=val('bw-excerpt');
+  const author=val('bw-author')||'Deskwork';
+  const category=val('bw-category');
+  const slug=bwSlugify(title);
+  const today=new Date().toISOString().slice(0,10);
+  const readTime=bwReadTime();
+
+  const entry={
+    title:title, excerpt:excerpt, slug:slug+'.html',
+    image:bwCoverDataUrl||'', date:today, category:category, author:author, readTime:readTime
+  };
+  const text=JSON.stringify(entry, null, 2)+',';
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{
+      showToast('Copied — paste this as a new entry in /blog/posts.json.');
+    }).catch(()=>{
+      showToast('Could not copy automatically — check the browser console or try again.');
+    });
+  } else {
+    showToast('Copy isn\'t supported in this browser.');
+  }
 }
 
 // ---- Student tools: GPA ----

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Deskwork</title>
+<meta name="description" content="Guides and tips on resumes, job applications, and the tools on Deskwork.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#EDF1F5;--paper-raised:#FFFFFF;--ink:#1B2430;--ink-soft:#4B5563;--stamp:#C1443C;--stamp-dark:#9E362F;--line:#D9E1E8;--radius:10px;--shadow-md:0 6px 20px rgba(27,36,48,.08), 0 1px 3px rgba(27,36,48,.06);}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.6;}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px;}
+  header{padding:40px 0 0 0;}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;}
+  .brand h1{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:600;margin:0;}
+  .mark{width:14px;height:14px;background:var(--stamp);transform:rotate(45deg);flex-shrink:0;}
+  header p.tag{color:var(--ink-soft);font-size:.98rem;margin:0 0 10px 0;}
+  a.back-link{color:var(--ink-soft);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line);}
+  main{padding:26px 0 60px 0;}
+  .post-grid{display:flex;flex-direction:column;gap:18px;}
+  .post-card{
+    display:flex;gap:16px;background:var(--paper-raised);border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;
+    text-decoration:none;color:inherit;
+  }
+  .post-card img{width:140px;height:140px;object-fit:cover;flex-shrink:0;}
+  .post-card .pc-body{padding:16px 18px;min-width:0;}
+  .post-card .pc-category{
+    display:inline-block;background:var(--paper);color:var(--stamp-dark);
+    font-size:.68rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    padding:2px 8px;border-radius:3px;margin-bottom:6px;
+  }
+  .post-card h2{font-family:'Fraunces',serif;font-size:1.15rem;margin:0 0 6px 0;color:var(--ink);}
+  .post-card .pc-excerpt{font-size:.85rem;color:var(--ink-soft);margin-bottom:8px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .post-card .pc-meta{font-size:.74rem;color:var(--ink-soft);}
+  @media (max-width:520px){.post-card{flex-direction:column;} .post-card img{width:100%;height:160px;}}
+  .empty-state{
+    background:var(--paper-raised);border:1px dashed var(--line);border-radius:var(--radius);
+    padding:40px 24px;text-align:center;color:var(--ink-soft);
+  }
+  .ad-slot{display:none;background:#E4E9EE;border:1px dashed var(--line);text-align:center;color:var(--ink-soft);font-size:.78rem;padding:16px;border-radius:6px;margin:24px 0;}
+  footer{border-top:1.5px solid var(--line);padding:28px 0 44px 0;color:var(--ink-soft);font-size:.82rem;}
+  footer a{color:var(--ink-soft);margin-right:16px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="mark"></span><h1>Deskwork Blog</h1></div>
+    <p class="tag">Guides and tips on resumes, job applications, and getting the most out of Deskwork's tools.</p>
+    <a class="back-link" href="../index.html">← Back to tools</a>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="ad-slot">Ad space — 728×90 leaderboard placeholder</div>
+    <div class="post-grid" id="post-grid">
+      <div class="empty-state">Loading posts...</div>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <a href="../index.html">Tools</a>
+    <a href="../about.html">About</a>
+    <a href="../privacy.html">Privacy Policy</a>
+    <span>Deskwork — built with free, open tools.</span>
+  </div>
+</footer>
+
+<script>
+fetch('posts.json')
+  .then(r => r.json())
+  .then(posts => {
+    const grid = document.getElementById('post-grid');
+    if(!posts || !posts.length){
+      grid.innerHTML = '<div class="empty-state">No posts yet — check back soon.</div>';
+      return;
+    }
+    posts.sort((a,b) => new Date(b.date) - new Date(a.date));
+    grid.innerHTML = posts.map(p => {
+      const img = p.image ? `<img src="${p.image}" alt="">` : '';
+      const cat = p.category ? `<span class="pc-category">${escHtml(p.category)}</span>` : '';
+      const dateStr = p.date ? new Date(p.date).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}) : '';
+      return `<a class="post-card" href="${escHtml(p.slug)}">
+        ${img}
+        <div class="pc-body">
+          ${cat}
+          <h2>${escHtml(p.title)}</h2>
+          <div class="pc-excerpt">${escHtml(p.excerpt||'')}</div>
+          <div class="pc-meta">${escHtml(p.author||'Deskwork')} · ${dateStr}${p.readTime?' · '+escHtml(p.readTime):''}</div>
+        </div>
+      </a>`;
+    }).join('');
+  })
+  .catch(() => {
+    document.getElementById('post-grid').innerHTML = '<div class="empty-state">No posts yet — check back soon.</div>';
+  });
+
+function escHtml(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>
