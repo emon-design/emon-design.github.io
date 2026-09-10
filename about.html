@@ -1,55 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — Deskwork</title>
-<meta name="description" content="Deskwork is a free set of browser tools for resumes, file conversion, and student calculations. Learn how it works and why it's free.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{--paper:#EDF1F5;--paper-raised:#FFFFFF;--ink:#1B2430;--ink-soft:#4B5563;--stamp:#C1443C;--stamp-dark:#9E362F;--line:#D9E1E8;}
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.65;}
-  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
-  header{padding:36px 0 0 0;}
-  .brand{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
-  .brand h1{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;margin:0;}
-  .mark{width:14px;height:14px;background:var(--stamp);transform:rotate(45deg);flex-shrink:0;}
-  a.home-link{color:var(--ink-soft);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line);}
-  main{padding:34px 0 70px 0;}
-  h2{font-family:'Fraunces',serif;font-size:1.6rem;margin:0 0 .5em 0;}
-  p{color:var(--ink-soft);margin:0 0 1.1em 0;}
-  strong{color:var(--ink);}
-  footer{border-top:1.5px solid var(--line);padding:28px 0 44px 0;color:var(--ink-soft);font-size:.82rem;}
-  footer a{color:var(--ink-soft);margin-right:16px;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>About Deskwork — Free Online Tools</title>
+  <meta name="description" content="Learn about Deskwork, a collection of free browser-based tools for resumes, documents, students, productivity, and everyday digital work.">
+
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://emon-design.github.io/about.html">
+
+  <style>
+    :root{
+      --bg:#f7f8fa;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#5f6b7a;
+      --border:#e4e8ee;
+      --accent:#2563eb;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.7;
+    }
+
+    header{
+      background:#fff;
+      border-bottom:1px solid var(--border);
+    }
+
+    .nav{
+      max-width:1050px;
+      margin:auto;
+      padding:16px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      color:var(--text);
+      text-decoration:none;
+      font-size:1.25rem;
+      font-weight:800;
+    }
+
+    nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:16px;
+    }
+
+    nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:.95rem;
+    }
+
+    nav a:hover{
+      color:var(--accent);
+    }
+
+    main{
+      max-width:850px;
+      margin:50px auto;
+      padding:0 20px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:36px;
+      box-shadow:0 4px 18px rgba(20,30,50,.04);
+    }
+
+    h1{
+      margin-top:0;
+      font-size:2.25rem;
+      line-height:1.2;
+    }
+
+    h2{
+      margin-top:34px;
+      line-height:1.3;
+    }
+
+    p,li{
+      color:var(--muted);
+    }
+
+    a{
+      color:var(--accent);
+    }
+
+    footer{
+      border-top:1px solid var(--border);
+      background:#fff;
+      margin-top:60px;
+    }
+
+    .footer-inner{
+      max-width:1050px;
+      margin:auto;
+      padding:25px 20px;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      gap:15px;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .footer-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:15px;
+    }
+
+    .footer-links a{
+      color:var(--muted);
+      text-decoration:none;
+    }
+
+    @media(max-width:650px){
+      .nav{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .card{
+        padding:24px;
+      }
+
+      h1{
+        font-size:1.85rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
+
 <header>
-  <div class="wrap">
-    <div class="brand"><span class="mark"></span><h1>Deskwork</h1></div>
-    <a class="home-link" href="index.html">← Back to tools</a>
+  <div class="nav">
+    <a class="brand" href="index.html">Deskwork</a>
+
+    <nav aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
   </div>
 </header>
+
 <main>
-  <div class="wrap">
-    <h2>About Deskwork</h2>
-    <p>Deskwork is a small set of free tools built for one reason: resumes, file conversions, and everyday calculations shouldn't require an account, a subscription, or your files leaving your device.</p>
-    <p>Everything on this site runs <strong>in your browser</strong>. When you build a resume or compress an image here, none of that data is uploaded anywhere or stored on a server — it stays on your device the whole time.</p>
-    <p>The site currently includes a resume builder, an image compressor and format converter, a GPA calculator, and a citation generator. More tools get added over time, based on what people ask for.</p>
-    <p>Deskwork is free to use. It's supported by ads shown alongside the tools, and by an optional premium tier for extra resume templates and file features. There's no obligation to pay for anything — the core tools stay free.</p>
-    <p>Built and maintained by an independent developer. If something's broken or you have a tool you wish existed, reach out — details on the <a href="about.html#contact">contact</a> note below.</p>
-    <h2 id="contact" style="margin-top:2em;">Contact</h2>
-    <p>For questions, bug reports, or tool requests, email <strong>marazemon3@gmail.com</strong>.</p>
-  </div>
+  <article class="card">
+
+    <h1>About Deskwork</h1>
+
+    <p>
+      Deskwork is a collection of free browser-based tools designed to make
+      everyday digital work simpler, faster, and more accessible.
+    </p>
+
+    <p>
+      The site brings together practical tools for resumes, documents,
+      students, productivity, and common file-related tasks in one place.
+    </p>
+
+    <h2>What Deskwork provides</h2>
+
+    <p>
+      Deskwork includes tools such as resume builders, document and file
+      utilities, student-focused tools, writing tools, and other practical
+      browser-based utilities.
+    </p>
+
+    <p>
+      The goal is straightforward: provide useful tools that people can use
+      without unnecessary complexity, expensive software, or complicated
+      account requirements.
+    </p>
+
+    <h2>Designed for practical everyday work</h2>
+
+    <p>
+      Deskwork is intended for students, job seekers, professionals,
+      applicants, and anyone who needs a simple tool to complete a common
+      digital task.
+    </p>
+
+    <p>
+      The site also publishes guides and practical articles covering topics
+      related to resumes, careers, documents, productivity, and the tools
+      available on Deskwork.
+    </p>
+
+    <h2>Browser-based tools</h2>
+
+    <p>
+      Many Deskwork tools are designed to work directly in your web browser.
+      Where a tool processes information locally in the browser, your files
+      can be handled on your device rather than being uploaded to a Deskwork
+      server.
+    </p>
+
+    <p>
+      Users should still review the behavior and output of each tool before
+      relying on generated or converted files for important purposes.
+    </p>
+
+    <h2>Free access</h2>
+
+    <p>
+      Deskwork currently provides its core tools as free browser-based
+      utilities. The site may evolve over time as new tools and features are
+      developed.
+    </p>
+
+    <h2>Our approach</h2>
+
+    <p>
+      Deskwork aims to keep its tools straightforward, useful, accessible,
+      and easy to understand. We prefer practical functionality over
+      unnecessary complexity.
+    </p>
+
+    <h2>Contact</h2>
+
+    <p>
+      For questions, feedback, corrections, or suggestions about Deskwork,
+      please use the contact information provided on the website.
+    </p>
+
+  </article>
 </main>
+
 <footer>
-  <div class="wrap">
-    <a href="blog/index.html">Blog</a> <a href="about.html">About</a>
-    <a href="privacy.html">Privacy Policy</a>
+  <div class="footer-inner">
     <span>Deskwork — built with free, open tools.</span>
+
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="blog/index.html">Blog</a>
+    </div>
   </div>
 </footer>
+
 </body>
 </html>
