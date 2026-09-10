@@ -72,7 +72,7 @@
 </footer>
 
 <script>
-fetch('posts.json')
+fetch('posts.json?v=' + Date.now(), {cache: 'no-store'})
   .then(r => r.json())
   .then(posts => {
     const grid = document.getElementById('post-grid');
