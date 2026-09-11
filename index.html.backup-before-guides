@@ -126,18 +126,6 @@
   .card h2{font-size:1.25rem;margin-bottom:4px;}
   .card p.desc{color:var(--ink-soft);font-size:.92rem;margin:0 0 20px 0;}
 
-  .tool-intro{
-    background:var(--paper-raised);border:1px solid var(--line);
-    box-shadow:var(--shadow-md);border-radius:var(--radius);
-    padding:28px 30px;margin-bottom:24px;
-  }
-  .tool-intro h2{font-family:'Fraunces',serif;font-size:1.4rem;margin:0 0 10px 0;}
-  .tool-intro h3{font-family:'Fraunces',serif;font-size:1.05rem;margin:18px 0 6px 0;}
-  .tool-intro p{color:var(--ink-soft);font-size:.92rem;line-height:1.7;margin:0 0 12px 0;}
-  .tool-intro ul{color:var(--ink-soft);font-size:.92rem;line-height:1.7;margin:0 0 12px 0;padding-left:20px;}
-  .tool-intro li{margin-bottom:4px;}
-  .tool-intro strong{color:var(--ink);}
-
   label{display:block;font-size:.85rem;font-weight:500;margin:14px 0 5px 0;color:var(--ink);}
   label:first-of-type{margin-top:0;}
   input[type=text], input[type=email], input[type=tel], input[type=number], textarea, select{
@@ -540,7 +528,7 @@
   .tmpl-btn.active{background:var(--ink);color:#fff;}
 
   @media print{
-    header.site, nav.tabs, .card > *:not(.resume-preview), .two-col > div:first-child, footer, .ad-slot, .tool-intro{display:none !important;}
+    header.site, nav.tabs, .card > *:not(.resume-preview), .two-col > div:first-child, footer, .ad-slot{display:none !important;}
     @page{margin:14mm;}
     .wrap{max-width:none !important;padding:0 !important;}
     .two-col{display:block !important;}
@@ -575,21 +563,6 @@
 
     <!-- RESUME BUILDER -->
     <section class="panel active" id="resume">
-      <div class="tool-intro">
-        <h2>Free Resume Builder — No Account, No Watermark</h2>
-        <p>A resume is often the only thing standing between you and an interview, yet most free builders lock the good templates behind a paywall or stick a watermark across your download. This one doesn't. Fill in your details once, and switch freely between 10 layouts built for different situations — a US-style ATS-safe format, an international sidebar layout, and formats specific to Bangladesh, the Gulf, and academic careers.</p>
-        <h3>Which template should you use?</h3>
-        <p>The right template depends on where you're applying, not personal taste:</p>
-        <ul>
-          <li><strong>Compact (US/ATS)</strong> — plain, single-column, built to survive automated resume-screening software used by most US and multinational employers.</li>
-          <li><strong>Bangladesh Standard or Classic</strong> — matches the structure local employers expect: personal details, GPA per exam level, and a declaration section.</li>
-          <li><strong>Gulf / Middle East</strong> — includes fields recruiters in that region specifically ask for, like passport number and driving license status.</li>
-          <li><strong>International, Sidebar, or Europass</strong> — suited to regions where a photo and a skills-at-a-glance layout are the norm.</li>
-          <li><strong>Academic</strong> — built around publications, conferences, and research interests instead of a standard work history.</li>
-        </ul>
-        <h3>How it works</h3>
-        <p>Everything you type is saved automatically to your own device as you go — nothing is uploaded anywhere, and nothing is lost if you close the tab and come back later. When you're done, download it as a PDF or, for supported templates, a Word-compatible file.</p>
-      </div>
       <div class="two-col">
         <div>
           <div class="card">
@@ -773,19 +746,6 @@
 
     <!-- JAPAN FORMAT (Rirekisho) -->
     <section class="panel" id="japan">
-      <div class="tool-intro">
-        <h2>Japan Rirekisho (履歴書) Builder</h2>
-        <p>Applications for jobs and visas in Japan — including the Specified Skilled Worker (SSW) and Technical Intern Training programs — use a standardized resume format called a <strong>rirekisho</strong>, and it looks nothing like a typical Western CV. Employers and immigration reviewers expect it in one specific structure, and submitting the wrong format, or leaving out a required section, can hurt an otherwise strong application.</p>
-        <h3>What makes a rirekisho different</h3>
-        <p>Beyond the usual education and work history, a complete rirekisho includes sections most resumes never ask for: physical and health information (height, weight, blood type, eyesight), your family structure, and details on things like dietary restrictions or religious practices — all genuinely relevant to certain visa categories and caregiving or hospitality roles. Every field here is labeled bilingually in Japanese and English, matching the real document.</p>
-        <h3>Built-in details that matter</h3>
-        <ul>
-          <li>A repeatable table for language certifications — add every JLPT level, JFT-Basic, or NAT Test result you've completed, not just one</li>
-          <li>An education "Result" field that supports CGPA, GPA, or marks a degree as still in progress</li>
-          <li>Checkbox-style Yes/No fields that render and print exactly like the original document</li>
-        </ul>
-        <p>Want the full breakdown of what each section needs and the mistakes that commonly get applications rejected? Read the <a href="blog/how-to-write-a-rirekisho-for-a-japan-visa-application.html">full guide on the blog</a>.</p>
-      </div>
       <div class="two-col">
         <div>
           <div class="card">
@@ -929,19 +889,6 @@
 
     <!-- COVER LETTER -->
     <section class="panel" id="letter">
-      <div class="tool-intro">
-        <h2>How to Write a Professional Email or Letter</h2>
-        <p>Most people write far more emails asking for something, following up, or reporting a problem than they write actual job applications — yet almost every "cover letter tool" only handles the job-application case. This one covers the everyday situations too: a request to a company, a complaint or bug report, an email to a teacher, account recovery, or a simple thank-you.</p>
-        <h3>The structure that works for almost any letter</h3>
-        <ul>
-          <li><strong>Opening</strong> — say why you're writing in the first sentence. Don't make the reader guess.</li>
-          <li><strong>Body</strong> — the actual details: what happened, what you need, or what you're offering.</li>
-          <li><strong>Closing</strong> — what you want to happen next, and a thank-you.</li>
-        </ul>
-        <h3>Match the tone to the purpose</h3>
-        <p>A job application can afford to sound polished and a little formal. A bug report to a support team should be direct and specific — include reference numbers and exact steps, not just "it's broken." An email to a teacher should stay respectful but doesn't need corporate stiffness. Picking the right Purpose above adjusts the fields and draft wording to match.</p>
-        <p>Whatever you write here is meant to be copied straight into Gmail, Facebook, or wherever you're sending it — that's why "Copy to clipboard" is the main action, not just PDF download.</p>
-      </div>
       <div class="two-col">
         <div>
           <div class="card">
@@ -1001,19 +948,6 @@
 
     <!-- FILE TOOLS -->
     <section class="panel" id="convert">
-      <div class="tool-intro">
-        <h2>Image & File Tools</h2>
-        <p>Resizing an image and compressing it are two different problems that people often mix up. Resizing changes the actual pixel dimensions — useful when a form or website has a strict size limit. Compressing keeps the dimensions but shrinks the file size by simplifying the image data — useful when the file itself is too many megabytes for an upload limit or a slow connection.</p>
-        <h3>Choosing a format</h3>
-        <ul>
-          <li><strong>JPG</strong> — best for photos; smaller file size, some quality loss at high compression</li>
-          <li><strong>PNG</strong> — best for screenshots, logos, or anything with sharp edges/text; lossless, but doesn't shrink as much when compressed</li>
-          <li><strong>WebP</strong> — usually the smallest file size for the same visual quality, if the site or form you're uploading to accepts it</li>
-        </ul>
-        <p>If you're targeting a specific size limit — "must be under 100KB" — use the target file size mode instead of guessing with the quality slider.</p>
-        <h3>PDF and Word conversion — what's realistic</h3>
-        <p>Converting between PDF and Word is genuinely difficult, and no tool — free or paid — can guarantee a perfect result every time, because the two formats store information completely differently. This tool does a solid best-effort conversion: it works well on simple, single-column documents, and may need manual cleanup on complex layouts, multi-column pages, or heavy tables. Always open and check the result before relying on it. Compressing a PDF here works by converting each page into an optimized image — the file gets smaller, but the text is no longer selectable or searchable afterward, which is worth knowing before you use it on something that needs to stay text-based.</p>
-      </div>
       <div class="card">
         <h2>Image resizer, compressor & converter</h2>
         <p class="desc">Resize to any custom dimensions, control file size by quality or target size (KB/MB), and export as PNG, JPG, or WebP — runs entirely on your device, nothing is uploaded.</p>
@@ -1104,16 +1038,6 @@
 
     <!-- STUDENT TOOLS -->
     <section class="panel" id="student">
-      <div class="tool-intro">
-        <h2>Student Tools — Scanning, GPA & Citations</h2>
-        <p>Three tools students actually reach for regularly, without needing separate apps for each one.</p>
-        <h3>Scanning a document with your phone</h3>
-        <p>A phone photo of a document usually looks tilted and uneven — the Document Scanner fixes that by flattening the perspective once you drag the four corner dots onto the page's actual edges. It's a manual corner-fit rather than automatic AI detection, but the straightening, sharpening, and black-and-white "scan" cleanup all happen instantly afterward. For anything that needs to look genuinely official (ID documents, signed forms), a real flatbed scanner still gives a cleaner result — this is built for the common case of getting a readable, presentable page quickly.</p>
-        <h3>GPA vs CGPA — how the calculation actually works</h3>
-        <p>Both are a credit-weighted average: multiply each grade by its credit hours, add those up, then divide by the total credits — not a simple average of the grades themselves. A 4-credit A and a 1-credit A don't count equally, which is exactly why credits matter. This calculator supports the US 4.0 scale, the 10-point scale used across much of South Asia, and plain percentage marks — pick whichever matches your institution, since the underlying math is the same either way.</p>
-        <h3>Citations — what "basic" actually means here</h3>
-        <p>The citation generator builds a properly formatted APA, MLA, or Chicago entry from the author, year, title, and publisher you provide. It's built for the common case — a book, article, or webpage with clear author/title/date. Unusual source types (a legal case, an interview, a social media post) follow their own specific citation rules that this tool doesn't attempt to guess — worth double-checking against your citation style guide for anything non-standard.</p>
-      </div>
       <div class="card">
         <h2>Document Scanner</h2>
         <p class="desc">Snap or upload a photo of a page, drag the 4 dots onto its corners, and it'll flatten the perspective into a clean scan — like laying it flat under a real scanner. Corner-fitting is manual (drag to match), not AI auto-detect, but the straightening and cleanup happen instantly, right in your browser. Combine multiple pages into one PDF.</p>
@@ -1259,29 +1183,6 @@
       </div>
     </section>
 
-    <div class="tool-intro site-closing">
-      <h2>Your Files Stay in Your Browser</h2>
-      <p>Every tool on this site — the resume builder, the file converter, the document scanner — runs its processing directly in your browser using JavaScript. There's no upload step, because there's no server on the other end to upload to: this is a static site with nowhere for your files to go. Selecting a file, typing your details, and downloading the result all happen locally on your device. The one honest caveat: the page itself loads fonts and a few external code libraries (for PDF/Word conversion) from public CDNs when you open certain tools — that's a normal part of how any website loads its assets, and it's separate from your actual content, which never leaves your device.</p>
-
-      <h2 style="margin-top:28px;">Frequently Asked Questions</h2>
-      <h3>Are Deskwork's tools actually free?</h3>
-      <p>Yes — no account, no payment, no watermark on anything you download.</p>
-      <h3>Do I need to install anything?</h3>
-      <p>No. Everything runs in your mobile or desktop browser.</p>
-      <h3>Are my files or resume details uploaded anywhere?</h3>
-      <p>No — processing happens locally in your browser, and your resume/letter drafts auto-save only to your own device.</p>
-      <h3>Can I use this on a phone?</h3>
-      <p>Yes, the whole site is built mobile-first, including the document scanner, which uses your phone's camera directly.</p>
-      <h3>Which resume template should I use?</h3>
-      <p>It depends on where you're applying — see the guide at the top of the Resume Builder tab for a breakdown by region and job market.</p>
-      <h3>Is the resume ATS-friendly?</h3>
-      <p>The Compact (US/ATS) template is specifically built for automated resume-screening software — plain formatting, standard section headers, no graphics.</p>
-      <h3>Can this convert any PDF to Word perfectly?</h3>
-      <p>No tool can guarantee that — it works well on simple documents and may need manual cleanup on complex layouts. See the File Tools guide above for the honest breakdown.</p>
-      <h3>Can I use Deskwork for schoolwork?</h3>
-      <p>Yes — the GPA calculator, citation generator, and document scanner are built specifically with students in mind.</p>
-    </div>
-
   </div>
 </main>
 
@@ -1293,8 +1194,6 @@
       <a href="about.html">About</a>
       <span style="margin:0 10px;color:var(--line);">·</span>
       <a href="privacy.html">Privacy Policy</a>
-      <span style="margin:0 10px;color:var(--line);">·</span>
-      <a href="mailto:marazemon3@gmail.com">Contact</a>
     </div>
     Deskwork — built with free, open tools. Nothing you enter here leaves your device.
   </div>
