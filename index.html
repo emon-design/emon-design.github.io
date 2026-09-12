@@ -1294,6 +1294,8 @@
       <span style="margin:0 10px;color:var(--line);">·</span>
       <a href="privacy.html">Privacy Policy</a>
       <span style="margin:0 10px;color:var(--line);">·</span>
+      <a href="terms.html">Terms of Use</a>
+      <span style="margin:0 10px;color:var(--line);">·</span>
       <a href="mailto:marazemon3@gmail.com">Contact</a>
     </div>
     Deskwork — built with free, open tools. Nothing you enter here leaves your device.
@@ -3681,6 +3683,7 @@ function buildBlogPostHtml(){
     <a href="index.html">All posts</a>
     <a href="../about.html">About</a>
     <a href="../privacy.html">Privacy Policy</a>
+    <a href="../terms.html">Terms of Use</a>
     <span>Deskwork Blog</span>
   </div>
 </footer>
@@ -3786,32 +3789,22 @@ addGpaRow();
 
 // ---- Student tools: Citation generator ----
 function genCitation(){
-  const author = val('c-author').trim() || 'Author, A.';
-  const year = val('c-year').trim() || 'n.d.';
-  const title = val('c-title').trim() || 'Untitled';
-  const pub = val('c-pub').trim() || 'Publisher';
-  const style = document.getElementById('c-style').value;
-
-  // Clean trailing punctuation so generated citations stay consistent.
-  const cleanTitle = title.replace(/[.]+$/, '');
-  const cleanPub = pub.replace(/[.]+$/, '');
-
-  let out = '';
-
-  if(style === 'apa'){
-    // APA 7: basic book/article/web-source form.
-    out = `${author} (${year}). ${cleanTitle}. ${cleanPub}.`;
-  } else if(style === 'mla'){
-    // MLA 9: basic source form.
-    out = `${author}. "${cleanTitle}." ${cleanPub}, ${year}.`;
-  } else if(style === 'chicago'){
-    // Chicago bibliography: basic source form.
-    out = `${author}. ${cleanTitle}. ${cleanPub}, ${year}.`;
+  const author=val('c-author')||'Author, A.';
+  const year=val('c-year')||'n.d.';
+  const title=val('c-title')||'Untitled';
+  const pub=val('c-pub')||'Publisher';
+  const style=document.getElementById('c-style').value;
+  let out='';
+  if(style==='apa'){
+    out=`${author} (${year}). ${title}. ${pub}.`;
+  } else if(style==='chicago'){
+    out=`${author}. ${title}. ${pub}, ${year}.`;
+  } else {
+    out=`${author}. "${title}." ${pub}, ${year}.`;
   }
-
-  const box = document.getElementById('citation-out');
-  box.style.display = 'block';
-  box.textContent = out;
+  const box=document.getElementById('citation-out');
+  box.style.display='block';
+  box.textContent=out;
 }
 </script>
 </body>
